@@ -1,6 +1,6 @@
 # LeagueOfStats
 
-**LeagueOfStats** é um aplicativo Android desenvolvido em Kotlin que permite aos jogadores de *League of Legends* acessar estatísticas detalhadas dos campeões. Com uma interface amigável e intuitiva, o app exibe dados como taxa de vitória, taxa de pick, taxa de banimento, builds populares e muito mais!
+**LeagueOfStats** é um aplicativo Android desenvolvido em Kotlin que permite aos jogadores de *League of Legends* acessar estatísticas detalhadas dos campeões. Com uma interface amigável e intuitiva!
 
 ## Funcionalidades
 
