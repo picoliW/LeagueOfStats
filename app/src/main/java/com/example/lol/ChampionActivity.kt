@@ -70,8 +70,27 @@ fun ChampionDetailsScreen(championStats: ChampionStats) {
             Spacer(modifier = Modifier.height(16.dp))
 
             Text(text = "HP: ${championStats.stats.hp}", style = MaterialTheme.typography.bodyLarge)
+            Text(text = "Health per lvl: ${championStats.stats.hpperlevel}", style = MaterialTheme.typography.bodyLarge)
+
+            Spacer(modifier = Modifier.height(16.dp))
+
             Text(text = "Attack Damage: ${championStats.stats.attackdamage}", style = MaterialTheme.typography.bodyLarge)
+            Text(text = "Attack Damage per lvl: ${championStats.stats.attackdamageperlevel}", style = MaterialTheme.typography.bodyLarge)
+
+            Spacer(modifier = Modifier.height(16.dp))
+
             Text(text = "Armor: ${championStats.stats.armor}", style = MaterialTheme.typography.bodyLarge)
+            Text(text = "Armor per lvl: ${championStats.stats.armorperlevel}", style = MaterialTheme.typography.bodyLarge)
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Text(text = "Mana Points: ${championStats.stats.mp}", style = MaterialTheme.typography.bodyLarge)
+            Text(text = "Mana Points per lvl: ${championStats.stats.mpperlevel}", style = MaterialTheme.typography.bodyLarge)
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Text(text = "Attack Speed: ${championStats.stats.attackspeed}", style = MaterialTheme.typography.bodyLarge)
+            Text(text = "Attack Speed per lvl: ${championStats.stats.attackspeedperlevel}", style = MaterialTheme.typography.bodyLarge)
         }
     }
 }
