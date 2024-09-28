@@ -1,11 +1,12 @@
 package com.example.lol
 
+import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -16,9 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
@@ -28,7 +27,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.json.JSONArray
-import org.json.JSONObject
 import java.net.HttpURLConnection
 import java.net.URL
 
@@ -38,7 +36,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             LolTheme {
-                val champions = remember { mutableStateOf(listOf<Champion>()) }
+                val champions = remember { mutableStateOf(listOf<ChampionStats>()) }
                 fetchAllChampions(champions)
 
                 ChampionsList(champions.value)
@@ -47,13 +45,7 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-data class Champion(
-    val name: String,
-    val icon: String,
-    val title: String
-)
-
-fun fetchAllChampions(champions: MutableState<List<Champion>>) {
+fun fetchAllChampions(champions: MutableState<List<ChampionStats>>) {
     CoroutineScope(Dispatchers.IO).launch {
         val url = URL("http://girardon.com.br:3001/champions")
         val connection = url.openConnection() as HttpURLConnection
@@ -64,17 +56,69 @@ fun fetchAllChampions(champions: MutableState<List<Champion>>) {
 
             val response = connection.inputStream.bufferedReader().use { it.readText() }
             val jsonArray = JSONArray(response)
-            val championList = mutableListOf<Champion>()
+            val championList = mutableListOf<ChampionStats>()
 
             for (i in 0 until jsonArray.length()) {
                 val champion = jsonArray.getJSONObject(i)
+
+                val id = champion.getString("id")
+                val key = champion.getString("key")
                 val name = champion.getString("name")
-                val image = champion.getString("icon").replace("http://", "https://")
                 val title = champion.getString("title")
+                val description = champion.getString("description")
 
-                println("URL da imagem de $name: $image")
+                val tagsArray = champion.getJSONArray("tags")
+                val tags = mutableListOf<String>()
+                for (j in 0 until tagsArray.length()) {
+                    tags.add(tagsArray.getString(j))
+                }
 
-                championList.add(Champion(name, image, title))
+                val statsJson = champion.getJSONObject("stats")
+                val stats = Stats(
+                    hp = statsJson.getInt("hp"),
+                    hpperlevel = statsJson.getInt("hpperlevel"),
+                    mp = statsJson.getInt("mp"),
+                    mpperlevel = statsJson.getInt("mpperlevel"),
+                    movespeed = statsJson.getInt("movespeed"),
+                    armor = statsJson.getDouble("armor"),
+                    armorperlevel = statsJson.getDouble("armorperlevel"),
+                    spellblock = statsJson.getDouble("spellblock"),
+                    spellblockperlevel = statsJson.getDouble("spellblockperlevel"),
+                    attackrange = statsJson.getInt("attackrange"),
+                    hpregen = statsJson.getDouble("hpregen"),
+                    hpregenperlevel = statsJson.getDouble("hpregenperlevel"),
+                    mpregen = statsJson.getDouble("mpregen"),
+                    mpregenperlevel = statsJson.getDouble("mpregenperlevel"),
+                    crit = statsJson.getDouble("crit"),
+                    critperlevel = statsJson.getDouble("critperlevel"),
+                    attackdamage = statsJson.getDouble("attackdamage"),
+                    attackdamageperlevel = statsJson.getDouble("attackdamageperlevel"),
+                    attackspeedperlevel = statsJson.getDouble("attackspeedperlevel"),
+                    attackspeed = statsJson.getDouble("attackspeed")
+                )
+
+                val icon = champion.getString("icon").replace("http://", "https://")
+
+                val spriteJson = champion.getJSONObject("sprite")
+                val sprite = Sprite(
+                    url = spriteJson.getString("url").replace("http://", "https://"),
+                    x = spriteJson.getInt("x"),
+                    y = spriteJson.getInt("y")
+                )
+
+                championList.add(
+                    ChampionStats(
+                        id = id,
+                        key = key,
+                        name = name,
+                        title = title,
+                        tags = tags,
+                        stats = stats,
+                        icon = icon,
+                        sprite = sprite,
+                        description = description
+                    )
+                )
             }
 
             champions.value = championList
@@ -85,7 +129,7 @@ fun fetchAllChampions(champions: MutableState<List<Champion>>) {
 }
 
 @Composable
-fun ChampionsList(champions: List<Champion>) {
+fun ChampionsList(champions: List<ChampionStats>) {
     Scaffold { paddingValues ->
         LazyColumn(
             modifier = Modifier
@@ -93,18 +137,31 @@ fun ChampionsList(champions: List<Champion>) {
                 .padding(paddingValues)
         ) {
             items(champions) { champion ->
-                ChampionCard(champion)
+                val context = LocalContext.current
+                ChampionCard(champion) {
+                    val intent = Intent(context, ChampionActivity::class.java).apply {
+
+                    }
+                    context.startActivity(intent)
+                }
             }
         }
     }
 }
 
 @Composable
-fun ChampionCard(champion: Champion) {
+fun ChampionCard(champion: ChampionStats, onClick: () -> Unit) {
+    val context = LocalContext.current
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp),
+            .padding(8.dp)
+            .clickable {
+                val intent = Intent(context, ChampionActivity::class.java)
+                intent.putExtra("championStats", champion) // Passando o objeto ChampionStats
+                context.startActivity(intent)
+            },
         shape = RoundedCornerShape(8.dp),
         elevation = CardDefaults.cardElevation(4.dp)
     ) {
@@ -130,14 +187,5 @@ fun ChampionCard(champion: Champion) {
                 Text(text = champion.title, style = MaterialTheme.typography.bodyMedium)
             }
         }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    LolTheme {
-        val sampleChampion = Champion("Ahri", "https://example.com/ahri_icon.png", "The Nine-Tailed Fox")
-        ChampionCard(sampleChampion)
     }
 }
