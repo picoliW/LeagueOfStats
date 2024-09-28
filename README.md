@@ -26,8 +26,6 @@
 
 • Kotlin: Linguagem principal do app.
 
-• Retrofit: Para fazer chamadas à API e buscar dados de campeões.
-
-• Material Design: Para uma interface moderna e intuitiva.
+• HttpURLConnection: Para fazer chamadas à API e buscar dados de campeões.
 
 • Coil: Para carregar e exibir imagens dos campeões de forma rápida e eficiente.
