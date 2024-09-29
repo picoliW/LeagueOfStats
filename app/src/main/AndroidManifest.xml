@@ -17,7 +17,6 @@
         android:theme="@style/Theme.Lol"
         tools:targetApi="31">
 
-        <!-- Set SplashScreen as the launcher activity -->
         <activity
             android:name=".SplashScreen"
             android:exported="true"
@@ -37,6 +36,12 @@
 
         <activity
             android:name=".ChampionActivity"
+            android:exported="true"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.Lol" />
+
+        <activity
+            android:name=".HomeActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.Lol" />
