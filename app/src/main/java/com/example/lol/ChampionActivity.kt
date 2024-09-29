@@ -56,6 +56,7 @@ fun ChampionDetailsScreen(championStats: ChampionStats) {
             )
         }
     ) { paddingValues ->
+
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
@@ -142,59 +143,138 @@ fun ChampionDetailsScreen(championStats: ChampionStats) {
             item {
                 Spacer(modifier = Modifier.height(16.dp))
 
-                Text(
-                    text = "Recommended Spells",
-                    style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
-                    modifier = Modifier.padding(bottom = 16.dp)
-                )
-
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Center,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp)
+                Card(
+                    modifier = Modifier.fillMaxWidth().padding(8.dp),
+                    shape = RoundedCornerShape(8.dp)
                 ) {
-                    // Carregar e exibir a imagem do feitiço Flash
-                    var flashBitmap by remember { mutableStateOf<Bitmap?>(null) }
-                    LaunchedEffect(Unit) {
-                        CoroutineScope(Dispatchers.IO).launch {
-                            flashBitmap = loadImageFromUrl("https://static.wikia.nocookie.net/leagueoflegends/images/7/74/Flash.png/revision/latest/thumbnail/width/360/height/360?cb=20220324211321&path-prefix=pt-br")
+                    Column(modifier = Modifier.padding(16.dp)) {
+                        Text(
+                            text = "Recommended Spells",
+                            style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
+                            modifier = Modifier.padding(bottom = 16.dp)
+                        )
+
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center,
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            var flashBitmap by remember { mutableStateOf<Bitmap?>(null) }
+                            LaunchedEffect(Unit) {
+                                CoroutineScope(Dispatchers.IO).launch {
+                                    flashBitmap = loadImageFromUrl("https://static.wikia.nocookie.net/leagueoflegends/images/7/74/Flash.png/revision/latest/thumbnail/width/360/height/360?cb=20220324211321&path-prefix=pt-br")
+                                }
+                            }
+
+                            flashBitmap?.let {
+                                Image(
+                                    bitmap = it.asImageBitmap(),
+                                    contentDescription = "flash icon",
+                                    modifier = Modifier.size(64.dp),
+                                    contentScale = ContentScale.Crop
+                                )
+                            }
+
+                            Spacer(modifier = Modifier.width(32.dp))
+
+                            var teleportBitmap by remember { mutableStateOf<Bitmap?>(null) }
+                            LaunchedEffect(Unit) {
+                                CoroutineScope(Dispatchers.IO).launch {
+                                    teleportBitmap = loadImageFromUrl("https://cmsassets.rgpub.io/sanity/images/dsfx7636/news_live/6dc976f3ec2d5f41e14cb9aa94535e9ee2d82077-256x256.png")
+                                }
+                            }
+
+                            teleportBitmap?.let {
+                                Image(
+                                    bitmap = it.asImageBitmap(),
+                                    contentDescription = "teleport icon",
+                                    modifier = Modifier.size(64.dp),
+                                    contentScale = ContentScale.Crop
+                                )
+                            }
                         }
                     }
+                }
+            }
 
-                    flashBitmap?.let {
-                        Image(
-                            bitmap = it.asImageBitmap(),
-                            contentDescription = "flash icon",
-                            modifier = Modifier.size(64.dp),
-                            contentScale = ContentScale.Crop
+            // Card for Recommended Items
+            item {
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Card(
+                    modifier = Modifier.fillMaxWidth().padding(8.dp),
+                    shape = RoundedCornerShape(8.dp)
+                ) {
+                    Column(modifier = Modifier.padding(16.dp)) {
+                        Text(
+                            text = "Recommended Items",
+                            style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
+                            modifier = Modifier.padding(bottom = 16.dp)
                         )
-                    }
 
-                    Spacer(modifier = Modifier.width(32.dp))
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center,
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            var IEBitmap by remember { mutableStateOf<Bitmap?>(null) }
+                            LaunchedEffect(Unit) {
+                                CoroutineScope(Dispatchers.IO).launch {
+                                    IEBitmap =
+                                        loadImageFromUrl("https://leagueofitems.com/images/items/256/3031.webp")
+                                }
+                            }
 
+                            IEBitmap?.let {
+                                Image(
+                                    bitmap = it.asImageBitmap(),
+                                    contentDescription = "infinity edge icon",
+                                    modifier = Modifier.size(64.dp),
+                                    contentScale = ContentScale.Crop
+                                )
+                            }
 
-                    var teleportBitmap by remember { mutableStateOf<Bitmap?>(null) }
-                    LaunchedEffect(Unit) {
-                        CoroutineScope(Dispatchers.IO).launch {
-                            teleportBitmap = loadImageFromUrl("https://cmsassets.rgpub.io/sanity/images/dsfx7636/news_live/6dc976f3ec2d5f41e14cb9aa94535e9ee2d82077-256x256.png")
+                            Spacer(modifier = Modifier.width(32.dp))
+
+                            var goredrinkerBitmap by remember { mutableStateOf<Bitmap?>(null) }
+                            LaunchedEffect(Unit) {
+                                CoroutineScope(Dispatchers.IO).launch {
+                                    goredrinkerBitmap =
+                                        loadImageFromUrl("https://static.invenglobal.com/upload/image/2021/10/11/i1633960421449915.png")
+                                }
+                            }
+
+                            goredrinkerBitmap?.let {
+                                Image(
+                                    bitmap = it.asImageBitmap(),
+                                    contentDescription = "goredrinker icon",
+                                    modifier = Modifier.size(64.dp),
+                                    contentScale = ContentScale.Crop
+                                )
+                            }
+
+                            Spacer(modifier = Modifier.width(16.dp))
+
+                            var stormsurgeBitmap by remember { mutableStateOf<Bitmap?>(null) }
+                            LaunchedEffect(Unit) {
+                                CoroutineScope(Dispatchers.IO).launch {
+                                    stormsurgeBitmap =
+                                        loadImageFromUrl("https://cmsassets.rgpub.io/sanity/images/dsfx7636/news_live/a600af61619cdbcc5b3cf6c8d8f5bb49554d7739-512x512.png")
+                                }
+                            }
+
+                            stormsurgeBitmap?.let {
+                                Image(
+                                    bitmap = it.asImageBitmap(),
+                                    contentDescription = "stormsurgeBitmap icon",
+                                    modifier = Modifier.size(64.dp),
+                                    contentScale = ContentScale.Crop
+                                )
+                            }
                         }
                     }
-
-                    teleportBitmap?.let {
-                        Image(
-                            bitmap = it.asImageBitmap(),
-                            contentDescription = "teleport icon",
-                            modifier = Modifier.size(64.dp),
-                            contentScale = ContentScale.Crop
-                        )
-                    }
-
-                    Spacer(modifier = Modifier.width(16.dp))
                 }
             }
         }
     }
 }
-
