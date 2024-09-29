@@ -159,7 +159,7 @@ fun ChampionCard(champion: ChampionStats, onClick: () -> Unit) {
             .padding(8.dp)
             .clickable {
                 val intent = Intent(context, ChampionActivity::class.java)
-                intent.putExtra("championStats", champion) // Passando o objeto ChampionStats
+                intent.putExtra("championStats", champion)
                 context.startActivity(intent)
             },
         shape = RoundedCornerShape(8.dp),
