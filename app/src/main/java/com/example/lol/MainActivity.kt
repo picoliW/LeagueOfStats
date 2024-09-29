@@ -44,7 +44,7 @@ class MainActivity : ComponentActivity() {
                 val champions = remember { mutableStateOf(listOf<ChampionStats>()) }
                 fetchAllChampions(champions)
 
-                ChampionsList(champions.value)
+                ChampionsScreen()
             }
         }
     }
@@ -134,6 +134,39 @@ fun fetchAllChampions(champions: MutableState<List<ChampionStats>>) {
 }
 
 @Composable
+fun ChampionsScreen() {
+    var searchQuery by remember { mutableStateOf("") }
+    val champions = remember { mutableStateOf(listOf<ChampionStats>()) }
+    fetchAllChampions(champions)
+
+    val filteredChampions = champions.value.filter {
+        it.name.contains(searchQuery, ignoreCase = true) || it.title.contains(searchQuery, ignoreCase = true)
+    }
+
+    Column {
+        SearchBar(
+            searchQuery = searchQuery,
+            onQueryChanged = { searchQuery = it }
+        )
+        ChampionsList(filteredChampions)
+    }
+}
+
+@Composable
+fun SearchBar(searchQuery: String, onQueryChanged: (String) -> Unit) {
+    TextField(
+        value = searchQuery,
+        onValueChange = onQueryChanged,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        placeholder = {
+            Text(text = "Search Champions")
+        }
+    )
+}
+
+@Composable
 fun ChampionsList(champions: List<ChampionStats>) {
     Scaffold { paddingValues ->
         LazyColumn(
@@ -144,9 +177,7 @@ fun ChampionsList(champions: List<ChampionStats>) {
             items(champions) { champion ->
                 val context = LocalContext.current
                 ChampionCard(champion) {
-                    val intent = Intent(context, ChampionActivity::class.java).apply {
-
-                    }
+                    val intent = Intent(context, ChampionActivity::class.java)
                     context.startActivity(intent)
                 }
             }
