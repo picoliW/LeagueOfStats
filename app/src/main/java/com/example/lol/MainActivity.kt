@@ -1,11 +1,14 @@
 package com.example.lol
 
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -15,6 +18,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
@@ -25,6 +29,7 @@ import coil.size.Size
 import com.example.lol.ui.theme.LolTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import org.json.JSONArray
 import java.net.HttpURLConnection
@@ -152,6 +157,13 @@ fun ChampionsList(champions: List<ChampionStats>) {
 @Composable
 fun ChampionCard(champion: ChampionStats, onClick: () -> Unit) {
     val context = LocalContext.current
+    var bitmap by remember { mutableStateOf<Bitmap?>(null) }
+
+LaunchedEffect(champion.icon) {
+    CoroutineScope(Dispatchers.IO).launch {
+        bitmap = loadImageFromUrl(champion.icon)
+    }
+}
 
     Card(
         modifier = Modifier
@@ -169,16 +181,17 @@ fun ChampionCard(champion: ChampionStats, onClick: () -> Unit) {
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.padding(16.dp)
         ) {
-            Image(
-                painter = rememberAsyncImagePainter(
-                    model = ImageRequest.Builder(LocalContext.current)
-                        .data(champion.icon)
-                        .size(Size.ORIGINAL)
-                        .build()
-                ),
-                contentDescription = "${champion.name} icon",
-                modifier = Modifier.size(64.dp),
-                contentScale = ContentScale.Crop
+            bitmap?.let {
+                Image(
+                    bitmap = it.asImageBitmap(),
+                    contentDescription = "${champion.icon} icon",
+                    modifier = Modifier.size(64.dp),
+                    contentScale = ContentScale.Crop
+                )
+            } ?: Box(
+                modifier = Modifier
+                    .size(64.dp)
+                    .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.2f))
             )
 
             Spacer(modifier = Modifier.width(16.dp))
@@ -189,3 +202,17 @@ fun ChampionCard(champion: ChampionStats, onClick: () -> Unit) {
         }
     }
 }
+
+fun loadImageFromUrl(url: String): Bitmap? {
+    return try {
+        val connection: HttpURLConnection = URL(url).openConnection() as HttpURLConnection
+        connection.doInput = true
+        connection.connect()
+        val inputStream = connection.inputStream
+        BitmapFactory.decodeStream(inputStream)
+    } catch (e: Exception) {
+        e.printStackTrace()
+        null
+    }
+}
+

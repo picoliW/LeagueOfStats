@@ -177,7 +177,7 @@ fun ChampionDetailsScreen(championStats: ChampionStats) {
                 ) {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Center, // Centraliza os itens
+                        horizontalArrangement = Arrangement.Center,
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(16.dp)
