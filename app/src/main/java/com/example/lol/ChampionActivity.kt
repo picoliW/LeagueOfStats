@@ -12,20 +12,15 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-
 import com.example.lol.ui.theme.LolTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -46,6 +41,25 @@ class ChampionActivity : ComponentActivity() {
     }
 }
 
+@Composable
+fun displayImg(url: String, name: String) {
+    var teleportBitmap by remember { mutableStateOf<Bitmap?>(null) }
+    LaunchedEffect(Unit) {
+        CoroutineScope(Dispatchers.IO).launch {
+            teleportBitmap = loadImageFromUrl(url)
+        }
+    }
+
+    teleportBitmap?.let {
+        Image(
+            bitmap = it.asImageBitmap(),
+            contentDescription = name,
+            modifier = Modifier.size(64.dp),
+            contentScale = ContentScale.Crop
+        )
+    }
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChampionDetailsScreen(championStats: ChampionStats) {
@@ -56,7 +70,6 @@ fun ChampionDetailsScreen(championStats: ChampionStats) {
             )
         }
     ) { paddingValues ->
-
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
@@ -96,55 +109,165 @@ fun ChampionDetailsScreen(championStats: ChampionStats) {
             }
 
             item {
-                Card(modifier = Modifier.fillMaxWidth().padding(8.dp)) {
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp)
+                ) {
                     Column(modifier = Modifier.padding(16.dp)) {
-                        Text(text = "HP: ${championStats.stats.hp}", style = MaterialTheme.typography.bodyLarge)
-                        Text(text = "Health per lvl: ${championStats.stats.hpperlevel}", style = MaterialTheme.typography.bodyLarge)
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Image(
+                                painter = painterResource(id = R.drawable.hpicon),
+                                contentDescription = "HP icon",
+                                modifier = Modifier.size(24.dp)
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(
+                                text = "HP: ${championStats.stats.hp}",
+                                style = MaterialTheme.typography.bodyLarge
+                            )
+                        }
+
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(
+                                text = "Health per lvl: ${championStats.stats.hpperlevel}",
+                                style = MaterialTheme.typography.bodyLarge
+                            )
+                        }
                     }
                 }
 
-                Spacer(modifier = Modifier.height(16.dp))
-
-                Card(modifier = Modifier.fillMaxWidth().padding(8.dp)) {
-                    Column(modifier = Modifier.padding(16.dp)) {
-                        Text(text = "Attack Damage: ${championStats.stats.attackdamage}", style = MaterialTheme.typography.bodyLarge)
-                        Text(text = "Attack Damage per lvl: ${championStats.stats.attackdamageperlevel}", style = MaterialTheme.typography.bodyLarge)
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                Card(modifier = Modifier.fillMaxWidth().padding(8.dp)) {
-                    Column(modifier = Modifier.padding(16.dp)) {
-                        Text(text = "Armor: ${championStats.stats.armor}", style = MaterialTheme.typography.bodyLarge)
-                        Text(text = "Armor per lvl: ${championStats.stats.armorperlevel}", style = MaterialTheme.typography.bodyLarge)
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                Card(modifier = Modifier.fillMaxWidth().padding(8.dp)) {
-                    Column(modifier = Modifier.padding(16.dp)) {
-                        Text(text = "Mana Points: ${championStats.stats.mp}", style = MaterialTheme.typography.bodyLarge)
-                        Text(text = "Mana Points per lvl: ${championStats.stats.mpperlevel}", style = MaterialTheme.typography.bodyLarge)
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                Card(modifier = Modifier.fillMaxWidth().padding(8.dp)) {
-                    Column(modifier = Modifier.padding(16.dp)) {
-                        Text(text = "Attack Speed: ${championStats.stats.attackspeed}", style = MaterialTheme.typography.bodyLarge)
-                        Text(text = "Attack Speed per lvl: ${championStats.stats.attackspeedperlevel}", style = MaterialTheme.typography.bodyLarge)
-                    }
-                }
-            }
-
-            item {
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Card(
-                    modifier = Modifier.fillMaxWidth().padding(8.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp)
+                ) {
+                    Column(modifier = Modifier.padding(16.dp)) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Image(
+                                painter = painterResource(id = R.drawable.atkdmgicon),
+                                contentDescription = "Attack Damage icon",
+                                modifier = Modifier.size(24.dp)
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(
+                                text = "Attack Damage: ${championStats.stats.attackdamage}",
+                                style = MaterialTheme.typography.bodyLarge
+                            )
+                        }
+
+                        Text(
+                            text = "Attack Damage per lvl: ${championStats.stats.attackdamageperlevel}",
+                            style = MaterialTheme.typography.bodyLarge
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp)
+                ) {
+                    Column(modifier = Modifier.padding(16.dp)) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Image(
+                                painter = painterResource(id = R.drawable.armoricon),
+                                contentDescription = "Armor icon",
+                                modifier = Modifier.size(24.dp)
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(
+                                text = "Armor: ${championStats.stats.armor}",
+                                style = MaterialTheme.typography.bodyLarge
+                            )
+                        }
+
+                        Text(
+                            text = "Armor per lvl: ${championStats.stats.armorperlevel}",
+                            style = MaterialTheme.typography.bodyLarge
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp)
+                ) {
+                    Column(modifier = Modifier.padding(16.dp)) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Image(
+                                painter = painterResource(id = R.drawable.mpicon),
+                                contentDescription = "Mana Points icon",
+                                modifier = Modifier.size(24.dp)
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(
+                                text = "Mana Points: ${championStats.stats.mp}",
+                                style = MaterialTheme.typography.bodyLarge
+                            )
+                        }
+
+                        Text(
+                            text = "Mana Points per lvl: ${championStats.stats.mpperlevel}",
+                            style = MaterialTheme.typography.bodyLarge
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp)
+                ) {
+                    Column(modifier = Modifier.padding(16.dp)) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Image(
+                                painter = painterResource(id = R.drawable.atkspeedicon),
+                                contentDescription = "Attack Speed icon",
+                                modifier = Modifier.size(24.dp)
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(
+                                text = "Attack Speed: ${championStats.stats.attackspeed}",
+                                style = MaterialTheme.typography.bodyLarge
+                            )
+                        }
+
+                        Text(
+                            text = "Attack Speed per lvl: ${championStats.stats.attackspeedperlevel}",
+                            style = MaterialTheme.typography.bodyLarge
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp),
                     shape = RoundedCornerShape(8.dp)
                 ) {
                     Column(modifier = Modifier.padding(16.dp)) {
@@ -159,50 +282,27 @@ fun ChampionDetailsScreen(championStats: ChampionStats) {
                             horizontalArrangement = Arrangement.Center,
                             modifier = Modifier.fillMaxWidth()
                         ) {
-                            var flashBitmap by remember { mutableStateOf<Bitmap?>(null) }
-                            LaunchedEffect(Unit) {
-                                CoroutineScope(Dispatchers.IO).launch {
-                                    flashBitmap = loadImageFromUrl("https://static.wikia.nocookie.net/leagueoflegends/images/7/74/Flash.png/revision/latest/thumbnail/width/360/height/360?cb=20220324211321&path-prefix=pt-br")
-                                }
-                            }
+                            displayImg(
+                                url = "https://static.wikia.nocookie.net/leagueoflegends/images/7/74/Flash.png/revision/latest/thumbnail/width/360/height/360?cb=20220324211321&path-prefix=pt-br",
+                                name = "Flash icon"
+                            )
 
-                            flashBitmap?.let {
-                                Image(
-                                    bitmap = it.asImageBitmap(),
-                                    contentDescription = "flash icon",
-                                    modifier = Modifier.size(64.dp),
-                                    contentScale = ContentScale.Crop
-                                )
-                            }
+                            Spacer(modifier = Modifier.width(16.dp))
 
-                            Spacer(modifier = Modifier.width(32.dp))
-
-                            var teleportBitmap by remember { mutableStateOf<Bitmap?>(null) }
-                            LaunchedEffect(Unit) {
-                                CoroutineScope(Dispatchers.IO).launch {
-                                    teleportBitmap = loadImageFromUrl("https://cmsassets.rgpub.io/sanity/images/dsfx7636/news_live/6dc976f3ec2d5f41e14cb9aa94535e9ee2d82077-256x256.png")
-                                }
-                            }
-
-                            teleportBitmap?.let {
-                                Image(
-                                    bitmap = it.asImageBitmap(),
-                                    contentDescription = "teleport icon",
-                                    modifier = Modifier.size(64.dp),
-                                    contentScale = ContentScale.Crop
-                                )
-                            }
+                            displayImg(
+                                url = "https://cmsassets.rgpub.io/sanity/images/dsfx7636/news_live/6dc976f3ec2d5f41e14cb9aa94535e9ee2d82077-256x256.png",
+                                name = "Teleport icon"
+                            )
                         }
                     }
                 }
-            }
 
-            // Card for Recommended Items
-            item {
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Card(
-                    modifier = Modifier.fillMaxWidth().padding(8.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp),
                     shape = RoundedCornerShape(8.dp)
                 ) {
                     Column(modifier = Modifier.padding(16.dp)) {
@@ -217,60 +317,15 @@ fun ChampionDetailsScreen(championStats: ChampionStats) {
                             horizontalArrangement = Arrangement.Center,
                             modifier = Modifier.fillMaxWidth()
                         ) {
-                            var IEBitmap by remember { mutableStateOf<Bitmap?>(null) }
-                            LaunchedEffect(Unit) {
-                                CoroutineScope(Dispatchers.IO).launch {
-                                    IEBitmap =
-                                        loadImageFromUrl("https://leagueofitems.com/images/items/256/3031.webp")
-                                }
-                            }
-
-                            IEBitmap?.let {
-                                Image(
-                                    bitmap = it.asImageBitmap(),
-                                    contentDescription = "infinity edge icon",
-                                    modifier = Modifier.size(64.dp),
-                                    contentScale = ContentScale.Crop
-                                )
-                            }
-
-                            Spacer(modifier = Modifier.width(32.dp))
-
-                            var goredrinkerBitmap by remember { mutableStateOf<Bitmap?>(null) }
-                            LaunchedEffect(Unit) {
-                                CoroutineScope(Dispatchers.IO).launch {
-                                    goredrinkerBitmap =
-                                        loadImageFromUrl("https://static.invenglobal.com/upload/image/2021/10/11/i1633960421449915.png")
-                                }
-                            }
-
-                            goredrinkerBitmap?.let {
-                                Image(
-                                    bitmap = it.asImageBitmap(),
-                                    contentDescription = "goredrinker icon",
-                                    modifier = Modifier.size(64.dp),
-                                    contentScale = ContentScale.Crop
-                                )
-                            }
+                            displayImg(url = "https://leagueofitems.com/images/items/256/3031.webp", name = "IE icon")
 
                             Spacer(modifier = Modifier.width(16.dp))
 
-                            var stormsurgeBitmap by remember { mutableStateOf<Bitmap?>(null) }
-                            LaunchedEffect(Unit) {
-                                CoroutineScope(Dispatchers.IO).launch {
-                                    stormsurgeBitmap =
-                                        loadImageFromUrl("https://cmsassets.rgpub.io/sanity/images/dsfx7636/news_live/a600af61619cdbcc5b3cf6c8d8f5bb49554d7739-512x512.png")
-                                }
-                            }
+                            displayImg(url = "https://static.invenglobal.com/upload/image/2021/10/11/i1633960421449915.png", name = "Goredrinker icon")
 
-                            stormsurgeBitmap?.let {
-                                Image(
-                                    bitmap = it.asImageBitmap(),
-                                    contentDescription = "stormsurgeBitmap icon",
-                                    modifier = Modifier.size(64.dp),
-                                    contentScale = ContentScale.Crop
-                                )
-                            }
+                            Spacer(modifier = Modifier.width(16.dp))
+
+                            displayImg(url = "https://cmsassets.rgpub.io/sanity/images/dsfx7636/news_live/a600af61619cdbcc5b3cf6c8d8f5bb49554d7739-512x512.png", name = "Stormsurge icon")
                         }
                     }
                 }
@@ -278,3 +333,5 @@ fun ChampionDetailsScreen(championStats: ChampionStats) {
         }
     }
 }
+
+
