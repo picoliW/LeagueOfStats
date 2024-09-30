@@ -34,11 +34,6 @@ fun HomeScreen() {
     val context = LocalContext.current
 
     Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text(text = "") }
-            )
-        }
     ) { paddingValues ->
 
         Column(
@@ -59,16 +54,51 @@ fun HomeScreen() {
                 contentScale = ContentScale.Crop
             )
 
+            Spacer(modifier = Modifier.height(32.dp))
+
             Button(
                 onClick = {
                     val intent = Intent(context, MainActivity::class.java)
                     context.startActivity(intent)
                 },
                 modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(8.dp)
+                shape = RoundedCornerShape(12.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.secondary
+                )
             ) {
-                Text(text = "Navegar por campeões")
+                Icon(
+                    painter = painterResource(id = R.drawable.champions),
+                    contentDescription = "Navigate Icon",
+                    modifier = Modifier.size(24.dp)
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(text = "Navegar por campeões", style = MaterialTheme.typography.bodyLarge)
             }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Button(
+                onClick = {
+                    val intent = Intent(context, TierListActivity::class.java)
+                    context.startActivity(intent)
+                },
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(12.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.secondary
+                )
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.champions),
+                    contentDescription = "Navigate Icon",
+                    modifier = Modifier.size(24.dp)
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(text = "Ver classificação dos campeões", style = MaterialTheme.typography.bodyLarge)
+            }
+
+
         }
     }
 }
