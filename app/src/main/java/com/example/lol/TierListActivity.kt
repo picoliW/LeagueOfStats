@@ -25,8 +25,6 @@ import com.example.lol.ui.theme.LolTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.net.HttpURLConnection
-import java.net.URL
 import kotlin.random.Random
 
 class TierListActivity : ComponentActivity() {
@@ -40,38 +38,64 @@ class TierListActivity : ComponentActivity() {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun TierListScreen() {
     val champions = remember { mutableStateOf(listOf<ChampionStats>()) }
+    val sortedByDescending = remember { mutableStateOf(false) }
+    val tiers = remember { mutableStateMapOf<String, Int>() }
 
     fetchAllChampions(champions)
 
-    Scaffold {
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text("Champion Tier List") },
+                actions = {
+                    Button(
+                        onClick = {
+                            sortedByDescending.value = !sortedByDescending.value
+                        }
+                    ) {
+                        Text(if (sortedByDescending.value) "Sort Ascending" else "Sort Descending")
+                    }
+                }
+            )
+        }
+    ) {
+        val sortedChampions = champions.value.sortedWith { a, b ->
+            val tierA = tiers.getOrPut(a.name) { Random.nextInt(1, 6) }
+            val tierB = tiers.getOrPut(b.name) { Random.nextInt(1, 6) }
+            if (sortedByDescending.value) tierB.compareTo(tierA) else tierA.compareTo(tierB)
+        }
+
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(16.dp)
+                .padding(top = 48.dp)
         ) {
-            items(champions.value) { champion ->
-                TierListItem(champion)
-                Spacer(modifier = Modifier.height(16.dp))
+            items(sortedChampions) { champion ->
+                TierListItem(champion, tiers[champion.name] ?: 1)
+                Spacer(modifier = Modifier
+                    .height(16.dp)
+                    )
+
             }
         }
     }
 }
 
 @Composable
-fun TierListItem(champion: ChampionStats) {
+fun TierListItem(champion: ChampionStats, tier: Int) {
     var bitmap by remember { mutableStateOf<Bitmap?>(null) }
 
     LaunchedEffect(champion.icon) {
         CoroutineScope(Dispatchers.IO).launch {
-            bitmap = loadImageFromUrl2(champion.icon)
+            bitmap = loadImageFromUrl(champion.icon)
         }
     }
-
-    val tier = remember { Random.nextInt(1, 6) }
 
     Card(
         modifier = Modifier
@@ -124,15 +148,7 @@ fun TierListItem(champion: ChampionStats) {
     }
 }
 
-fun loadImageFromUrl2(url: String): Bitmap? {
-    return try {
-        val connection: HttpURLConnection = URL(url).openConnection() as HttpURLConnection
-        connection.doInput = true
-        connection.connect()
-        val inputStream = connection.inputStream
-        BitmapFactory.decodeStream(inputStream)
-    } catch (e: Exception) {
-        e.printStackTrace()
-        null
-    }
-}
+
+
+
+
