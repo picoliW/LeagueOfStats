@@ -12,19 +12,19 @@
 
 ### Home
 
-![Home](https://i.imgur.com/IPAOIU9.png)
+![Home](https://i.imgur.com/pA03BDZ.png)
 
 ### Navegar Por Campeões
 
-![Home](https://i.imgur.com/CUERD4T.png)
+![Navegar Por Campeões](https://i.imgur.com/sZUTnTR.png)
 
 ### Tier List dos Campeões
 
-![Home](https://i.imgur.com/3lmreCq.png)
+![Tier List dos Campeões](https://i.imgur.com/aLWTsuC.png)
 
 ### Estatísticas dos campeões
 
-![Home](https://i.imgur.com/ELSwoAh.png)
+![Estatísticas dos campeões](https://i.imgur.com/XxSqOmi.png)
 ## Instalação
 
 1. Clone este repositório:
