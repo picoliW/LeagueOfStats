@@ -16,6 +16,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
@@ -133,17 +134,36 @@ fun TierListItem(champion: ChampionStats, tier: Int) {
                 Text(
                     text = champion.title,
                     style = MaterialTheme.typography.bodyMedium,
-                    fontSize = 16.sp
+                    fontSize = 12.sp
                 )
             }
 
             Spacer(modifier = Modifier.weight(1f))
 
-            Text(
-                text = "Tier: $tier",
-                style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
-                fontSize = 18.sp
-            )
+
+            Box(
+                modifier = Modifier
+                    .size(48.dp)
+                    .background(
+                        color = when (tier) {
+                            1 -> Color(0xFFFF0000)
+                            2 -> Color(0xFFFFFF00)
+                            3 -> Color(0xFF0000FF)
+                            4 -> Color(0xFF00FF00)
+                            5 -> Color(0xFFFFD700)
+                            else -> Color.Gray
+                        },
+                        shape = RoundedCornerShape(8.dp)
+                    ),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = "$tier",
+                    style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
+                    fontSize = 18.sp,
+                    color = MaterialTheme.colorScheme.onPrimary
+                )
+            }
         }
     }
 }
