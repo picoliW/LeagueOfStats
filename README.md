@@ -29,7 +29,7 @@
 
 1. Clone este repositório:
    ```bash
-   git clone https://github.com/SeuUsuario/LeagueOfStats.git
+   git clone https://github.com/picoliw/LeagueOfStats.git
    
 2. Abra o projeto no Android Studio
 
