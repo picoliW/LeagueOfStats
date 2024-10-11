@@ -3,6 +3,7 @@ package com.example.lol
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.media.MediaPlayer
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -63,6 +64,24 @@ fun displayImg(url: String, name: String) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChampionDetailsScreen(championStats: ChampionStats) {
+    val context = LocalContext.current
+    var mediaPlayer: MediaPlayer? = null
+
+    fun playSound(championName: String) {
+        val soundFileName = championName.lowercase().replace(" ", "_")
+
+        val soundResId = context.resources.getIdentifier(soundFileName, "raw", context.packageName)
+
+        if (soundResId != 0) {
+            if (mediaPlayer == null) {
+                mediaPlayer = MediaPlayer.create(context, soundResId)
+            }
+            mediaPlayer?.start()
+        } else {
+            println("Som não encontrado para o campeão: $championName")
+        }
+    }
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -96,6 +115,22 @@ fun ChampionDetailsScreen(championStats: ChampionStats) {
                         contentScale = ContentScale.Crop
                     )
                 }
+
+                Spacer(modifier = Modifier.height(16.dp))
+            }
+
+            item {
+                Image(
+                    painter = painterResource(id = R.drawable.altofalante),
+                    contentDescription = "Speaker Icon",
+                    modifier = Modifier
+                        .size(48.dp)
+                        .clickable {
+                            playSound(championStats.name)
+                        }
+                        .padding(16.dp),
+                    contentScale = ContentScale.Crop
+                )
 
                 Spacer(modifier = Modifier.height(16.dp))
             }
