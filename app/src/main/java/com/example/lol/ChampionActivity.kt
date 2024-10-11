@@ -73,6 +73,7 @@ fun ChampionDetailsScreen(championStats: ChampionStats) {
             .replace("'", "")
             .replace(" ", "_")
             .replace(".", "")
+            .replace("&", "")
 
         val soundResId = context.resources.getIdentifier(soundFileName, "raw", context.packageName)
 
