@@ -68,7 +68,11 @@ fun ChampionDetailsScreen(championStats: ChampionStats) {
     var mediaPlayer: MediaPlayer? = null
 
     fun playSound(championName: String) {
-        val soundFileName = championName.lowercase().replace(" ", "_")
+        val soundFileName = championName
+            .lowercase()
+            .replace("'", "")
+            .replace(" ", "_")
+            .replace(".", "")
 
         val soundResId = context.resources.getIdentifier(soundFileName, "raw", context.packageName)
 
@@ -77,8 +81,9 @@ fun ChampionDetailsScreen(championStats: ChampionStats) {
                 mediaPlayer = MediaPlayer.create(context, soundResId)
             }
             mediaPlayer?.start()
+            println("Som não encontrado para o campeão: $championName, nome do arquivo: $soundFileName")
         } else {
-            println("Som não encontrado para o campeão: $championName")
+            println("Som não encontrado para o campeão: $championName, nome do arquivo: $soundFileName")
         }
     }
 
