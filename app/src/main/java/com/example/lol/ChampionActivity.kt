@@ -12,6 +12,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -82,16 +84,34 @@ fun ChampionDetailsScreen(championStats: ChampionStats) {
                 mediaPlayer = MediaPlayer.create(context, soundResId)
             }
             mediaPlayer?.start()
-            println("Som não encontrado para o campeão: $championName, nome do arquivo: $soundFileName")
         } else {
             println("Som não encontrado para o campeão: $championName, nome do arquivo: $soundFileName")
         }
     }
 
+    fun shareChampion() {
+        val shareMessage = "Venha ver as estatísticas de ${championStats.name} em League of Stats!"
+        val shareIntent = Intent().apply {
+            action = Intent.ACTION_SEND
+            putExtra(Intent.EXTRA_TEXT, shareMessage)
+            type = "text/plain"
+        }
+        context.startActivity(Intent.createChooser(shareIntent, "Compartilhar via"))
+
+    }
+
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(text = championStats.name) }
+                title = { Text(text = championStats.name) },
+                actions = {
+                    IconButton(onClick = { shareChampion() }) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.compartilhar),
+                            contentDescription = "Compartilhar ${championStats.name}",
+                        )
+                    }
+                }
             )
         }
     ) { paddingValues ->
@@ -121,6 +141,7 @@ fun ChampionDetailsScreen(championStats: ChampionStats) {
                         contentScale = ContentScale.Crop
                     )
                 }
+
 
                 Spacer(modifier = Modifier.height(16.dp))
             }
@@ -323,17 +344,20 @@ fun ChampionDetailsScreen(championStats: ChampionStats) {
                             horizontalArrangement = Arrangement.Center,
                             modifier = Modifier.fillMaxWidth()
                         ) {
-                            displayImg(
-                                url = "https://static.wikia.nocookie.net/leagueoflegends/images/7/74/Flash.png/revision/latest/thumbnail/width/360/height/360?cb=20220324211321&path-prefix=pt-br",
-                                name = "Flash icon"
-                            )
-
-                            Spacer(modifier = Modifier.width(16.dp))
 
                             displayImg(
                                 url = "https://cmsassets.rgpub.io/sanity/images/dsfx7636/news_live/6dc976f3ec2d5f41e14cb9aa94535e9ee2d82077-256x256.png",
                                 name = "Teleport icon"
                             )
+
+                            Spacer(modifier = Modifier.width(16.dp))
+
+                            displayImg(
+                                url = "https://static.wikia.nocookie.net/leagueoflegends/images/7/74/Flash.png/revision/latest/thumbnail/width/360/height/360?cb=20220324211321&path-prefix=pt-br",
+                                name = "Flash icon"
+                            )
+
+
                         }
                     }
                 }
