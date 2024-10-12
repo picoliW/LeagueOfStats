@@ -10,27 +10,13 @@
 
 ## Capturas de Tela
 
-<div style="display: flex; justify-content: space-around;">
-   <div>
-      <h3>Home</h3>
-      <img src="https://i.imgur.com/pA03BDZ.png" alt="Home" width="300"/>
-   </div>
-   <div>
-      <h3>Navegar Por Campeões</h3>
-      <img src="https://i.imgur.com/sZUTnTR.png" alt="Navegar Por Campeões" width="300"/>
-   </div>
-</div>
+| Home | Navegar Por Campeões |
+|:----:|:--------------------:|
+| ![Home](https://i.imgur.com/pA03BDZ.png) | ![Navegar Por Campeões](https://i.imgur.com/sZUTnTR.png) |
 
-<div style="display: flex; justify-content: space-around; padding-top: 20px;">
-   <div>
-      <h3>Tier List dos Campeões</h3>
-      <img src="https://i.imgur.com/aLWTsuC.png" alt="Tier List dos Campeões" width="300"/>
-   </div>
-   <div>
-      <h3>Estatísticas dos Campeões</h3>
-      <img src="https://i.imgur.com/XxSqOmi.png" alt="Estatísticas dos Campeões" width="300"/>
-   </div>
-</div>
+| Tier List dos Campeões | Estatísticas dos Campeões |
+|:----------------------:|:-------------------------:|
+| ![Tier List dos Campeões](https://i.imgur.com/aLWTsuC.png) | ![Estatísticas dos Campeões](https://i.imgur.com/XxSqOmi.png) |
 
 ## Instalação
 
