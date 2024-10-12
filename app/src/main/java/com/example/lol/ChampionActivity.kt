@@ -394,6 +394,40 @@ fun ChampionDetailsScreen(championStats: ChampionStats) {
                         }
                     }
                 }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp)
+                        .height(IntrinsicSize.Min),
+                    shape = RoundedCornerShape(8.dp)
+                ) {
+                    Column(modifier = Modifier.padding(8.dp)) {
+                        Text(
+                            text = "Skill Orders",
+                            style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
+                            modifier = Modifier.padding(bottom = 8.dp)
+                        )
+
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center,
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Image(
+                                painter = painterResource(id = R.drawable.ordemskill),
+                                contentDescription = "Skill Order",
+                                modifier = Modifier
+                                    .width(500.dp)
+                                    .height(150.dp),
+                                contentScale = ContentScale.FillWidth
+                            )
+                        }
+                    }
+                }
+
             }
         }
     }
