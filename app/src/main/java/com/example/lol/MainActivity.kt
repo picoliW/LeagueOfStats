@@ -1,5 +1,6 @@
 package com.example.lol
 
+import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -24,6 +25,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.lol.ui.theme.LolTheme
+import database.ChampionDatabase
+import database.ChampionStatsEntity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -38,7 +41,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             LolTheme {
                 val champions = remember { mutableStateOf(listOf<ChampionStats>()) }
-                fetchAllChampions(champions)
+                fetchAllChampions(champions, context = LocalContext.current)
 
                 ChampionsScreen()
             }
@@ -46,7 +49,7 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-fun fetchAllChampions(champions: MutableState<List<ChampionStats>>) {
+fun fetchAllChampions(champions: MutableState<List<ChampionStats>>, context: Context) {
     CoroutineScope(Dispatchers.IO).launch {
         val url = URL("http://girardon.com.br:3001/champions")
         val connection = url.openConnection() as HttpURLConnection
@@ -57,83 +60,102 @@ fun fetchAllChampions(champions: MutableState<List<ChampionStats>>) {
 
             val response = connection.inputStream.bufferedReader().use { it.readText() }
             val jsonArray = JSONArray(response)
-            val championList = mutableListOf<ChampionStats>()
+            val championList = mutableListOf<ChampionStatsEntity>()
 
             for (i in 0 until jsonArray.length()) {
                 val champion = jsonArray.getJSONObject(i)
-
-                val id = champion.getString("id")
-                val key = champion.getString("key")
-                val name = champion.getString("name")
-                val title = champion.getString("title")
-                val description = champion.getString("description")
-
-                val tagsArray = champion.getJSONArray("tags")
-                val tags = mutableListOf<String>()
-                for (j in 0 until tagsArray.length()) {
-                    tags.add(tagsArray.getString(j))
-                }
-
                 val statsJson = champion.getJSONObject("stats")
-                val stats = Stats(
-                    hp = statsJson.getInt("hp"),
-                    hpperlevel = statsJson.getInt("hpperlevel"),
-                    mp = statsJson.getInt("mp"),
-                    mpperlevel = statsJson.getInt("mpperlevel"),
-                    movespeed = statsJson.getInt("movespeed"),
-                    armor = statsJson.getDouble("armor"),
-                    armorperlevel = statsJson.getDouble("armorperlevel"),
-                    spellblock = statsJson.getDouble("spellblock"),
-                    spellblockperlevel = statsJson.getDouble("spellblockperlevel"),
-                    attackrange = statsJson.getInt("attackrange"),
-                    hpregen = statsJson.getDouble("hpregen"),
-                    hpregenperlevel = statsJson.getDouble("hpregenperlevel"),
-                    mpregen = statsJson.getDouble("mpregen"),
-                    mpregenperlevel = statsJson.getDouble("mpregenperlevel"),
-                    crit = statsJson.getDouble("crit"),
-                    critperlevel = statsJson.getDouble("critperlevel"),
-                    attackdamage = statsJson.getDouble("attackdamage"),
-                    attackdamageperlevel = statsJson.getDouble("attackdamageperlevel"),
-                    attackspeedperlevel = statsJson.getDouble("attackspeedperlevel"),
-                    attackspeed = statsJson.getDouble("attackspeed")
-                )
-
-                val icon = champion.getString("icon").replace("http://", "https://")
-
                 val spriteJson = champion.getJSONObject("sprite")
-                val sprite = Sprite(
-                    url = spriteJson.getString("url").replace("http://", "https://"),
-                    x = spriteJson.getInt("x"),
-                    y = spriteJson.getInt("y")
-                )
 
                 championList.add(
-                    ChampionStats(
-                        id = id,
-                        key = key,
-                        name = name,
-                        title = title,
-                        tags = tags,
-                        stats = stats,
-                        icon = icon,
-                        sprite = sprite,
-                        description = description
+                    ChampionStatsEntity(
+                        id = champion.getString("id"),
+                        key = champion.getString("key"),
+                        name = champion.getString("name"),
+                        title = champion.getString("title"),
+                        tags = champion.getJSONArray("tags").toString(),
+                        hp = statsJson.getInt("hp"),
+                        hpperlevel = statsJson.getInt("hpperlevel"),
+                        mp = statsJson.getInt("mp"),
+                        mpperlevel = statsJson.getInt("mpperlevel"),
+                        movespeed = statsJson.getInt("movespeed"),
+                        armor = statsJson.getDouble("armor"),
+                        armorperlevel = statsJson.getDouble("armorperlevel"),
+                        spellblock = statsJson.getDouble("spellblock"),
+                        spellblockperlevel = statsJson.getDouble("spellblockperlevel"),
+                        attackrange = statsJson.getInt("attackrange"),
+                        hpregen = statsJson.getDouble("hpregen"),
+                        hpregenperlevel = statsJson.getDouble("hpregenperlevel"),
+                        mpregen = statsJson.getDouble("mpregen"),
+                        mpregenperlevel = statsJson.getDouble("mpregenperlevel"),
+                        crit = statsJson.getDouble("crit"),
+                        critperlevel = statsJson.getDouble("critperlevel"),
+                        attackdamage = statsJson.getDouble("attackdamage"),
+                        attackdamageperlevel = statsJson.getDouble("attackdamageperlevel"),
+                        attackspeedperlevel = statsJson.getDouble("attackspeedperlevel"),
+                        attackspeed = statsJson.getDouble("attackspeed"),
+                        icon = champion.getString("icon").replace("http://", "https://"),
+                        spriteUrl = spriteJson.getString("url").replace("http://", "https://"),
+                        spriteX = spriteJson.getInt("x"),
+                        spriteY = spriteJson.getInt("y"),
+                        description = champion.getString("description")
                     )
                 )
             }
 
-            champions.value = championList
+            val db = ChampionDatabase.getDatabase(context)
+            db.championDao().insertAll(championList)
+
+            champions.value = championList.map {
+                ChampionStats(
+                    id = it.id,
+                    key = it.key,
+                    name = it.name,
+                    title = it.title,
+                    tags = it.tags.split(","),
+                    stats = Stats(
+                        hp = it.hp,
+                        hpperlevel = it.hpperlevel,
+                        mp = it.mp,
+                        mpperlevel = it.mpperlevel,
+                        movespeed = it.movespeed,
+                        armor = it.armor,
+                        armorperlevel = it.armorperlevel,
+                        spellblock = it.spellblock,
+                        spellblockperlevel = it.spellblockperlevel,
+                        attackrange = it.attackrange,
+                        hpregen = it.hpregen,
+                        hpregenperlevel = it.hpregenperlevel,
+                        mpregen = it.mpregen,
+                        mpregenperlevel = it.mpregenperlevel,
+                        crit = it.crit,
+                        critperlevel = it.critperlevel,
+                        attackdamage = it.attackdamage,
+                        attackdamageperlevel = it.attackdamageperlevel,
+                        attackspeedperlevel = it.attackspeedperlevel,
+                        attackspeed = it.attackspeed
+                    ),
+                    icon = it.icon,
+                    sprite = Sprite(
+                        url = it.spriteUrl,
+                        x = it.spriteX,
+                        y = it.spriteY
+                    ),
+                    description = it.description
+                )
+            }
         } finally {
             connection.disconnect()
         }
     }
 }
 
+
 @Composable
 fun ChampionsScreen() {
     var searchQuery by remember { mutableStateOf("") }
     val champions = remember { mutableStateOf(listOf<ChampionStats>()) }
-    fetchAllChampions(champions)
+    fetchAllChampions(champions, context = LocalContext.current)
 
     val filteredChampions = champions.value.filter {
         it.name.contains(searchQuery, ignoreCase = true) || it.title.contains(searchQuery, ignoreCase = true)
