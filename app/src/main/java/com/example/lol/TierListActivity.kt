@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -46,7 +47,7 @@ fun TierListScreen() {
     val sortedByDescending = remember { mutableStateOf(false) }
     val tiers = remember { mutableStateMapOf<String, Int>() }
 
-    fetchAllChampions(champions)
+    fetchAllChampions(champions, context = LocalContext.current)
 
     Scaffold(
         topBar = {

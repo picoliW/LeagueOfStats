@@ -1,9 +1,11 @@
 package com.example.lol
 
+import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -34,19 +36,24 @@ import java.net.URL
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val dbHelper = DatabaseHelper(this)
+        val champions = dbHelper.getAllChampions()
+        for (champion in champions) {
+            Log.d("ChampionData", "ID: ${champion.id}, Name: ${champion.name}, Title: ${champion.title}")
+        }
         enableEdgeToEdge()
         setContent {
             LolTheme {
                 val champions = remember { mutableStateOf(listOf<ChampionStats>()) }
-                fetchAllChampions(champions)
-
-                ChampionsScreen()
+                fetchAllChampions(champions, context = LocalContext.current)
+                ChampionsScreen( context = LocalContext.current)
             }
         }
     }
 }
 
-fun fetchAllChampions(champions: MutableState<List<ChampionStats>>) {
+fun fetchAllChampions(champions: MutableState<List<ChampionStats>>, context: Context) {
+    val dbHelper = DatabaseHelper(context)
     CoroutineScope(Dispatchers.IO).launch {
         val url = URL("http://girardon.com.br:3001/champions")
         val connection = url.openConnection() as HttpURLConnection
@@ -107,19 +114,20 @@ fun fetchAllChampions(champions: MutableState<List<ChampionStats>>) {
                     y = spriteJson.getInt("y")
                 )
 
-                championList.add(
-                    ChampionStats(
-                        id = id,
-                        key = key,
-                        name = name,
-                        title = title,
-                        tags = tags,
-                        stats = stats,
-                        icon = icon,
-                        sprite = sprite,
-                        description = description
-                    )
+                val championStats = ChampionStats(
+                    id = id,
+                    key = key,
+                    name = name,
+                    title = title,
+                    tags = tags,
+                    stats = stats,
+                    icon = icon,
+                    sprite = sprite,
+                    description = description
                 )
+
+                championList.add(championStats)
+                dbHelper.insertChampion(championStats)
             }
 
             champions.value = championList
@@ -129,11 +137,13 @@ fun fetchAllChampions(champions: MutableState<List<ChampionStats>>) {
     }
 }
 
+
 @Composable
-fun ChampionsScreen() {
+fun ChampionsScreen(context: Context) {
+    val dbHelper = DatabaseHelper(context)
+    val champions = remember { mutableStateOf(dbHelper.getAllChampions()) }
+
     var searchQuery by remember { mutableStateOf("") }
-    val champions = remember { mutableStateOf(listOf<ChampionStats>()) }
-    fetchAllChampions(champions)
 
     val filteredChampions = champions.value.filter {
         it.name.contains(searchQuery, ignoreCase = true) || it.title.contains(searchQuery, ignoreCase = true)
@@ -147,6 +157,7 @@ fun ChampionsScreen() {
         ChampionsList(filteredChampions)
     }
 }
+
 
 @Composable
 fun SearchBar(searchQuery: String, onQueryChanged: (String) -> Unit) {
