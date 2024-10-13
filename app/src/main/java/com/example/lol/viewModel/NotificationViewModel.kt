@@ -39,7 +39,6 @@ class NotificationViewModel(
         }
         notificationManager.createNotificationChannel(channel)
 
-        // Intent para abrir o aplicativo quando a notificação for clicada
         val intent = Intent(applicationContext, MainActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         }
@@ -50,10 +49,10 @@ class NotificationViewModel(
         val notification = NotificationCompat.Builder(applicationContext, channelId)
             .setContentTitle("Come check out the new champions!")
             .setContentText("New champions added, click to see details.")
-            .setSmallIcon(R.drawable.ic_placeholder)
+            .setSmallIcon(R.drawable.notification_icon)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-            .setContentIntent(pendingIntent) // Definir o PendingIntent aqui
-            .setAutoCancel(true) // Cancela a notificação ao clicar nela
+            .setContentIntent(pendingIntent)
+            .setAutoCancel(true)
             .build()
 
         if (ActivityCompat.checkSelfPermission(
