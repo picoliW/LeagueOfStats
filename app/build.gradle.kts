@@ -20,7 +20,7 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
-        buildConfigField ("String", "GOOGLE_API_KEY", "\"AIzaSyCJE_bQRx0f5B24lBJqXIZFCsRpaqwsFFA\"")
+        buildConfigField ("String", "GOOGLE_API_KEY", "\"AIzaSyBLhvyAozSziMFyA8c-2q424KKQmYudcP4\"")
     }
 
     buildTypes {

@@ -26,8 +26,8 @@ import com.example.lol.database.ChampionStatsEntity
 import com.example.lol.models.Sprite
 import com.example.lol.models.Stats
 import com.example.lol.ui.components.NotificationButton
-// import com.google.cloud.translate.Translate
-// import com.google.cloud.translate.TranslateOptions
+import com.google.cloud.translate.Translate
+import com.google.cloud.translate.TranslateOptions
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -63,8 +63,8 @@ fun fetchAllChampions(champions: MutableState<List<ChampionStats>>, context: Con
                 val spriteJson = champion.getJSONObject("sprite")
 
                 val originalTitle = champion.getString("title")
-                // val translatedTitle = translateText(originalTitle, "pt") ?: originalTitle
-                val translatedTitle = originalTitle // Usar o título original sem tradução
+                val translatedTitle = translateText(originalTitle, "pt") ?: originalTitle
+                // val translatedTitle = originalTitle // Usar o título original sem tradução
 
                 championList.add(
                     ChampionStatsEntity(
@@ -178,7 +178,7 @@ fun ChampionsList(champions: List<ChampionStats>) {
     }
 }
 
-/*
+
 fun translateText(text: String, targetLanguage: String): String {
     val apiKey = BuildConfig.GOOGLE_API_KEY
 
@@ -190,4 +190,4 @@ fun translateText(text: String, targetLanguage: String): String {
     )
     return translation.translatedText
 }
-*/
+
