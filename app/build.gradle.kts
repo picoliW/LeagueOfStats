@@ -1,9 +1,20 @@
 
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
     id ("com.google.devtools.ksp") version ("1.9.0-1.0.13")
 }
+
+val localProperties = Properties()
+val localPropertiesFile = rootProject.file("local.properties")
+if (localPropertiesFile.exists()) {
+    localProperties.load(localPropertiesFile.inputStream())
+}
+
+val googleApiKey: String = localProperties.getProperty("GOOGLE_API_KEY", "google_api_key")
+
 
 android {
     namespace = "com.example.lol"
@@ -20,6 +31,8 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+        buildConfigField("String", "GOOGLE_API_KEY", "\"${googleApiKey}\"")
+
     }
 
     buildTypes {
@@ -76,5 +89,4 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
     implementation ("androidx.work:work-runtime-ktx:2.8.1")
     implementation ("com.google.cloud:google-cloud-translate:1.94.3")
-    implementation("io.github.cdimascio:dotenv-kotlin:6.4.2")
 }
