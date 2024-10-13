@@ -9,6 +9,7 @@ data class ChampionStatsEntity(
     val key: String,
     val name: String,
     val title: String,
+    val translatedTitle: String?,
     val tags: String,
     val hp: Int,
     val hpperlevel: Int,
@@ -34,5 +35,6 @@ data class ChampionStatsEntity(
     val spriteUrl: String,
     val spriteX: Int,
     val spriteY: Int,
-    val description: String
+    val description: String,
+    val new_column_name: Int = 0
 )

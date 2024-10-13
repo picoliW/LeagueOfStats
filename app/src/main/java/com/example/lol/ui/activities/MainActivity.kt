@@ -57,60 +57,70 @@ fun fetchAllChampions(champions: MutableState<List<ChampionStats>>, context: Con
             val jsonArray = JSONArray(response)
             val championList = mutableListOf<ChampionStatsEntity>()
 
+            val db = ChampionDatabase.getDatabase(context)
+            val championDao = db.championDao()
+
             for (i in 0 until jsonArray.length()) {
                 val champion = jsonArray.getJSONObject(i)
                 val statsJson = champion.getJSONObject("stats")
                 val spriteJson = champion.getJSONObject("sprite")
 
+                val championId = champion.getString("id")
+                val existingChampion = championDao.getChampionById(championId)
+
                 val originalTitle = champion.getString("title")
-                val translatedTitle = translateText(originalTitle, "pt") ?: originalTitle
-                // val translatedTitle = originalTitle // Usar o título original sem tradução
+                val translatedTitle: String = if (existingChampion?.translatedTitle != null) {
+                    existingChampion.translatedTitle
+                } else {
+                    val translated = translateText(originalTitle, "pt") ?: originalTitle
+                    translated
+                }
 
-                championList.add(
-                    ChampionStatsEntity(
-                        id = champion.getString("id"),
-                        key = champion.getString("key"),
-                        name = champion.getString("name"),
-                        title = translatedTitle,
-                        tags = champion.getJSONArray("tags").toString(),
-                        hp = statsJson.getInt("hp"),
-                        hpperlevel = statsJson.getInt("hpperlevel"),
-                        mp = statsJson.getInt("mp"),
-                        mpperlevel = statsJson.getInt("mpperlevel"),
-                        movespeed = statsJson.getInt("movespeed"),
-                        armor = statsJson.getDouble("armor"),
-                        armorperlevel = statsJson.getDouble("armorperlevel"),
-                        spellblock = statsJson.getDouble("spellblock"),
-                        spellblockperlevel = statsJson.getDouble("spellblockperlevel"),
-                        attackrange = statsJson.getInt("attackrange"),
-                        hpregen = statsJson.getDouble("hpregen"),
-                        hpregenperlevel = statsJson.getDouble("hpregenperlevel"),
-                        mpregen = statsJson.getDouble("mpregen"),
-                        mpregenperlevel = statsJson.getDouble("mpregenperlevel"),
-                        crit = statsJson.getDouble("crit"),
-                        critperlevel = statsJson.getDouble("critperlevel"),
-                        attackdamage = statsJson.getDouble("attackdamage"),
-                        attackdamageperlevel = statsJson.getDouble("attackdamageperlevel"),
-                        attackspeedperlevel = statsJson.getDouble("attackspeedperlevel"),
-                        attackspeed = statsJson.getDouble("attackspeed"),
-                        icon = champion.getString("icon").replace("http://", "https://"),
-                        spriteUrl = spriteJson.getString("url").replace("http://", "https://"),
-                        spriteX = spriteJson.getInt("x"),
-                        spriteY = spriteJson.getInt("y"),
-                        description = champion.getString("description")
-                    )
+                val championStatsEntity = ChampionStatsEntity(
+                    id = champion.getString("id"),
+                    key = champion.getString("key"),
+                    name = champion.getString("name"),
+                    title = originalTitle,
+                    translatedTitle = translatedTitle, // Salva a tradução
+                    tags = champion.getJSONArray("tags").toString(),
+                    hp = statsJson.getInt("hp"),
+                    hpperlevel = statsJson.getInt("hpperlevel"),
+                    mp = statsJson.getInt("mp"),
+                    mpperlevel = statsJson.getInt("mpperlevel"),
+                    movespeed = statsJson.getInt("movespeed"),
+                    armor = statsJson.getDouble("armor"),
+                    armorperlevel = statsJson.getDouble("armorperlevel"),
+                    spellblock = statsJson.getDouble("spellblock"),
+                    spellblockperlevel = statsJson.getDouble("spellblockperlevel"),
+                    attackrange = statsJson.getInt("attackrange"),
+                    hpregen = statsJson.getDouble("hpregen"),
+                    hpregenperlevel = statsJson.getDouble("hpregenperlevel"),
+                    mpregen = statsJson.getDouble("mpregen"),
+                    mpregenperlevel = statsJson.getDouble("mpregenperlevel"),
+                    crit = statsJson.getDouble("crit"),
+                    critperlevel = statsJson.getDouble("critperlevel"),
+                    attackdamage = statsJson.getDouble("attackdamage"),
+                    attackdamageperlevel = statsJson.getDouble("attackdamageperlevel"),
+                    attackspeedperlevel = statsJson.getDouble("attackspeedperlevel"),
+                    attackspeed = statsJson.getDouble("attackspeed"),
+                    icon = champion.getString("icon").replace("http://", "https://"),
+                    spriteUrl = spriteJson.getString("url").replace("http://", "https://"),
+                    spriteX = spriteJson.getInt("x"),
+                    spriteY = spriteJson.getInt("y"),
+                    description = champion.getString("description")
                 )
-            }
 
-            val db = ChampionDatabase.getDatabase(context)
-            db.championDao().insertAll(championList)
+                championList.add(championStatsEntity)
+
+                championDao.insertAll(listOf(championStatsEntity))
+            }
 
             champions.value = championList.map {
                 ChampionStats(
                     id = it.id,
                     key = it.key,
                     name = it.name,
-                    title = it.title,
+                    title = it.translatedTitle ?: it.title,
                     tags = it.tags.split(","),
                     stats = Stats(
                         hp = it.hp,
@@ -148,6 +158,7 @@ fun fetchAllChampions(champions: MutableState<List<ChampionStats>>, context: Con
         }
     }
 }
+
 
 @Composable
 fun ChampionsScreen() {

@@ -10,6 +10,9 @@ interface ChampionDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(champions: List<ChampionStatsEntity>)
 
+    @Query("SELECT * FROM champions WHERE id = :id LIMIT 1")
+    suspend fun getChampionById(id: String): ChampionStatsEntity?
+
     @Query("SELECT * FROM champions")
     suspend fun getAllChampions(): List<ChampionStatsEntity>
 }
