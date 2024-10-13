@@ -43,7 +43,7 @@ class ChampionActivity : ComponentActivity() {
 }
 
 @Composable
-fun displayImg(url: String, name: String) {
+fun DisplayImg(url: String, name: String) {
     var teleportBitmap by remember { mutableStateOf<Bitmap?>(null) }
     LaunchedEffect(Unit) {
         CoroutineScope(Dispatchers.IO).launch {
@@ -343,14 +343,14 @@ fun ChampionDetailsScreen(championStats: ChampionStats) {
                             modifier = Modifier.fillMaxWidth()
                         ) {
 
-                            displayImg(
+                            DisplayImg(
                                 url = "https://cmsassets.rgpub.io/sanity/images/dsfx7636/news_live/6dc976f3ec2d5f41e14cb9aa94535e9ee2d82077-256x256.png",
                                 name = "Teleport icon"
                             )
 
                             Spacer(modifier = Modifier.width(16.dp))
 
-                            displayImg(
+                            DisplayImg(
                                 url = "https://static.wikia.nocookie.net/leagueoflegends/images/7/74/Flash.png/revision/latest/thumbnail/width/360/height/360?cb=20220324211321&path-prefix=pt-br",
                                 name = "Flash icon"
                             )
@@ -380,15 +380,15 @@ fun ChampionDetailsScreen(championStats: ChampionStats) {
                             horizontalArrangement = Arrangement.Center,
                             modifier = Modifier.fillMaxWidth()
                         ) {
-                            displayImg(url = "https://leagueofitems.com/images/items/256/3031.webp", name = "IE icon")
+                            DisplayImg(url = "https://leagueofitems.com/images/items/256/3031.webp", name = "IE icon")
 
                             Spacer(modifier = Modifier.width(16.dp))
 
-                            displayImg(url = "https://static.invenglobal.com/upload/image/2021/10/11/i1633960421449915.png", name = "Goredrinker icon")
+                            DisplayImg(url = "https://static.invenglobal.com/upload/image/2021/10/11/i1633960421449915.png", name = "Goredrinker icon")
 
                             Spacer(modifier = Modifier.width(16.dp))
 
-                            displayImg(url = "https://cmsassets.rgpub.io/sanity/images/dsfx7636/news_live/a600af61619cdbcc5b3cf6c8d8f5bb49554d7739-512x512.png", name = "Stormsurge icon")
+                            DisplayImg(url = "https://cmsassets.rgpub.io/sanity/images/dsfx7636/news_live/a600af61619cdbcc5b3cf6c8d8f5bb49554d7739-512x512.png", name = "Stormsurge icon")
                         }
                     }
                 }
