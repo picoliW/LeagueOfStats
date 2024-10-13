@@ -1,4 +1,4 @@
-package com.example.lol
+package com.example.lol.ui.activities
 
 import android.annotation.SuppressLint
 import android.graphics.Bitmap
@@ -26,6 +26,8 @@ import com.example.lol.ui.theme.LolTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import com.example.lol.models.ChampionStats
+import com.example.lol.ui.components.loadImageFromUrl
 import kotlin.random.Random
 
 class TierListActivity : ComponentActivity() {

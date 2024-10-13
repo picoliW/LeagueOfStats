@@ -1,4 +1,4 @@
-package database
+package com.example.lol.database
 
 import androidx.room.Dao
 import androidx.room.Insert

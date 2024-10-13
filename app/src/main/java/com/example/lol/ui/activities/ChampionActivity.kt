@@ -1,4 +1,4 @@
-package com.example.lol
+package com.example.lol.ui.activities
 
 import android.content.Intent
 import android.graphics.Bitmap
@@ -21,10 +21,13 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.example.lol.R
 import com.example.lol.ui.theme.LolTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import com.example.lol.models.ChampionStats
+import com.example.lol.ui.components.loadImageFromUrl
 
 class ChampionActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

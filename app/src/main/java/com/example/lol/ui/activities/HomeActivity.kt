@@ -1,4 +1,4 @@
-package com.example.lol
+package com.example.lol.ui.activities
 
 import android.content.Intent
 import android.os.Bundle
@@ -15,6 +15,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import com.example.lol.R
 import com.example.lol.ui.theme.LolTheme
 
 class HomeActivity : ComponentActivity() {

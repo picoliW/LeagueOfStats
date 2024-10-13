@@ -1,38 +1,31 @@
-package com.example.lol
+package com.example.lol.ui.activities
 
 import android.content.Context
-import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.example.lol.models.ChampionStats
+import com.example.lol.ui.components.ChampionCard
+import com.example.lol.ui.components.SearchBar
 import com.example.lol.ui.theme.LolTheme
-import database.ChampionDatabase
-import database.ChampionStatsEntity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.json.JSONArray
 import java.net.HttpURLConnection
 import java.net.URL
+import com.example.lol.database.ChampionDatabase
+import com.example.lol.database.ChampionStatsEntity
+import com.example.lol.models.Sprite
+import com.example.lol.models.Stats
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -150,7 +143,6 @@ fun fetchAllChampions(champions: MutableState<List<ChampionStats>>, context: Con
     }
 }
 
-
 @Composable
 fun ChampionsScreen() {
     var searchQuery by remember { mutableStateOf("") }
@@ -171,97 +163,10 @@ fun ChampionsScreen() {
 }
 
 @Composable
-fun SearchBar(searchQuery: String, onQueryChanged: (String) -> Unit) {
-    TextField(
-        value = searchQuery,
-        onValueChange = onQueryChanged,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp),
-        placeholder = {
-            Text(text = "Search Champions")
-        }
-    )
-}
-
-@Composable
 fun ChampionsList(champions: List<ChampionStats>) {
-    Scaffold { paddingValues ->
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-        ) {
-            items(champions) { champion ->
-                val context = LocalContext.current
-                ChampionCard(champion) {
-                    val intent = Intent(context, ChampionActivity::class.java)
-                    context.startActivity(intent)
-                }
-            }
+    LazyColumn {
+        items(champions) { champion ->
+            ChampionCard(champion = champion, onClick = {})
         }
     }
 }
-
-@Composable
-fun ChampionCard(champion: ChampionStats, onClick: () -> Unit) {
-    val context = LocalContext.current
-    var bitmap by remember { mutableStateOf<Bitmap?>(null) }
-
-LaunchedEffect(champion.icon) {
-    CoroutineScope(Dispatchers.IO).launch {
-        bitmap = loadImageFromUrl(champion.icon)
-    }
-}
-
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(8.dp)
-            .clickable {
-                val intent = Intent(context, ChampionActivity::class.java)
-                intent.putExtra("championStats", champion)
-                context.startActivity(intent)
-            },
-        shape = RoundedCornerShape(8.dp),
-        elevation = CardDefaults.cardElevation(4.dp)
-    ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(16.dp)
-        ) {
-            bitmap?.let {
-                Image(
-                    bitmap = it.asImageBitmap(),
-                    contentDescription = "${champion.icon} icon",
-                    modifier = Modifier.size(64.dp),
-                    contentScale = ContentScale.Crop
-                )
-            } ?: Box(
-                modifier = Modifier
-                    .size(64.dp)
-                    .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.2f))
-            )
-
-            Spacer(modifier = Modifier.width(16.dp))
-            Column {
-                Text(text = champion.name, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-                Text(text = champion.title, style = MaterialTheme.typography.bodyMedium)
-            }
-        }
-    }
-}
-
-fun loadImageFromUrl(url: String): Bitmap? {
-    return try {
-        val connection: HttpURLConnection = URL(url).openConnection() as HttpURLConnection
-        connection.doInput = true
-        connection.connect()
-        val inputStream = connection.inputStream
-        BitmapFactory.decodeStream(inputStream)
-    } catch (e: Exception) {
-        e.printStackTrace()
-        null
-    }
-}
-
