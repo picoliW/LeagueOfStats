@@ -10,6 +10,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalContext
+import com.example.lol.BuildConfig
 import com.example.lol.models.ChampionStats
 import com.example.lol.ui.components.ChampionCard
 import com.example.lol.ui.components.SearchBar
@@ -25,6 +26,8 @@ import com.example.lol.database.ChampionStatsEntity
 import com.example.lol.models.Sprite
 import com.example.lol.models.Stats
 import com.example.lol.ui.components.NotificationButton
+// import com.google.cloud.translate.Translate
+// import com.google.cloud.translate.TranslateOptions
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -59,12 +62,16 @@ fun fetchAllChampions(champions: MutableState<List<ChampionStats>>, context: Con
                 val statsJson = champion.getJSONObject("stats")
                 val spriteJson = champion.getJSONObject("sprite")
 
+                val originalTitle = champion.getString("title")
+                // val translatedTitle = translateText(originalTitle, "pt") ?: originalTitle
+                val translatedTitle = originalTitle // Usar o título original sem tradução
+
                 championList.add(
                     ChampionStatsEntity(
                         id = champion.getString("id"),
                         key = champion.getString("key"),
                         name = champion.getString("name"),
-                        title = champion.getString("title"),
+                        title = translatedTitle,
                         tags = champion.getJSONArray("tags").toString(),
                         hp = statsJson.getInt("hp"),
                         hpperlevel = statsJson.getInt("hpperlevel"),
@@ -170,3 +177,17 @@ fun ChampionsList(champions: List<ChampionStats>) {
         }
     }
 }
+
+/*
+fun translateText(text: String, targetLanguage: String): String {
+    val apiKey = BuildConfig.GOOGLE_API_KEY
+
+    val translate = TranslateOptions.newBuilder().setApiKey(apiKey).build().service
+
+    val translation = translate.translate(
+        text,
+        Translate.TranslateOption.targetLanguage(targetLanguage)
+    )
+    return translation.translatedText
+}
+*/

@@ -74,7 +74,7 @@ fun HomeScreen() {
                     modifier = Modifier.size(24.dp)
                 )
                 Spacer(modifier = Modifier.width(8.dp))
-                Text(text = "Browse champions", style = MaterialTheme.typography.bodyLarge)
+                Text(text = "Navegar por campeões", style = MaterialTheme.typography.bodyLarge)
             }
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -96,7 +96,7 @@ fun HomeScreen() {
                     modifier = Modifier.size(24.dp)
                 )
                 Spacer(modifier = Modifier.width(8.dp))
-                Text(text = "See champions tiers", style = MaterialTheme.typography.bodyLarge)
+                Text(text = "Ver TierList de campeões", style = MaterialTheme.typography.bodyLarge)
             }
 
 

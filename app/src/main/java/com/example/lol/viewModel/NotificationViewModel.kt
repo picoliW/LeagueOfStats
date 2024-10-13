@@ -47,8 +47,8 @@ class NotificationViewModel(
         )
 
         val notification = NotificationCompat.Builder(applicationContext, channelId)
-            .setContentTitle("Come check out the new champions!")
-            .setContentText("New champions added, click to see details.")
+            .setContentTitle("Venha ver os novos campeões!")
+            .setContentText("Novos campeões adicionados, clique para ver os detalhes.")
             .setSmallIcon(R.drawable.notification_icon)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setContentIntent(pendingIntent)

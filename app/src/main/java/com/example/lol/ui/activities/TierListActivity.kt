@@ -61,7 +61,7 @@ fun TierListScreen() {
                             sortedByDescending.value = !sortedByDescending.value
                         }
                     ) {
-                        Text(if (sortedByDescending.value) "Sort Ascending" else "Sort Descending")
+                        Text(if (sortedByDescending.value) "Filtrar Crescente" else "Filtrar Descrescente")
                     }
                 }
             )
