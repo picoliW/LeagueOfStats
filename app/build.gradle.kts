@@ -20,7 +20,6 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
-        buildConfigField ("String", "GOOGLE_API_KEY", "\"AIzaSyBLhvyAozSziMFyA8c-2q424KKQmYudcP4\"")
     }
 
     buildTypes {
@@ -77,4 +76,5 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
     implementation ("androidx.work:work-runtime-ktx:2.8.1")
     implementation ("com.google.cloud:google-cloud-translate:1.94.3")
+    implementation("io.github.cdimascio:dotenv-kotlin:6.4.2")
 }

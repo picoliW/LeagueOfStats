@@ -28,6 +28,7 @@ import com.example.lol.models.Stats
 import com.example.lol.ui.components.NotificationButton
 import com.google.cloud.translate.Translate
 import com.google.cloud.translate.TranslateOptions
+import io.github.cdimascio.dotenv.dotenv
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -191,7 +192,13 @@ fun ChampionsList(champions: List<ChampionStats>) {
 
 
 fun translateText(text: String, targetLanguage: String): String {
-    val apiKey = BuildConfig.GOOGLE_API_KEY
+
+    val dotenv = dotenv {
+        directory = "/assets"
+        filename = "env"
+    }
+
+    val apiKey = dotenv["GOOGLE_API_KEY"]
 
     val translate = TranslateOptions.newBuilder().setApiKey(apiKey).build().service
 
