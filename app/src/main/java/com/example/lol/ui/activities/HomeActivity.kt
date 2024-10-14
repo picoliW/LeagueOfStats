@@ -99,6 +99,27 @@ fun HomeScreen() {
                 Text(text = "Ver TierList de campeões", style = MaterialTheme.typography.bodyLarge)
             }
 
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Button(
+                onClick = {
+                    val intent = Intent(context, RandomChampionsActivity::class.java)
+                    context.startActivity(intent)
+                },
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(12.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.secondary
+                )
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.champions),
+                    contentDescription = "Random Champions Icon",
+                    modifier = Modifier.size(24.dp)
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(text = "Escolher campeões aleatórios", style = MaterialTheme.typography.bodyLarge)
+            }
 
         }
     }
