@@ -33,6 +33,7 @@ import kotlinx.coroutines.launch
 import com.example.lol.models.ChampionStats
 import com.example.lol.ui.components.loadImageFromUrl
 import com.example.lol.ui.utils.SoundManager
+import com.example.lol.ui.utils.shareChampion
 
 class ChampionActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -72,23 +73,12 @@ fun ChampionDetailsScreen(championStats: ChampionStats) {
     val context = LocalContext.current
     val soundManager = remember { SoundManager(context) }
 
-    fun shareChampion() {
-        val shareMessage = "Venha ver as estatísticas de ${championStats.name} em League of Stats!"
-        val shareIntent = Intent().apply {
-            action = Intent.ACTION_SEND
-            putExtra(Intent.EXTRA_TEXT, shareMessage)
-            type = "text/plain"
-        }
-        context.startActivity(Intent.createChooser(shareIntent, "Compartilhar via"))
-
-    }
-
     Scaffold(
         topBar = {
             TopAppBar(
                 title = { Text(text = championStats.name) },
                 actions = {
-                    IconButton(onClick = { shareChampion() }) {
+                    IconButton(onClick = { shareChampion(context, championStats.name) }) {
                         Icon(
                             painter = painterResource(id = R.drawable.compartilhar),
                             contentDescription = "Compartilhar ${championStats.name}",
