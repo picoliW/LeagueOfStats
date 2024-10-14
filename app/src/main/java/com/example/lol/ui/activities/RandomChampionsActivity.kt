@@ -53,7 +53,7 @@ fun RandomChampionsScreen() {
         val team1 = randomChampions.take(5)
         val team2 = randomChampions.takeLast(5)
 
-        Column(
+        Row(
             modifier = Modifier
                 .fillMaxSize()
                 .background(
@@ -61,16 +61,15 @@ fun RandomChampionsScreen() {
                         colors = listOf(Color(0xFF0F2027), Color(0xFF203A43), Color(0xFF2C5364))
                     )
                 ),
-            horizontalAlignment = Alignment.CenterHorizontally
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceEvenly
         ) {
-            LazyRow(
-                modifier = Modifier
-                    .padding(top = 32.dp)
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceEvenly
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                items(team1.size) { index ->
-                    ChampionIcon(champion = team1[index])
+                team1.forEach { champion ->
+                    ChampionIcon(champion = champion)
+                    Spacer(modifier = Modifier.height(16.dp))
                 }
             }
 
@@ -81,22 +80,22 @@ fun RandomChampionsScreen() {
                     fontSize = 32.sp,
                     color = Color.White
                 ),
-                modifier = Modifier.padding(vertical = 24.dp)
+                modifier = Modifier.padding(horizontal = 16.dp)
             )
 
-            LazyRow(
-                modifier = Modifier
-                    .padding(bottom = 32.dp)
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceEvenly
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                items(team2.size) { index ->
-                    ChampionIcon(champion = team2[index])
+                team2.forEach { champion ->
+                    ChampionIcon(champion = champion)
+                    Spacer(modifier = Modifier.height(16.dp))
                 }
             }
         }
     }
 }
+
+
 
 @Composable
 fun ChampionIcon(champion: ChampionStats) {
