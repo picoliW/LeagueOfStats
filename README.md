@@ -8,7 +8,7 @@
 - [Capturas de Tela](#capturas-de-tela)
 - [Instalação](#instalação)
 - [Tecnologias Utilizadas](#tecnologias-utilizadas)
-- [Estrutura do Projeto](#Estrutura do Projeto)
+- [Estrutura do Projeto](#Estrutura-do-Projeto)
 - [Licença](#licença)
 
 # Funcionalidades
