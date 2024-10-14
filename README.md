@@ -51,4 +51,4 @@
 
 # Licença
 
-Este projeto está licenciado sob a Licença MIT, o que significa que é gratuito para uso pessoal e comercial.
+Este projeto está licenciado sob a Licença MIT - veja o arquivo [LICENSE](./LICENSE) para mais detalhes.
