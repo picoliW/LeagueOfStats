@@ -32,6 +32,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import com.example.lol.models.ChampionStats
 import com.example.lol.ui.components.loadImageFromUrl
+import com.example.lol.ui.utils.SoundManager
 
 class ChampionActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -69,27 +70,7 @@ fun DisplayImg(url: String, name: String) {
 @Composable
 fun ChampionDetailsScreen(championStats: ChampionStats) {
     val context = LocalContext.current
-    var mediaPlayer: MediaPlayer? = null
-
-    fun playSound(championName: String) {
-        val soundFileName = championName
-            .lowercase()
-            .replace("'", "")
-            .replace(" ", "_")
-            .replace(".", "")
-            .replace("&", "")
-
-        val soundResId = context.resources.getIdentifier(soundFileName, "raw", context.packageName)
-
-        if (soundResId != 0) {
-            if (mediaPlayer == null) {
-                mediaPlayer = MediaPlayer.create(context, soundResId)
-            }
-            mediaPlayer?.start()
-        } else {
-            println("Som não encontrado para o campeão: $championName, nome do arquivo: $soundFileName")
-        }
-    }
+    val soundManager = remember { SoundManager(context) }
 
     fun shareChampion() {
         val shareMessage = "Venha ver as estatísticas de ${championStats.name} em League of Stats!"
@@ -160,7 +141,7 @@ fun ChampionDetailsScreen(championStats: ChampionStats) {
                     modifier = Modifier
                         .size(48.dp)
                         .clickable {
-                            playSound(championStats.name)
+                            soundManager.playSound(championStats.name)
                         }
                         .padding(16.dp),
                     contentScale = ContentScale.Crop,
