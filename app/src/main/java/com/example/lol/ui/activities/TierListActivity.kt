@@ -60,7 +60,11 @@ fun TierListScreen() {
                     Button(
                         onClick = {
                             sortedByDescending.value = !sortedByDescending.value
-                        }
+                        },
+                        modifier = Modifier.padding(vertical = 16.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.secondary
+                        )
                     ) {
                         Text(if (sortedByDescending.value) "Filtrar Crescente" else "Filtrar Descrescente")
                     }
