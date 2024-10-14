@@ -31,9 +31,10 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import com.example.lol.models.ChampionStats
+import com.example.lol.ui.components.SoundManager
 import com.example.lol.ui.components.loadImageFromUrl
-import com.example.lol.ui.utils.SoundManager
-import com.example.lol.ui.utils.shareChampion
+import com.example.lol.ui.components.shareChampion
+import com.example.lol.ui.components.DisplayImg
 
 class ChampionActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,25 +46,6 @@ class ChampionActivity : ComponentActivity() {
                 ChampionDetailsScreen(championStats)
             }
         }
-    }
-}
-
-@Composable
-fun DisplayImg(url: String, name: String) {
-    var teleportBitmap by remember { mutableStateOf<Bitmap?>(null) }
-    LaunchedEffect(Unit) {
-        CoroutineScope(Dispatchers.IO).launch {
-            teleportBitmap = loadImageFromUrl(url)
-        }
-    }
-
-    teleportBitmap?.let {
-        Image(
-            bitmap = it.asImageBitmap(),
-            contentDescription = name,
-            modifier = Modifier.size(64.dp),
-            contentScale = ContentScale.Crop
-        )
     }
 }
 

@@ -1,4 +1,4 @@
-package com.example.lol.ui.utils
+package com.example.lol.ui.components
 
 import android.content.Context
 import android.media.MediaPlayer
