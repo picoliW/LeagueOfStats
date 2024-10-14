@@ -36,6 +36,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import com.example.lol.R
+import com.example.lol.ui.components.loadImageFromUrl
 
 class RandomChampionsActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -187,17 +188,4 @@ fun ChampionIcon(champion: ChampionStats) {
             .size(96.dp)
             .background(Color.Gray, shape = MaterialTheme.shapes.medium)
     )
-}
-
-fun loadImageFromUrl(url: String): Bitmap? {
-    return try {
-        val connection: HttpURLConnection = URL(url).openConnection() as HttpURLConnection
-        connection.doInput = true
-        connection.connect()
-        val inputStream = connection.inputStream
-        BitmapFactory.decodeStream(inputStream)
-    } catch (e: Exception) {
-        e.printStackTrace()
-        null
-    }
 }
