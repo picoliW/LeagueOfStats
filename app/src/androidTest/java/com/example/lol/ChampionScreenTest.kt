@@ -134,5 +134,17 @@ class ChampionsScreenTest {
         assertEquals("Ahri", filteredChampions[0].name)
     }
 
+    @Test
+    fun testChampionFilter_byKey() {
+        val searchQuery = "266"
+        val filteredChampions = champions.filter {
+            it.key == searchQuery
+        }
+
+        assertEquals(1, filteredChampions.size)
+        assertEquals("Aatrox", filteredChampions[0].name)
+    }
+
+
 
 }
