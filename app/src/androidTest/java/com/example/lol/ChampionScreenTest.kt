@@ -145,6 +145,17 @@ class ChampionsScreenTest {
         assertEquals("Aatrox", filteredChampions[0].name)
     }
 
+    @Test
+    fun testChampionFilter_noResults() {
+        val searchQuery = "NonExistentChampion"
+        val filteredChampions = champions.filter {
+            it.name.contains(searchQuery, ignoreCase = true)
+        }
+
+        assertTrue(filteredChampions.isEmpty())
+    }
+
+
 
 
 }
