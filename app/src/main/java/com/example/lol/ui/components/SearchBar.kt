@@ -17,7 +17,7 @@ fun SearchBar(searchQuery: String, onQueryChanged: (String) -> Unit) {
             .fillMaxWidth()
             .padding(16.dp),
         placeholder = {
-            Text(text = "Search Champions")
+            Text(text = "Buscar Campeões")
         }
     )
 }
