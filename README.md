@@ -8,6 +8,7 @@
 - [Capturas de Tela](#capturas-de-tela)
 - [Instalação](#instalação)
 - [Tecnologias Utilizadas](#tecnologias-utilizadas)
+- [Estrutura do Projeto](#Estrutura do Projeto)
 - [Licença](#licença)
 
 # Funcionalidades
@@ -48,6 +49,36 @@
 
 • Bitmap e BitmapFactory - Para carregar e manipular imagens.
 
+# Estrutura do Projeto
+```
+LeagueOfStats/
+├── main/
+│   ├── java/
+│   │   ├── database/
+│   │   │   ├── ChampionDao                 // Define métodos para acessar os dados do banco de dados
+│   │   │   ├── ChampionDatabase            // Gerencia a criação e conexão com o banco de dados de campeões
+│   │   │   └── ChampionStatsEntity         // Entidade que representa as estatísticas dos campeões no banco de dados
+│   │   ├── models/
+│   │   │   └── ChampionModel               // Modelagem dos dados dos campeões
+│   │   ├── ui/
+│   │   │   ├── activities/
+│   │   │   │   ├── ChampionActivity        // Exibe detalhes do campeão selecionado
+│   │   │   │   ├── HomeActivity            // Tela inicial do aplicativo
+│   │   │   │   ├── MainActivity            // Atividade principal que exibe os campeões
+│   │   │   │   ├── RandomChampionsActivity // Exibe 10 campeões aleatórios
+│   │   │   │   ├── SplashScreen            // Tela de splash inicial
+│   │   │   │   └── TierListActivity        // Exibe a lista de campeões organizados por tier
+│   │   │   ├── components/
+│   │   │   │   ├── ChampionCard            // Componente visual que exibe uma carta de campeão
+│   │   │   │   ├── DisplayImage            // Componente para carregar e exibir imagens
+│   │   │   │   ├── NotificationButton      // Botão de notificação configurável
+│   │   │   │   ├── PlaySound               // Componente para tocar falas dos personagens
+│   │   │   │   ├── SearchBar               // Barra de pesquisa para buscar campeões
+│   │   │   │   └── ShareChampion           // Componente para compartilhar informações sobre campeões
+│   │   ├── viewModel/
+│   │   │   └── NotificationViewModel       // Gerencia os dados de notificações no app
+├── README.md                               // Documentação do projeto
+```
 
 # Licença
 
