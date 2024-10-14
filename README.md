@@ -2,13 +2,21 @@
 
 **LeagueOfStats** é um aplicativo Android desenvolvido em Kotlin que permite aos jogadores de *League of Legends* acessar estatísticas detalhadas dos campeões. Com uma interface amigável e intuitiva!
 
-## Funcionalidades
+## Tabela de Conteúdo
+
+- [Funcionalidades](#funcionalidades)
+- [Capturas de Tela](#capturas-de-tela)
+- [Instalação](#instalação)
+- [Tecnologias Utilizadas](#tecnologias-utilizadas)
+- [Licença](#licença)
+
+# Funcionalidades
 
 - 🎮 **Estatísticas dos Campeões**: Acesse informações detalhadas sobre cada campeão, incluindo builds recomendadas, feitiços recomendados, tier list de campeões, e muito mais.
 - 🔍 **Filtro e Busca**: Encontre rapidamente qualquer campeão usando o sistema de busca.
 - 📊 **Análises**: Veja dados apresentados de forma visual facilitam a compreensão das estatísticas.
 
-## Capturas de Tela
+# Capturas de Tela
 
 | Home | Navegar Por Campeões |
 |:----:|:--------------------:|
@@ -18,7 +26,7 @@
 |:----------------------:|:-------------------------:|
 | ![Tier List dos Campeões](https://i.imgur.com/aLWTsuC.png) | ![Estatísticas dos Campeões](https://i.imgur.com/XxSqOmi.png) |
 
-## Instalação
+# Instalação
 
 1. Clone este repositório:
    ```bash
@@ -28,7 +36,7 @@
 
 3. Compile e execute o aplicativo no seu dispositivo ou emulador.
 
-## Tecnologias Utilizadas
+# Tecnologias Utilizadas
 
 • Kotlin: Linguagem principal do app.
 
@@ -39,3 +47,8 @@
 • Android Intents - Para navegação entre atividades.
 
 • Bitmap e BitmapFactory - Para carregar e manipular imagens.
+
+
+# Licença
+
+Este projeto está licenciado sob a Licença MIT, o que significa que é gratuito para uso pessoal e comercial.
