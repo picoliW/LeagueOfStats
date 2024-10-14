@@ -33,6 +33,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.IconButton
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import com.example.lol.R
@@ -65,75 +66,78 @@ fun RandomChampionsScreen() {
         val team1 = randomChampions.take(5)
         val team2 = randomChampions.takeLast(5)
 
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(
-                    brush = Brush.verticalGradient(
-                        colors = listOf(Color(0xFF0F2027), Color(0xFF203A43), Color(0xFF2C5364))
-                    )
-                ),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Button(
-                onClick = {
-                    randomChampions.clear()
-                    randomChampions.addAll(champions.value.shuffled().take(10))
-                },
-                modifier = Modifier.padding(vertical = 16.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.secondary
-                )
-            ) {
-                Text(text = "Rolar Novamente")
-            }
+        Box(modifier = Modifier.fillMaxSize()) {
+            Image(
+                painter = painterResource(id = R.drawable.background1),
+                contentDescription = null,
+                modifier = Modifier.matchParentSize(),
+                contentScale = ContentScale.Crop
+            )
 
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceEvenly,
-                modifier = Modifier.weight(1f)
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally
+                Button(
+                    onClick = {
+                        randomChampions.clear()
+                        randomChampions.addAll(champions.value.shuffled().take(10))
+                    },
+                    modifier = Modifier.padding(vertical = 16.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.secondary
+                    )
                 ) {
-                    team1.forEachIndexed { index, champion ->
-                        ChampionWithDiceIcon(
-                            champion = champion,
-                            onDiceClick = {
-                                randomChampions[index] = champions.value.random()
-                            }
-                        )
-                        Spacer(modifier = Modifier.height(16.dp))
-                    }
+                    Text(text = "Rolar Novamente")
                 }
 
-                Text(
-                    text = "VS",
-                    style = MaterialTheme.typography.titleLarge.copy(
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 32.sp,
-                        color = Color.White
-                    ),
-                    modifier = Modifier.padding(horizontal = 16.dp)
-                )
-
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceEvenly,
+                    modifier = Modifier.weight(1f)
                 ) {
-                    team2.forEachIndexed { index, champion ->
-                        ChampionWithDiceIcon(
-                            champion = champion,
-                            onDiceClick = {
-                                randomChampions[5 + index] = champions.value.random()
-                            }
-                        )
-                        Spacer(modifier = Modifier.height(16.dp))
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        team1.forEachIndexed { index, champion ->
+                            ChampionWithDiceIcon(
+                                champion = champion,
+                                onDiceClick = {
+                                    randomChampions[index] = champions.value.random()
+                                }
+                            )
+                            Spacer(modifier = Modifier.height(16.dp))
+                        }
+                    }
+
+                    Image(
+                        painter = painterResource(id = R.drawable.vs),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .size(128.dp)
+                            .padding(horizontal = 16.dp),
+                        colorFilter = ColorFilter.tint(Color.White)
+                    )
+
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        team2.forEachIndexed { index, champion ->
+                            ChampionWithDiceIcon(
+                                champion = champion,
+                                onDiceClick = {
+                                    randomChampions[5 + index] = champions.value.random()
+                                }
+                            )
+                            Spacer(modifier = Modifier.height(16.dp))
+                        }
                     }
                 }
             }
         }
     }
 }
+
 
 
 @Composable
