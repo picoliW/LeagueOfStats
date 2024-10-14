@@ -100,5 +100,14 @@ class ChampionsScreenTest {
         assertEquals("Aatrox", filteredChampions[0].name)
     }
 
+    @Test
+    fun testChampionFilter_byTitle() {
+        val searchQuery = "the Nine-Tailed Fox"
+        val filteredChampions = champions.filter {
+            it.title.contains(searchQuery, ignoreCase = true)
+        }
 
+        assertEquals(1, filteredChampions.size)
+        assertEquals("Ahri", filteredChampions[0].name)
+    }
 }
