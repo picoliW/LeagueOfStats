@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.material3.MaterialTheme
@@ -11,9 +12,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.lol.models.ChampionStats
 import com.example.lol.ui.theme.LolTheme
 import kotlinx.coroutines.CoroutineScope
@@ -48,12 +54,18 @@ fun RandomChampionsScreen() {
         val team2 = randomChampions.takeLast(5)
 
         Column(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize()
+                .background(
+                    brush = Brush.verticalGradient(
+                        colors = listOf(Color(0xFF0F2027), Color(0xFF203A43), Color(0xFF2C5364))
+                    )
+                ),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             LazyRow(
                 modifier = Modifier
-                    .padding(top = 16.dp)
+                    .padding(top = 32.dp)
                     .fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
@@ -64,13 +76,17 @@ fun RandomChampionsScreen() {
 
             Text(
                 text = "VS",
-                style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.padding(vertical = 16.dp)
+                style = MaterialTheme.typography.titleLarge.copy(
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 32.sp,
+                    color = Color.White
+                ),
+                modifier = Modifier.padding(vertical = 24.dp)
             )
 
             LazyRow(
                 modifier = Modifier
-                    .padding(bottom = 16.dp)
+                    .padding(bottom = 32.dp)
                     .fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
@@ -96,11 +112,15 @@ fun ChampionIcon(champion: ChampionStats) {
         Image(
             bitmap = it.asImageBitmap(),
             contentDescription = "${champion.name} Icon",
-            modifier = Modifier.size(64.dp),
+            modifier = Modifier
+                .size(96.dp)
+                .shadow(8.dp, shape = MaterialTheme.shapes.medium),
             contentScale = ContentScale.Crop
         )
     } ?: Box(
-        modifier = Modifier.size(64.dp)
+        modifier = Modifier
+            .size(96.dp)
+            .background(Color.Gray, shape = MaterialTheme.shapes.medium)
     )
 }
 

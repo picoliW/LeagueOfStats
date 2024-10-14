@@ -7,6 +7,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -15,6 +16,9 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -115,6 +119,11 @@ fun ChampionDetailsScreen(championStats: ChampionStats) {
     ) { paddingValues ->
         LazyColumn(
             modifier = Modifier
+                .background(
+                    brush = Brush.verticalGradient(
+                        colors = listOf(Color(0xFF0F2027), Color(0xFF203A43), Color(0xFF2C5364))
+                    )
+                )
                 .fillMaxSize()
                 .padding(paddingValues)
                 .padding(16.dp),
@@ -154,16 +163,17 @@ fun ChampionDetailsScreen(championStats: ChampionStats) {
                             playSound(championStats.name)
                         }
                         .padding(16.dp),
-                    contentScale = ContentScale.Crop
+                    contentScale = ContentScale.Crop,
+                    colorFilter = ColorFilter.tint(Color.White)
                 )
-
                 Spacer(modifier = Modifier.height(16.dp))
             }
 
             item {
                 Text(
-                    text = "Base Champion Stats",
+                    text = "Dados do Campeão",
                     style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
+                    color = Color.White,
                     modifier = Modifier.padding(bottom = 16.dp)
                 )
             }
@@ -185,7 +195,7 @@ fun ChampionDetailsScreen(championStats: ChampionStats) {
                             )
                             Spacer(modifier = Modifier.width(8.dp))
                             Text(
-                                text = "HP: ${championStats.stats.hp}",
+                                text = "Pontos de Vida: ${championStats.stats.hp}",
                                 style = MaterialTheme.typography.bodyLarge
                             )
                         }
@@ -195,7 +205,7 @@ fun ChampionDetailsScreen(championStats: ChampionStats) {
                         ) {
                             Spacer(modifier = Modifier.width(8.dp))
                             Text(
-                                text = "Health per lvl: ${championStats.stats.hpperlevel}",
+                                text = "Pontos de Vida por lvl: ${championStats.stats.hpperlevel}",
                                 style = MaterialTheme.typography.bodyLarge
                             )
                         }
@@ -220,13 +230,13 @@ fun ChampionDetailsScreen(championStats: ChampionStats) {
                             )
                             Spacer(modifier = Modifier.width(8.dp))
                             Text(
-                                text = "Attack Damage: ${championStats.stats.attackdamage}",
+                                text = "Dano de Ataque: ${championStats.stats.attackdamage}",
                                 style = MaterialTheme.typography.bodyLarge
                             )
                         }
 
                         Text(
-                            text = "Attack Damage per lvl: ${championStats.stats.attackdamageperlevel}",
+                            text = "Dano de Ataque por lvl: ${championStats.stats.attackdamageperlevel}",
                             style = MaterialTheme.typography.bodyLarge
                         )
                     }
@@ -250,13 +260,13 @@ fun ChampionDetailsScreen(championStats: ChampionStats) {
                             )
                             Spacer(modifier = Modifier.width(8.dp))
                             Text(
-                                text = "Armor: ${championStats.stats.armor}",
+                                text = "Armadura: ${championStats.stats.armor}",
                                 style = MaterialTheme.typography.bodyLarge
                             )
                         }
 
                         Text(
-                            text = "Armor per lvl: ${championStats.stats.armorperlevel}",
+                            text = "Armadura por lvl: ${championStats.stats.armorperlevel}",
                             style = MaterialTheme.typography.bodyLarge
                         )
                     }
@@ -280,13 +290,13 @@ fun ChampionDetailsScreen(championStats: ChampionStats) {
                             )
                             Spacer(modifier = Modifier.width(8.dp))
                             Text(
-                                text = "Mana Points: ${championStats.stats.mp}",
+                                text = "Pontos de Mana: ${championStats.stats.mp}",
                                 style = MaterialTheme.typography.bodyLarge
                             )
                         }
 
                         Text(
-                            text = "Mana Points per lvl: ${championStats.stats.mpperlevel}",
+                            text = "Pontos de Mana por lvl: ${championStats.stats.mpperlevel}",
                             style = MaterialTheme.typography.bodyLarge
                         )
                     }
@@ -310,13 +320,13 @@ fun ChampionDetailsScreen(championStats: ChampionStats) {
                             )
                             Spacer(modifier = Modifier.width(8.dp))
                             Text(
-                                text = "Attack Speed: ${championStats.stats.attackspeed}",
+                                text = "Velocidade de Ataque: ${championStats.stats.attackspeed}",
                                 style = MaterialTheme.typography.bodyLarge
                             )
                         }
 
                         Text(
-                            text = "Attack Speed per lvl: ${championStats.stats.attackspeedperlevel}",
+                            text = "Velocidade de Ataque por lvl: ${championStats.stats.attackspeedperlevel}",
                             style = MaterialTheme.typography.bodyLarge
                         )
                     }
@@ -332,7 +342,7 @@ fun ChampionDetailsScreen(championStats: ChampionStats) {
                 ) {
                     Column(modifier = Modifier.padding(16.dp)) {
                         Text(
-                            text = "Recommended Spells",
+                            text = "Feitiços Recomendados",
                             style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
                             modifier = Modifier.padding(bottom = 16.dp)
                         )
@@ -370,7 +380,7 @@ fun ChampionDetailsScreen(championStats: ChampionStats) {
                 ) {
                     Column(modifier = Modifier.padding(16.dp)) {
                         Text(
-                            text = "Recommended Items",
+                            text = "Itens Recomendados",
                             style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
                             modifier = Modifier.padding(bottom = 16.dp)
                         )
@@ -404,7 +414,7 @@ fun ChampionDetailsScreen(championStats: ChampionStats) {
                 ) {
                     Column(modifier = Modifier.padding(8.dp)) {
                         Text(
-                            text = "Skill Orders",
+                            text = "Ordem de Habilidades",
                             style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
                             modifier = Modifier.padding(bottom = 8.dp)
                         )

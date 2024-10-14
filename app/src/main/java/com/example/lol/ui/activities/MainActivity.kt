@@ -5,10 +5,15 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import com.example.lol.BuildConfig
 import com.example.lol.models.ChampionStats
@@ -220,7 +225,15 @@ fun ChampionsScreen() {
         it.name.contains(searchQuery, ignoreCase = true) || it.title.contains(searchQuery, ignoreCase = true)
     }
 
-    Column {
+    Column(
+        modifier = Modifier
+        .fillMaxSize()
+        .background(
+            brush = Brush.verticalGradient(
+                colors = listOf(Color(0xFF0F2027), Color(0xFF203A43), Color(0xFF2C5364))
+            )
+        )
+    ) {
         SearchBar(
             searchQuery = searchQuery,
             onQueryChanged = { searchQuery = it }
