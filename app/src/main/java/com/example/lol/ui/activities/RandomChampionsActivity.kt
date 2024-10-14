@@ -29,7 +29,11 @@ import java.net.HttpURLConnection
 import java.net.URL
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.IconButton
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import com.example.lol.R
 
 class RandomChampionsActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,9 +49,14 @@ class RandomChampionsActivity : ComponentActivity() {
 @Composable
 fun RandomChampionsScreen() {
     val champions = remember { mutableStateOf(listOf<ChampionStats>()) }
-    val randomChampions = champions.value.shuffled().take(10)
+    val randomChampions = remember { mutableStateListOf<ChampionStats>() }
 
     fetchAllChampions(champions, context = LocalContext.current)
+
+    LaunchedEffect(champions.value) {
+        randomChampions.clear()
+        randomChampions.addAll(champions.value.shuffled().take(10))
+    }
 
     if (randomChampions.size == 10) {
         val team1 = randomChampions.take(5)
@@ -64,11 +73,17 @@ fun RandomChampionsScreen() {
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
+            // Coluna para o Team 1 (esquerda)
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                team1.forEach { champion ->
-                    ChampionIcon(champion = champion)
+                team1.forEachIndexed { index, champion ->
+                    ChampionWithDiceIcon(
+                        champion = champion,
+                        onDiceClick = {
+                            randomChampions[index] = champions.value.random()
+                        }
+                    )
                     Spacer(modifier = Modifier.height(16.dp))
                 }
             }
@@ -86,8 +101,13 @@ fun RandomChampionsScreen() {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                team2.forEach { champion ->
-                    ChampionIcon(champion = champion)
+                team2.forEachIndexed { index, champion ->
+                    ChampionWithDiceIcon(
+                        champion = champion,
+                        onDiceClick = {
+                            randomChampions[5 + index] = champions.value.random()
+                        }
+                    )
                     Spacer(modifier = Modifier.height(16.dp))
                 }
             }
@@ -95,6 +115,32 @@ fun RandomChampionsScreen() {
     }
 }
 
+@Composable
+fun ChampionWithDiceIcon(champion: ChampionStats, onDiceClick: () -> Unit) {
+    Box(
+        modifier = Modifier.size(96.dp)
+    ) {
+        ChampionIcon(champion = champion)
+
+        Box(
+            modifier = Modifier
+                .size(40.dp)
+                .background(Color.White, shape = CircleShape)
+                .align(Alignment.BottomEnd),
+            contentAlignment = Alignment.Center
+        ) {
+            IconButton(
+                onClick = onDiceClick,
+                modifier = Modifier.size(32.dp)
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.shuffle_icon),
+                    contentDescription = "Sorteio Aleatório"
+                )
+            }
+        }
+    }
+}
 
 
 @Composable
@@ -122,6 +168,8 @@ fun ChampionIcon(champion: ChampionStats) {
             .background(Color.Gray, shape = MaterialTheme.shapes.medium)
     )
 }
+
+
 
 fun loadImageFromUrl(url: String): Bitmap? {
     return try {
