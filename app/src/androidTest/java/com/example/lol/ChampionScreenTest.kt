@@ -1,5 +1,6 @@
 package com.example.lol.ui.activities
 
+import com.example.lol.database.ChampionStatsEntity
 import com.example.lol.models.ChampionStats
 import com.example.lol.models.Sprite
 import com.example.lol.models.Stats
@@ -110,4 +111,17 @@ class ChampionsScreenTest {
         assertEquals(1, filteredChampions.size)
         assertEquals("Ahri", filteredChampions[0].name)
     }
+
+    @Test
+    fun testChampionFilter_byTag() {
+        val searchQuery = "Fighter"
+        val filteredChampions = champions.filter {
+            it.tags.contains(searchQuery)
+        }
+
+        assertEquals(1, filteredChampions.size)
+        assertEquals("Aatrox", filteredChampions[0].name)
+    }
+
+
 }
