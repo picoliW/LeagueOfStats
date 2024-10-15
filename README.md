@@ -17,6 +17,10 @@
 - 🔍 **Filtro e Busca**: Encontre rapidamente qualquer campeão usando o sistema de busca.
 - 📊 **Análises**: Veja dados apresentados de forma visual facilitam a compreensão das estatísticas.
 
+# Preview
+
+![Home](https://i.imgur.com/OOw3abv.gif)
+
 # Capturas de Tela
 
 | Home | Navegar Por Campeões |
