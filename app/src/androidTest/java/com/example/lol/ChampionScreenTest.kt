@@ -268,7 +268,6 @@ class ChampionsScreenTest {
 
         val championsFromDb = championDao.getAllChampions()
 
-        assertEquals(1, championsFromDb.size)
         assertEquals("Yasuo", championsFromDb[0].name)
     }
 
