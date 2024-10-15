@@ -1,8 +1,6 @@
 package com.example.lol.ui.activities
 
 import android.content.Context
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.LocalContext
 import androidx.test.core.app.ApplicationProvider
 import com.example.lol.database.ChampionDatabase
 import com.example.lol.database.ChampionStatsEntity
