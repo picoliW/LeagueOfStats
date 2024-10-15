@@ -21,11 +21,15 @@
 
 | Home | Navegar Por Campeões |
 |:----:|:--------------------:|
-| ![Home](https://i.imgur.com/pA03BDZ.png) | ![Navegar Por Campeões](https://i.imgur.com/sZUTnTR.png) |
+| ![Home](https://i.imgur.com/vnvq2nW.png) | ![Navegar Por Campeões](https://i.imgur.com/bHCWScA.png) |
 
-| Tier List dos Campeões | Estatísticas dos Campeões |
+| Seleção de Times Aleatórios | TierList de Campeões |
 |:----------------------:|:-------------------------:|
-| ![Tier List dos Campeões](https://i.imgur.com/aLWTsuC.png) | ![Estatísticas dos Campeões](https://i.imgur.com/XxSqOmi.png) |
+| ![Seleção de Times Aleatórios](https://i.imgur.com/ENHVuRg.png) | ![Tier List dos Campeões](https://i.imgur.com/9iUd9Bm.png) |
+
+| Dados do Campeão | 
+|:----------------------:|
+| ![Dados do Campeão](https://i.imgur.com/q7DJGfz.png) ![Dados do Campeão 2](https://i.imgur.com/ZYDap8s.png) |
 
 # Instalação
 
