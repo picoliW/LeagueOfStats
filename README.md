@@ -5,10 +5,11 @@
 ## Tabela de Conteúdo
 
 - [Funcionalidades](#funcionalidades)
+- [Preview](#preview)
 - [Capturas de Tela](#capturas-de-tela)
 - [Instalação](#instalação)
 - [Tecnologias Utilizadas](#tecnologias-utilizadas)
-- [Estrutura do Projeto](#Estrutura-do-Projeto)
+- [Estrutura do Projeto](#estrutura-do-Projeto)
 - [Licença](#licença)
 
 # Funcionalidades
@@ -19,7 +20,7 @@
 
 # Preview
 
-![Home](https://i.imgur.com/OOw3abv.gif)
+![Preview](https://i.imgur.com/OOw3abv.gif)
 
 # Capturas de Tela
 
@@ -56,6 +57,14 @@
 • Android Intents - Para navegação entre atividades.
 
 • Bitmap e BitmapFactory - Para carregar e manipular imagens.
+
+• Cloud Translation API - Traduzir título dos campeões para português.
+
+• Room - Biblioteca de persistência para trabalhar com banco de dados SQLite, facilitando o acesso offline aos dados dos campeões.
+
+• NotificationCompat - Para enviar notificações personalizadas no aplicativo.
+
+
 
 # Estrutura do Projeto
 ```
