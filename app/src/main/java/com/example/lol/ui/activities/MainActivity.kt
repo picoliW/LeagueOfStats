@@ -57,6 +57,9 @@ fun fetchAllChampions(champions: MutableState<List<ChampionStats>>, context: Con
 
         val cachedChampions = championDao.getAllChampions()
 
+        val locale = context.resources.configuration.locales.get(0)
+        val isPortuguese = locale.language == "pt"
+
         if (cachedChampions.isNotEmpty()) {
             withContext(Dispatchers.Main) {
                 champions.value = cachedChampions.map {
@@ -64,7 +67,7 @@ fun fetchAllChampions(champions: MutableState<List<ChampionStats>>, context: Con
                         id = it.id,
                         key = it.key,
                         name = it.name,
-                        title = it.translatedTitle ?: it.title,
+                        title = if (isPortuguese) it.translatedTitle ?: it.title else it.title,
                         tags = it.tags.split(","),
                         stats = Stats(
                             hp = it.hp,
@@ -171,7 +174,7 @@ fun fetchAllChampions(champions: MutableState<List<ChampionStats>>, context: Con
                             id = it.id,
                             key = it.key,
                             name = it.name,
-                            title = it.translatedTitle ?: it.title,
+                            title = if (isPortuguese) it.translatedTitle ?: it.title else it.title,
                             tags = it.tags.split(","),
                             stats = Stats(
                                 hp = it.hp,
