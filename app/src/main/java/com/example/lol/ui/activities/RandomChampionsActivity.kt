@@ -22,6 +22,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import android.graphics.Bitmap
+import androidx.compose.foundation.border
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -48,6 +49,14 @@ class RandomChampionsActivity : ComponentActivity() {
 fun RandomChampionsScreen() {
     val champions = remember { mutableStateOf(listOf<ChampionStats>()) }
     val randomChampions = remember { mutableStateListOf<ChampionStats>() }
+
+    val vsImages = listOf(
+        R.drawable.lane1_top,
+        R.drawable.lane2_jg,
+        R.drawable.lane3_mid,
+        R.drawable.lane4_adc,
+        R.drawable.lane5_sup
+    )
 
     fetchAllChampions(champions, context = LocalContext.current)
 
@@ -85,53 +94,53 @@ fun RandomChampionsScreen() {
                     Text(text = stringResource(id = R.string.roll_again))
                 }
 
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceEvenly,
+                Column(
                     modifier = Modifier.weight(1f)
                 ) {
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        team1.forEachIndexed { index, champion ->
+                    team1.forEachIndexed { index, champion1 ->
+                        val champion2 = team2[index]
+
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .border(4.dp, Color(0xFFC89B3C))
+                                .background(Color(0xFF0A1428))
+                                .padding(vertical = 16.dp)
+                                .padding(8.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceEvenly
+                        ) {
                             ChampionWithDiceIcon(
-                                champion = champion,
+                                champion = champion1,
                                 onDiceClick = {
                                     randomChampions[index] = champions.value.random()
                                 }
                             )
-                            Spacer(modifier = Modifier.height(16.dp))
-                        }
-                    }
 
-                    Image(
-                        painter = painterResource(id = R.drawable.vs),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .size(128.dp)
-                            .padding(horizontal = 16.dp),
-                        colorFilter = ColorFilter.tint(Color.White)
-                    )
+                            Image(
+                                painter = painterResource(id = vsImages[index]),
+                                contentDescription = null,
+                                modifier = Modifier
+                                    .size(64.dp)
+                                    .padding(horizontal = 16.dp),
+                                colorFilter = ColorFilter.tint(Color.White)
+                            )
 
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        team2.forEachIndexed { index, champion ->
                             ChampionWithDiceIcon(
-                                champion = champion,
+                                champion = champion2,
                                 onDiceClick = {
                                     randomChampions[5 + index] = champions.value.random()
                                 }
                             )
-                            Spacer(modifier = Modifier.height(16.dp))
                         }
+
+                        Spacer(modifier = Modifier.height(16.dp))
                     }
                 }
             }
         }
     }
 }
-
 
 
 @Composable

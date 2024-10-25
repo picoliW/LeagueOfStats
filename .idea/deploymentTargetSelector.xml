@@ -4,7 +4,7 @@
     <selectionStates>
       <SelectionState runConfigName="Unnamed">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2024-10-25T06:18:46.869486400Z">
+        <DropdownSelection timestamp="2024-10-25T06:29:40.307239600Z">
           <Target type="DEFAULT_BOOT">
             <handle>
               <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\ledua\.android\avd\Medium_Phone_API_35.avd" />
