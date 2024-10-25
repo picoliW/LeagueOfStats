@@ -2,10 +2,10 @@ package com.example.lol.ui.components
 
 import android.content.Context
 import android.content.Intent
+import com.example.lol.R
 
 fun shareChampion(context: Context, championName: String) {
-    val shareMessage = "Venha ver as estatísticas de $championName em League of Stats! \n\n" +
-            "https://github.com/picoliW/LeagueOfStats"
+    val shareMessage = context.getString(R.string.share_text, championName.toString())
     val shareIntent = Intent().apply {
         action = Intent.ACTION_SEND
         putExtra(Intent.EXTRA_TEXT, shareMessage)

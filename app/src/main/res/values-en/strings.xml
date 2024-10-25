@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">lol</string>
+    <string name="browse_champions">Browse Champions</string>
+    <string name="view_tier_list">View Champion Tier List</string>
+    <string name="sort_random_champion">Sort Random Champions</string>
+    <string name="browse_champions_search">Browse Champions</string>
+    <string name="champion_data">Champion Data</string>
+    <string name="hp_points">Health Points:</string>
+    <string name="hp_points_per_lvl">Health points per lvl:</string>
+    <string name="atk_damage_per_lvl">Attack Damage per lvl:</string>
+    <string name="atk_damage">Attack Damage:</string>
+    <string name="armor_per_lvl">Armor per lvl:</string>
+    <string name="armor">Armor:</string>
+    <string name="mp_per_lvl">Mana Points per lvl:</string>
+    <string name="mp">Mana Points:</string>
+    <string name="atk_speed_per_lvl">Attack Speed per lvl:</string>
+    <string name="atk_speed">Attack Speed:</string>
+    <string name="recommended_spells">Recommended Spells:</string>
+    <string name="recommended_items">Recommended Items:</string>
+    <string name="skill_order">Skill Order:</string>
+    <string name="share_text">Come see %1$s stats in League of Stats!</string>
+    <string name="sort_Increasing">Sort Increasing</string>
+    <string name="sort_Decreasing">Sort Decreasing</string>
+    <string name="roll_again">Roll Again</string>
+
+</resources>

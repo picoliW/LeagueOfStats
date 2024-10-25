@@ -17,6 +17,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.lol.R
 import com.example.lol.ui.theme.LolTheme
@@ -82,7 +83,7 @@ fun HomeScreen() {
                     modifier = Modifier.size(24.dp)
                 )
                 Spacer(modifier = Modifier.width(8.dp))
-                Text(text = "Navegar por campeões", style = MaterialTheme.typography.bodyLarge)
+                Text(text = stringResource(id = R.string.browse_champions), style = MaterialTheme.typography.bodyLarge)
             }
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -104,7 +105,7 @@ fun HomeScreen() {
                     modifier = Modifier.size(24.dp)
                 )
                 Spacer(modifier = Modifier.width(8.dp))
-                Text(text = "Ver TierList de campeões", style = MaterialTheme.typography.bodyLarge)
+                Text(text = stringResource(id = R.string.view_tier_list), style = MaterialTheme.typography.bodyLarge)
             }
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -126,7 +127,7 @@ fun HomeScreen() {
                     modifier = Modifier.size(24.dp)
                 )
                 Spacer(modifier = Modifier.width(8.dp))
-                Text(text = "Escolher campeões aleatórios", style = MaterialTheme.typography.bodyLarge)
+                Text(text = stringResource(id = R.string.sort_random_champion), style = MaterialTheme.typography.bodyLarge)
             }
 
         }

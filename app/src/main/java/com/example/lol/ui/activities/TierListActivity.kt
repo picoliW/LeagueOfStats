@@ -20,9 +20,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.lol.R
 import com.example.lol.ui.theme.LolTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -66,7 +68,7 @@ fun TierListScreen() {
                             containerColor = MaterialTheme.colorScheme.secondary
                         )
                     ) {
-                        Text(if (sortedByDescending.value) "Filtrar Crescente" else "Filtrar Descrescente")
+                        Text(if (sortedByDescending.value) stringResource(id = R.string.sort_Increasing) else stringResource(id = R.string.sort_Decreasing))
                     }
                 }
             )

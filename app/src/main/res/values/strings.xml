@@ -1,3 +1,26 @@
 <resources>
     <string name="app_name">lol</string>
+    <string name="browse_champions">Navegar por campeões</string>
+    <string name="view_tier_list">Ver TierList de campeões</string>
+    <string name="sort_random_champion">Sortear Campeões Aleatórios</string>
+    <string name="browse_champions_search">Buscar Campeões</string>
+    <string name="champion_data">Dados do Campeão</string>
+    <string name="hp_points">Pontos de Vida</string>
+    <string name="hp_points_per_lvl">Pontos de Vida por lvl:</string>
+    <string name="atk_damage_per_lvl">Dano de Ataque por lvl:</string>
+    <string name="atk_damage">Dano de Ataque:</string>
+    <string name="armor_per_lvl">Armadura por lvl:</string>
+    <string name="armor">Armadura:</string>
+    <string name="mp_per_lvl">Pontos de Mana por lvl:</string>
+    <string name="mp">Pontos de Mana:</string>
+    <string name="atk_speed_per_lvl">Velocidade de Ataque por lvl:</string>
+    <string name="atk_speed">Velocidade de Ataque:</string>
+    <string name="recommended_spells">Feitiços Recomendados:</string>
+    <string name="recommended_items">Itens Recomendados:</string>
+    <string name="skill_order">Ordem de Habilidades:</string>
+    <string name="share_text">Venha ver as estatísticas de %1$s em League of Stats!</string>
+    <string name="sort_Increasing">Filtrar Crescente</string>
+    <string name="sort_Decreasing">Filtrar Decrescente</string>
+    <string name="roll_again">Rolar Novamente</string>
+
 </resources>

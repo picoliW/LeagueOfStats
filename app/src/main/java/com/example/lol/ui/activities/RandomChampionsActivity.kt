@@ -29,6 +29,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import com.example.lol.R
 import com.example.lol.ui.components.loadImageFromUrl
 
@@ -81,7 +82,7 @@ fun RandomChampionsScreen() {
                         containerColor = MaterialTheme.colorScheme.secondary
                     )
                 ) {
-                    Text(text = "Rolar Novamente")
+                    Text(text = stringResource(id = R.string.roll_again))
                 }
 
                 Row(
