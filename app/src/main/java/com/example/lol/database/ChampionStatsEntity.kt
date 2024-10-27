@@ -36,5 +36,6 @@ data class ChampionStatsEntity(
     val spriteX: Int,
     val spriteY: Int,
     val description: String,
+    val isFavorited: Boolean = false,
     val new_column_name: Int = 0
 )

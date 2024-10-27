@@ -27,6 +27,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.lol.R
+import com.example.lol.database.ChampionDatabase
 import com.example.lol.ui.theme.LolTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -55,6 +56,7 @@ class ChampionActivity : ComponentActivity() {
 fun ChampionDetailsScreen(championStats: ChampionStats) {
     val context = LocalContext.current
     val soundManager = remember { SoundManager(context) }
+    var isFavorited by remember { mutableStateOf(championStats.isFavorited) }
 
     Scaffold(
         topBar = {
@@ -65,6 +67,20 @@ fun ChampionDetailsScreen(championStats: ChampionStats) {
                         Icon(
                             painter = painterResource(id = R.drawable.compartilhar),
                             contentDescription = "Compartilhar ${championStats.name}",
+                        )
+                    }
+                    IconButton(onClick = {
+                        isFavorited = !isFavorited
+                        CoroutineScope(Dispatchers.IO).launch {
+                            val database = ChampionDatabase.getDatabase(context)
+                            database.championDao().updateFavoriteStatus(championStats.id, isFavorited)
+                        }
+                    }) {
+                        Icon(
+                            painter = painterResource(
+                                id = if (isFavorited) R.drawable.not_favorited else R.drawable.favorited
+                            ),
+                            contentDescription = if (isFavorited) "Remover dos favoritos" else "Adicionar aos favoritos",
                         )
                     }
                 }

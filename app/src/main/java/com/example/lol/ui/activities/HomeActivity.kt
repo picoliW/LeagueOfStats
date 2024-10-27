@@ -78,7 +78,7 @@ fun HomeScreen() {
                 )
             ) {
                 Icon(
-                    painter = painterResource(id = R.drawable.champions),
+                    painter = painterResource(id = R.drawable.lupa),
                     contentDescription = "Navigate Icon",
                     modifier = Modifier.size(24.dp)
                 )
@@ -122,7 +122,7 @@ fun HomeScreen() {
                 )
             ) {
                 Icon(
-                    painter = painterResource(id = R.drawable.champions),
+                    painter = painterResource(id = R.drawable.dice),
                     contentDescription = "Random Champions Icon",
                     modifier = Modifier.size(24.dp)
                 )
@@ -130,6 +130,27 @@ fun HomeScreen() {
                 Text(text = stringResource(id = R.string.sort_random_champion), style = MaterialTheme.typography.bodyLarge)
             }
 
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Button(
+                onClick = {
+                    val intent = Intent(context, FavoriteChampionsActivity::class.java)
+                    context.startActivity(intent)
+                },
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(12.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.secondary
+                )
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.not_favorited),
+                    contentDescription = "Random Champions Icon",
+                    modifier = Modifier.size(24.dp)
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(text = stringResource(id = R.string.show_favorites), style = MaterialTheme.typography.bodyLarge)
+            }
         }
     }
 }

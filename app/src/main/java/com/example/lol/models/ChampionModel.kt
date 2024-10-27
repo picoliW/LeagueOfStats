@@ -13,7 +13,8 @@ data class ChampionStats(
     val stats: Stats,
     val icon: String,
     val sprite: Sprite,
-    val description: String
+    val description: String,
+    var isFavorited: Boolean = false
 ) : Serializable
 
 data class Stats(

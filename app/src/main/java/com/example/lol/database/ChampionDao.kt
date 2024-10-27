@@ -15,4 +15,10 @@ interface ChampionDao {
 
     @Query("SELECT * FROM champions")
     suspend fun getAllChampions(): List<ChampionStatsEntity>
+
+    @Query("UPDATE champions SET isFavorited = :isFavorited WHERE id = :id")
+    suspend fun updateFavoriteStatus(id: String, isFavorited: Boolean)
+
+    @Query("SELECT * FROM champions WHERE isFavorited = 1")
+    suspend fun getFavoritedChampions(): List<ChampionStatsEntity>
 }
