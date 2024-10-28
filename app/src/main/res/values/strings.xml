@@ -28,6 +28,8 @@
     <string name="search_summoner">Buscar Invocador</string>
     <string name="summoner_name">Nome de Invocador</string>
     <string name="summoner_tag">TAG</string>
-
+    <string name="summoner_lvl">Nível do Invocador: %1$s</string>
+    <string name="champion">Campeao:</string>
+    <string name="show_mastery">Campeão: %1$s, Nível: %2$s, Pontos: %3$s</string>
 
 </resources>

@@ -10,7 +10,9 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.example.lol.R
 import com.example.lol.database.ChampionDao
 import com.example.lol.database.ChampionDatabase
 import com.example.lol.ui.components.ChampionMasteryResponse
@@ -72,14 +74,17 @@ fun SummonerProfileScreen(summonerLevel: Int, puuid: String) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Text("Nível do Invocador: $summonerLevel", style = MaterialTheme.typography.bodyLarge)
+        Text(stringResource(id = R.string.summoner_lvl, summonerLevel.toString()), style = MaterialTheme.typography.bodyLarge)
         Spacer(modifier = Modifier.height(16.dp))
 
         if (masteries.isNotEmpty()) {
             masteries.forEach { mastery ->
                 val championName = championNames[mastery.championId] ?: "Desconhecido"
                 Text(
-                    text = "Campeão: $championName, Nível: ${mastery.championLevel}, Pontos: ${mastery.championPoints}",
+                    text = stringResource(id = R.string.show_mastery,
+                        championName.toString(),
+                        mastery.championLevel.toString(),
+                        mastery.championPoints.toString()),
                     style = MaterialTheme.typography.bodyMedium
                 )
             }
@@ -88,7 +93,6 @@ fun SummonerProfileScreen(summonerLevel: Int, puuid: String) {
         }
     }
 }
-
 
 suspend fun getChampionNameById(championId: Int, dao: ChampionDao): String? {
     val champion = dao.getChampionById(championId.toString())

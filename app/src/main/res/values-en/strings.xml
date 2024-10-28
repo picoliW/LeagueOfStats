@@ -29,6 +29,10 @@
     <string name="search_summoner">Search Summoner</string>
     <string name="summoner_name">Summoner Name</string>
     <string name="summoner_tag">TAG</string>
+    <string name="summoner_lvl">Summoner Level: %1$s</string>
+    <string name="champion">Champion:</string>
+    <string name="show_mastery">Champion: %1$s, Level: %2$s, Points: %3$s</string>
+
 
 
 </resources>

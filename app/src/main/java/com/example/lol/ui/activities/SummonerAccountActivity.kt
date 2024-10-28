@@ -59,7 +59,7 @@ fun AccountScreen() {
         OutlinedTextField(
             value = gameName,
             onValueChange = { gameName = it },
-            label = { stringResource(id = R.string.summoner_name) },
+            label = { Text(text = stringResource(id = R.string.summoner_name)) },
             modifier = Modifier.fillMaxWidth()
         )
 
@@ -68,7 +68,7 @@ fun AccountScreen() {
         OutlinedTextField(
             value = tagLine,
             onValueChange = { tagLine = it },
-            label = { stringResource(id = R.string.summoner_tag) },
+            label = { Text(text = stringResource(id = R.string.summoner_tag)) },
             modifier = Modifier.fillMaxWidth()
         )
 
