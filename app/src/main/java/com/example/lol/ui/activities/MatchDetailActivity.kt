@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.lol.ui.components.getMatchDetailsWithSummonerNames
+import com.example.lol.ui.components.getMatchDetailsWithSummonerNamesAndChampions
 import kotlinx.coroutines.launch
 
 class MatchDetailActivity : ComponentActivity() {
@@ -31,17 +32,12 @@ class MatchDetailActivity : ComponentActivity() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MatchDetailScreen(matchId: String) {
-    var summonerNames by remember { mutableStateOf<List<String>>(emptyList()) }
+    var playersChampionsAndRoles by remember { mutableStateOf<List<Triple<String, String, String>>>(emptyList()) }
 
     LaunchedEffect(matchId) {
         try {
-            Log.d("MatchDetailScreen", "Fetching details for match ID: $matchId")
-            val response = getMatchDetailsWithSummonerNames(matchId, "americas")
-            Log.d("MatchDetailScreen", "API response: $response")
-
-            summonerNames = response.second.filter { it.isNotEmpty() }
-            Log.d("MatchDetailScreen", "Summoner Names: $summonerNames")
-
+            val response = getMatchDetailsWithSummonerNamesAndChampions(matchId, "americas")
+            playersChampionsAndRoles = response
         } catch (e: Exception) {
             Log.e("MatchDetailScreen", "Error fetching match details: ${e.message}")
         }
@@ -60,21 +56,24 @@ fun MatchDetailScreen(matchId: String) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             item {
-                Text("Invocadores na partida", style = MaterialTheme.typography.headlineSmall, color = Color.White)
+                Text("Invocadores, Campeões e Funções na Partida", style = MaterialTheme.typography.headlineSmall, color = Color.White)
                 Spacer(modifier = Modifier.height(16.dp))
             }
-            items(summonerNames) { name ->
-                Log.d("caralho", "Summoner Names: $name")
-                Text(
-                    text = name,
-                    color = Color.Black,
-                    style = MaterialTheme.typography.bodyLarge
-                )
+            items(playersChampionsAndRoles) { (name, champion, position) ->
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(
+                        text = "$name - $champion ($position)",
+                        color = Color.Black,
+                        style = MaterialTheme.typography.bodyLarge
+                    )
+                }
                 Spacer(modifier = Modifier.height(8.dp))
             }
         }
     }
 }
+
+
 
 
 

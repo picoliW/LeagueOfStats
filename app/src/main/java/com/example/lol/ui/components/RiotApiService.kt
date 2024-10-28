@@ -142,7 +142,17 @@ data class Metadata(
 data class Info(
     val gameDuration: Int,
     val gameMode: String,
+    val participants: List<Participant>
 )
+
+data class Participant(
+    val puuid: String,
+    val riotIdGameName: String,
+    val riotIdTagLine: String,
+    val championName: String,
+    val individualPosition: String,
+)
+
 
 suspend fun getMatchIds(puuid: String, region: String): List<String> {
     val retrofit = provideSummonerRetrofit(region)
@@ -173,8 +183,20 @@ suspend fun getSummonerNamesByPUUIDs(participants: List<String>, region: String)
         summonerNames.add(summonerName)
     }
 
-    return summonerNames
+    return summonerNames }
+
+suspend fun getMatchDetailsWithSummonerNamesAndChampions(matchId: String, region: String): List<Triple<String, String, String>> {
+    val matchDetails = getMatchDetails(matchId, region)
+
+    val playersChampionsAndRoles = mutableListOf<Triple<String, String, String>>()
+
+    for (participant in matchDetails.info.participants) {
+        playersChampionsAndRoles.add(Triple(participant.riotIdGameName, participant.championName, participant.individualPosition))
+    }
+
+    return playersChampionsAndRoles
 }
+
 
 
 
