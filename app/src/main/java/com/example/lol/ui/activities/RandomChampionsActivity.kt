@@ -23,6 +23,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import android.graphics.Bitmap
 import androidx.compose.foundation.border
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -78,7 +79,9 @@ fun RandomChampionsScreen() {
             )
 
             Column(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Button(
@@ -94,10 +97,11 @@ fun RandomChampionsScreen() {
                     Text(text = stringResource(id = R.string.roll_again))
                 }
 
-                Column(
+                LazyColumn(
                     modifier = Modifier.weight(1f)
                 ) {
-                    team1.forEachIndexed { index, champion1 ->
+                    items(team1.size) { index ->
+                        val champion1 = team1[index]
                         val champion2 = team2[index]
 
                         Row(
