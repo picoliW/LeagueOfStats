@@ -151,6 +151,28 @@ fun HomeScreen() {
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(text = stringResource(id = R.string.show_favorites), style = MaterialTheme.typography.bodyLarge)
             }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Button(
+                onClick = {
+                    val intent = Intent(context, AccountActivity::class.java)
+                    context.startActivity(intent)
+                },
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(12.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.secondary
+                )
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.not_favorited),
+                    contentDescription = "Random Champions Icon",
+                    modifier = Modifier.size(24.dp)
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(text = stringResource(id = R.string.show_favorites), style = MaterialTheme.typography.bodyLarge)
+            }
         }
     }
 }

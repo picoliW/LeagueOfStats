@@ -89,4 +89,8 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
     implementation ("androidx.work:work-runtime-ktx:2.8.1")
     implementation ("com.google.cloud:google-cloud-translate:1.94.3")
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation ("com.squareup.okhttp3:logging-interceptor:4.9.1")
+
 }
