@@ -14,6 +14,7 @@ if (localPropertiesFile.exists()) {
 }
 
 val googleApiKey: String = localProperties.getProperty("GOOGLE_API_KEY", "google_api_key")
+val riotApiKey: String = localProperties.getProperty("RIOT_API_KEY", "riot_api_key")
 
 
 android {
@@ -32,6 +33,7 @@ android {
             useSupportLibrary = true
         }
         buildConfigField("String", "GOOGLE_API_KEY", "\"${googleApiKey}\"")
+        buildConfigField("String", "RIOT_API_KEY", "\"${riotApiKey}\"")
 
     }
 

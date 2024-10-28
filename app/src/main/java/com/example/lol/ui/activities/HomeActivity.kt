@@ -166,12 +166,12 @@ fun HomeScreen() {
                 )
             ) {
                 Icon(
-                    painter = painterResource(id = R.drawable.not_favorited),
+                    painter = painterResource(id = R.drawable.lupa),
                     contentDescription = "Random Champions Icon",
                     modifier = Modifier.size(24.dp)
                 )
                 Spacer(modifier = Modifier.width(8.dp))
-                Text(text = stringResource(id = R.string.show_favorites), style = MaterialTheme.typography.bodyLarge)
+                Text(text = stringResource(id = R.string.search_summoner), style = MaterialTheme.typography.bodyLarge)
             }
         }
     }

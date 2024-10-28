@@ -72,6 +72,12 @@
             android:label="@string/app_name"
             android:theme="@style/Theme.Lol" />
 
+        <activity
+            android:name=".ui.activities.SummonerProfileActivity"
+            android:exported="true"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.Lol" />
+
     </application>
 
 </manifest>
