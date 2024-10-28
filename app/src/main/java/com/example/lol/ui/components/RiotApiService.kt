@@ -1,5 +1,6 @@
 package com.example.lol.ui.components
 
+import android.util.Log
 import com.example.lol.BuildConfig
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
@@ -8,6 +9,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 const val RIOT_API_KEY = BuildConfig.RIOT_API_KEY
 
@@ -52,6 +54,11 @@ interface RiotAccountApi {
         @Path("gameName") gameName: String,
         @Path("tagLine") tagLine: String
     ): AccountResponse
+
+    @GET("/riot/account/v1/accounts/by-puuid/{puuid}")
+    suspend fun getAccountByPUUID(
+        @Path("puuid") puuid: String
+    ): AccountResponse
 }
 
 interface RiotSummonerApi {
@@ -61,9 +68,21 @@ interface RiotSummonerApi {
     ): SummonerResponse
 }
 
-data class AccountResponse(val puuid: String)
-data class SummonerResponse(val summonerLevel: Int)
 
+data class AccountResponse(
+    val puuid: String,
+    val gameName: String,
+    val tagLine: String
+)
+
+data class SummonerResponse(
+    val id: String,
+    val accountId: String,
+    val puuid: String,
+    val profileIconId: String,
+    val revisionDate: String,
+    val summonerLevel: Int
+)
 suspend fun getAccountPuuid(gameName: String, tagLine: String): String {
     val retrofit = provideRetrofit()
     val accountApi = retrofit.create(RiotAccountApi::class.java)
@@ -95,6 +114,69 @@ suspend fun getTopChampionMasteries(puuid: String, region: String): List<Champio
     val masteryApi = retrofit.create(RiotChampionMasteryApi::class.java)
     return masteryApi.getTopChampionMasteries(puuid)
 }
+
+interface RiotMatchApi {
+    @GET("/lol/match/v5/matches/by-puuid/{puuid}/ids")
+    suspend fun getMatchIds(
+        @Path("puuid") puuid: String,
+        @Query("start") start: Int = 0,
+        @Query("count") count: Int = 100
+    ): List<String>
+
+    @GET("/lol/match/v5/matches/{matchId}")
+    suspend fun getMatchDetails(
+        @Path("matchId") matchId: String
+    ): MatchDetailsResponse
+}
+
+data class MatchDetailsResponse(
+    val metadata: Metadata,
+    val info: Info
+)
+
+data class Metadata(
+    val matchId: String,
+    val participants: List<String>
+)
+
+data class Info(
+    val gameDuration: Int,
+    val gameMode: String,
+)
+
+suspend fun getMatchIds(puuid: String, region: String): List<String> {
+    val retrofit = provideSummonerRetrofit(region)
+    val matchApi = retrofit.create(RiotMatchApi::class.java)
+    return matchApi.getMatchIds(puuid)
+}
+
+suspend fun getMatchDetails(matchId: String, region: String): MatchDetailsResponse {
+    val retrofit = provideSummonerRetrofit(region)
+    val matchApi = retrofit.create(RiotMatchApi::class.java)
+    return matchApi.getMatchDetails(matchId)
+}
+
+suspend fun getMatchDetailsWithSummonerNames(matchId: String, region: String): Pair<MatchDetailsResponse, List<String>> {
+    val matchDetails = getMatchDetails(matchId, region)
+    val summonerNames = getSummonerNamesByPUUIDs(matchDetails.metadata.participants, region)
+    return matchDetails to summonerNames
+}
+
+suspend fun getSummonerNamesByPUUIDs(participants: List<String>, region: String): List<String> {
+    val retrofit = provideSummonerRetrofit(region)
+    val accountApi = retrofit.create(RiotAccountApi::class.java)
+    val summonerNames = mutableListOf<String>()
+
+    for (puuid in participants) {
+        val account = accountApi.getAccountByPUUID(puuid)
+        val summonerName = "${account.gameName}#${account.tagLine}"
+        summonerNames.add(summonerName)
+    }
+
+    return summonerNames
+}
+
+
 
 
 

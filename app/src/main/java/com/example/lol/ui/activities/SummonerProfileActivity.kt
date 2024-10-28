@@ -1,12 +1,16 @@
 package com.example.lol.ui.activities
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -22,6 +26,10 @@ import com.example.lol.R
 import com.example.lol.database.ChampionDao
 import com.example.lol.database.ChampionDatabase
 import com.example.lol.ui.components.ChampionMasteryResponse
+import com.example.lol.ui.components.MatchDetailsResponse
+import com.example.lol.ui.components.getChampionNameById
+import com.example.lol.ui.components.getMatchDetails
+import com.example.lol.ui.components.getMatchIds
 import com.example.lol.ui.components.getTopChampionMasteries
 import com.example.lol.ui.components.shareChampion
 import com.example.lol.ui.theme.LolTheme
@@ -50,6 +58,7 @@ class SummonerProfileActivity : ComponentActivity() {
 fun SummonerProfileScreen(summonerLevel: Int, puuid: String, summonerName: String) {
     var masteries by remember { mutableStateOf<List<ChampionMasteryResponse>>(emptyList()) }
     var championNames by remember { mutableStateOf<Map<Int, String>>(emptyMap()) }
+    var recentMatches by remember { mutableStateOf<List<MatchDetailsResponse>>(emptyList()) }
 
     val context = LocalContext.current
     val db = ChampionDatabase.getDatabase(context)
@@ -69,8 +78,13 @@ fun SummonerProfileScreen(summonerLevel: Int, puuid: String, summonerName: Strin
                         }
                     }
                     championNames = names
+                    val matchIds = getMatchIds(puuid, "americas")
+                    val matches = matchIds.take(5).map { matchId ->
+                        getMatchDetails(matchId, "americas")
+                    }
+                    recentMatches = matches
                 } catch (e: Exception) {
-                    Log.e("SummonerProfileScreen", "Erro ao buscar maestrias: ${e.message}")
+                    Log.e("SummonerProfileScreen", "Erro ao buscar dados: ${e.message}")
                 }
             }
         }
@@ -83,7 +97,7 @@ fun SummonerProfileScreen(summonerLevel: Int, puuid: String, summonerName: Strin
             )
         }
     ) { paddingValues ->
-        Column(
+        LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
@@ -93,18 +107,19 @@ fun SummonerProfileScreen(summonerLevel: Int, puuid: String, summonerName: Strin
                     )
                 )
                 .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Top
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(
-                text = stringResource(id = R.string.summoner_lvl, summonerLevel.toString()),
-                style = MaterialTheme.typography.headlineMedium,
-                color = Color.White
-            )
-            Spacer(modifier = Modifier.height(16.dp))
+            item {
+                Text(
+                    text = stringResource(id = R.string.summoner_lvl, summonerLevel.toString()),
+                    style = MaterialTheme.typography.headlineMedium,
+                    color = Color.White
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+            }
 
             if (masteries.isNotEmpty()) {
-                masteries.forEach { mastery ->
+                items(masteries) { mastery ->
                     val championName = championNames[mastery.championId] ?: "Desconhecido"
                     Card(
                         modifier = Modifier
@@ -142,14 +157,62 @@ fun SummonerProfileScreen(summonerLevel: Int, puuid: String, summonerName: Strin
                     }
                 }
             } else {
-                Text("Carregando maestrias...", color = Color.White)
+                item {
+                    Text("Carregando maestrias...", color = Color.White)
+                }
             }
+
+            item {
+                Spacer(modifier = Modifier.height(16.dp))
+                Text(
+                    text = "Partidas Recentes",
+                    color = Color.White,
+                    style = MaterialTheme.typography.bodySmall
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+            }
+
+            items(recentMatches) { match ->
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp)
+                        .clickable {
+                            val intent = Intent(context, MatchDetailActivity::class.java).apply {
+                                putExtra("match_id", match.metadata.matchId)
+                            }
+                            context.startActivity(intent)
+                        },
+                    shape = RoundedCornerShape(8.dp),
+                    colors = CardDefaults.cardColors(containerColor = Color(0xFF1E1E1E))
+                ) {
+                    Row(
+                        modifier = Modifier.padding(16.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Column {
+                            Text(
+                                text = "ID do Jogo: ${match.metadata.matchId}",
+                                style = MaterialTheme.typography.bodyMedium.copy(color = Color.White)
+                            )
+                            Text(
+                                text = "Duração: ${match.info.gameDuration / 60} minutos",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = Color.Gray
+                            )
+                            Text(
+                                text = "Modo de Jogo: ${match.info.gameMode}",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = Color.Gray
+                            )
+                        }
+                    }
+                }
+            }
+
         }
     }
 }
 
-suspend fun getChampionNameById(championId: Int, dao: ChampionDao): String? {
-    val champion = dao.getChampionById(championId.toString())
-    Log.d("ChampionDebug", "ID: $championId, Campeão: $champion")
-    return champion?.name
-}
+
+
