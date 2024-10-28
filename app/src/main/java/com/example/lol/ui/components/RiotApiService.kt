@@ -75,3 +75,26 @@ suspend fun getSummonerLevel(puuid: String, region: String): Int {
     val summonerApi = retrofit.create(RiotSummonerApi::class.java)
     return summonerApi.getSummonerByPUUID(puuid).summonerLevel
 }
+
+interface RiotChampionMasteryApi {
+    @GET("/lol/champion-mastery/v4/champion-masteries/by-puuid/{puuid}/top?count=5")
+    suspend fun getTopChampionMasteries(
+        @Path("puuid") puuid: String
+    ): List<ChampionMasteryResponse>
+}
+
+data class ChampionMasteryResponse(
+    val championId: Int,
+    val championLevel: Int,
+    val championPoints: Int,
+    val lastPlayTime: Long
+)
+
+suspend fun getTopChampionMasteries(puuid: String, region: String): List<ChampionMasteryResponse> {
+    val retrofit = provideSummonerRetrofit(region)
+    val masteryApi = retrofit.create(RiotChampionMasteryApi::class.java)
+    return masteryApi.getTopChampionMasteries(puuid)
+}
+
+
+

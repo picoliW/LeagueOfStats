@@ -27,5 +27,8 @@
     <string name="favorites_empty_message">You don\'t have any favorite champion, you can favorite a champion by clicking in the star icon in the top of the champion page</string>
     <string name="favorites_topbar">Favorites</string>
     <string name="search_summoner">Search Summoner</string>
+    <string name="summoner_name">Summoner Name</string>
+    <string name="summoner_tag">TAG</string>
+
 
 </resources>

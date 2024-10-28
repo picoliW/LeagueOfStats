@@ -26,6 +26,8 @@
     <string name="favorites_empty_message">Você não tem nenhum campeão favorito, você pode favoritar um campeão clicando no ícone de estrela no topo da página do campeão</string>
     <string name="favorites_topbar">Favoritos</string>
     <string name="search_summoner">Buscar Invocador</string>
+    <string name="summoner_name">Nome de Invocador</string>
+    <string name="summoner_tag">TAG</string>
 
 
 </resources>

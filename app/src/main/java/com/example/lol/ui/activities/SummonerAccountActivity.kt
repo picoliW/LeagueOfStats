@@ -6,14 +6,20 @@ import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
+import com.example.lol.R
 import com.example.lol.ui.components.getAccountPuuid
 import com.example.lol.ui.components.getSummonerLevel
 import com.example.lol.ui.theme.LolTheme
@@ -41,6 +47,11 @@ fun AccountScreen() {
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .background(
+                brush = Brush.verticalGradient(
+                    colors = listOf(Color(0xFF0F2027), Color(0xFF203A43), Color(0xFF2C5364))
+                )
+            )
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
@@ -48,7 +59,7 @@ fun AccountScreen() {
         OutlinedTextField(
             value = gameName,
             onValueChange = { gameName = it },
-            label = { Text("Game Name") },
+            label = { stringResource(id = R.string.summoner_name) },
             modifier = Modifier.fillMaxWidth()
         )
 
@@ -57,7 +68,7 @@ fun AccountScreen() {
         OutlinedTextField(
             value = tagLine,
             onValueChange = { tagLine = it },
-            label = { Text("Tag Line") },
+            label = { stringResource(id = R.string.summoner_tag) },
             modifier = Modifier.fillMaxWidth()
         )
 
@@ -68,25 +79,20 @@ fun AccountScreen() {
                 if (gameName.text.isNotEmpty() && tagLine.text.isNotEmpty()) {
                     CoroutineScope(Dispatchers.IO).launch {
                         try {
-                            Log.d("AccountActivity", "Iniciando requisição para obter PUUID")
                             val puuid = getAccountPuuid(gameName.text, tagLine.text)
-                            Log.d("AccountActivity", "PUUID obtido com sucesso: $puuid")
-
-                            Log.d("AccountActivity", "Iniciando requisição para obter nível do invocador")
                             val level = getSummonerLevel(puuid, "br1")
-                            Log.d("AccountActivity", "Nível do invocador obtido com sucesso: $level")
 
                             CoroutineScope(Dispatchers.Main).launch {
                                 val intent = Intent(context, SummonerProfileActivity::class.java)
                                 intent.putExtra("summoner_level", level)
+                                intent.putExtra("puuid", puuid)
                                 context.startActivity(intent)
                             }
                         } catch (e: Exception) {
-                            Log.e("AccountActivity", "Erro ao buscar o nível: ${e.message}", e)
                             CoroutineScope(Dispatchers.Main).launch {
                                 Toast.makeText(
                                     context,
-                                    "Erro ao buscar o nível: ${e.message}",
+                                    "Erro ao buscar o invocador: ${e.message}",
                                     Toast.LENGTH_SHORT
                                 ).show()
                             }
@@ -96,9 +102,12 @@ fun AccountScreen() {
                     Toast.makeText(context, "Preencha ambos os campos", Toast.LENGTH_SHORT).show()
                 }
             },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = MaterialTheme.colorScheme.secondary
+            )
         ) {
-            Text("Buscar Invocador")
+            Text(stringResource(id = R.string.search_summoner))
         }
     }
 }
