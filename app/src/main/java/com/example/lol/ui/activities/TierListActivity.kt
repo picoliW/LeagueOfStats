@@ -93,10 +93,7 @@ fun TierListScreen() {
         ) {
             items(sortedChampions) { champion ->
                 TierListItem(champion, tiers[champion.name] ?: 1)
-                Spacer(modifier = Modifier
-                    .height(16.dp)
-                    )
-
+                Spacer(modifier = Modifier.height(16.dp))
             }
         }
     }
@@ -117,7 +114,8 @@ fun TierListItem(champion: ChampionStats, tier: Int) {
             .fillMaxWidth()
             .padding(8.dp),
         shape = RoundedCornerShape(8.dp),
-        elevation = CardDefaults.cardElevation(4.dp)
+        elevation = CardDefaults.cardElevation(4.dp),
+        colors = CardDefaults.cardColors(containerColor = Color(0xFF1E1E1E))
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -143,17 +141,18 @@ fun TierListItem(champion: ChampionStats, tier: Int) {
                     text = champion.name,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
-                    fontSize = 20.sp
+                    fontSize = 20.sp,
+                    color = Color.White
                 )
                 Text(
                     text = champion.title,
                     style = MaterialTheme.typography.bodyMedium,
-                    fontSize = 12.sp
+                    fontSize = 12.sp,
+                    color = Color.White
                 )
             }
 
             Spacer(modifier = Modifier.weight(1f))
-
 
             Box(
                 modifier = Modifier
@@ -181,8 +180,3 @@ fun TierListItem(champion: ChampionStats, tier: Int) {
         }
     }
 }
-
-
-
-
-

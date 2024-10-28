@@ -86,6 +86,7 @@ fun AccountScreen() {
                                 val intent = Intent(context, SummonerProfileActivity::class.java)
                                 intent.putExtra("summoner_level", level)
                                 intent.putExtra("puuid", puuid)
+                                intent.putExtra("summoner_name", gameName.text)
                                 context.startActivity(intent)
                             }
                         } catch (e: Exception) {

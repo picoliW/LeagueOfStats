@@ -15,6 +15,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -49,7 +50,8 @@ fun ChampionCard(champion: ChampionStats, onClick: () -> Unit) {
                 context.startActivity(intent)
             },
         shape = RoundedCornerShape(8.dp),
-        elevation = CardDefaults.cardElevation(4.dp)
+        elevation = CardDefaults.cardElevation(4.dp),
+        colors = CardDefaults.cardColors(containerColor = Color(0xFF1E1E1E))
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -70,8 +72,8 @@ fun ChampionCard(champion: ChampionStats, onClick: () -> Unit) {
 
             Spacer(modifier = Modifier.width(16.dp))
             Column {
-                Text(text = champion.name, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-                Text(text = champion.title, style = MaterialTheme.typography.bodyMedium)
+                Text(text = champion.name, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = Color.White)
+                Text(text = champion.title, style = MaterialTheme.typography.bodyMedium, color = Color.White)
             }
         }
     }
