@@ -31,7 +31,6 @@ import com.example.lol.database.ChampionDatabase
 import com.example.lol.database.ChampionStatsEntity
 import com.example.lol.models.Sprite
 import com.example.lol.models.Stats
-import com.example.lol.ui.components.NotificationButton
 import com.google.cloud.translate.Translate
 import com.google.cloud.translate.TranslateOptions
 import kotlinx.coroutines.withContext
@@ -242,7 +241,7 @@ fun ChampionsScreen() {
             searchQuery = searchQuery,
             onQueryChanged = { searchQuery = it }
         )
-        NotificationButton()
+
         ChampionsList(filteredChampions)
     }
 }

@@ -7,7 +7,9 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.os.Build
 import androidx.activity.ComponentActivity
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.padding
 import androidx.core.app.ActivityCompat
 import androidx.compose.material3.Button
@@ -24,11 +26,12 @@ import androidx.work.CoroutineWorker
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
+import androidx.work.workDataOf
 import com.example.lol.R
 import com.example.lol.ui.activities.MainActivity
 
 
-class NotificationViewModel(
+class Notification(
     context: Context,
     params: WorkerParameters
 ) : CoroutineWorker(context, params) {
@@ -39,6 +42,8 @@ class NotificationViewModel(
     }
 
     private fun sendNotification() {
+        val notificationText =
+            inputData.getString("notification_text") ?: "Confira os novos campeões!"
         val notificationId = 1
         val channelId = "lol_notifications"
         val notificationManager = NotificationManagerCompat.from(applicationContext)
@@ -56,12 +61,18 @@ class NotificationViewModel(
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         }
         val pendingIntent: PendingIntent = PendingIntent.getActivity(
-            applicationContext, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            applicationContext,
+            0,
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
         val notification = NotificationCompat.Builder(applicationContext, channelId)
-            .setContentTitle("Venha ver os novos campeões!")
-            .setContentText("Novos campeões adicionados, clique para ver os detalhes.")
+            .setContentTitle("Novos Times Criados!")
+            .setContentText(notificationText)
+            .setStyle(
+                NotificationCompat.BigTextStyle().bigText(notificationText)
+            )  // Exibe texto completo
             .setSmallIcon(R.drawable.notification_icon)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setContentIntent(pendingIntent)
@@ -79,45 +90,28 @@ class NotificationViewModel(
         notificationManager.notify(notificationId, notification)
     }
 
-    companion object
-}
 
-@Composable
-fun NotificationButton() {
-    val context = LocalContext.current
-
-    Button(onClick = {
-        if (checkNotificationPermission(context)) {
-            scheduleNotification(context)
-        } else {
-            requestNotificationPermission(context as MainActivity)
-        }
-    },
-        modifier = Modifier.padding(vertical = 16.dp),
-        colors = ButtonDefaults.buttonColors(
-            containerColor = MaterialTheme.colorScheme.secondary
-        )
-    ) {
-        Text(text = "Enviar Notificação")
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+    fun checkNotificationPermission(context: Context): Boolean {
+        return ActivityCompat.checkSelfPermission(
+            context,
+            Manifest.permission.POST_NOTIFICATIONS
+        ) == PackageManager.PERMISSION_GRANTED
     }
-}
 
-fun checkNotificationPermission(context: Context): Boolean {
-    return ActivityCompat.checkSelfPermission(
-        context,
-        Manifest.permission.POST_NOTIFICATIONS
-    ) == PackageManager.PERMISSION_GRANTED
-}
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+    fun requestNotificationPermission(activity: ComponentActivity) {
+        ActivityCompat.requestPermissions(
+            activity,
+            arrayOf(Manifest.permission.POST_NOTIFICATIONS),
+            0
+        )
+    }
 
-fun requestNotificationPermission(activity: ComponentActivity) {
-    ActivityCompat.requestPermissions(
-        activity,
-        arrayOf(Manifest.permission.POST_NOTIFICATIONS),
-        0
-    )
 }
-
-fun scheduleNotification(context: Context) {
-    val notificationRequest = OneTimeWorkRequestBuilder<NotificationViewModel>().build()
-    WorkManager.getInstance(context).enqueue(notificationRequest)
-}
+    fun scheduleNotification(context: Context, notificationText: String) {
+        val notificationRequest = OneTimeWorkRequestBuilder<Notification>()
+            .setInputData(workDataOf("notification_text" to notificationText))
+            .build()
+        WorkManager.getInstance(context).enqueue(notificationRequest)
+    }

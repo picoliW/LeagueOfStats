@@ -34,6 +34,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.example.lol.R
 import com.example.lol.ui.components.loadImageFromUrl
+import com.example.lol.ui.components.scheduleNotification
+
+
 
 class RandomChampionsActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,6 +53,7 @@ class RandomChampionsActivity : ComponentActivity() {
 fun RandomChampionsScreen() {
     val champions = remember { mutableStateOf(listOf<ChampionStats>()) }
     val randomChampions = remember { mutableStateListOf<ChampionStats>() }
+    val context = LocalContext.current
 
     val vsImages = listOf(
         R.drawable.lane1_top,
@@ -88,6 +92,13 @@ fun RandomChampionsScreen() {
                     onClick = {
                         randomChampions.clear()
                         randomChampions.addAll(champions.value.shuffled().take(10))
+
+                        val team1Names = randomChampions.take(5).joinToString(", ") { it.name }
+                        val team2Names = randomChampions.takeLast(5).joinToString(", ") { it.name }
+                        val notificationText = "Time 1: $team1Names\nTime 2: $team2Names"
+
+
+                        scheduleNotification(context, notificationText)
                     },
                     modifier = Modifier.padding(vertical = 16.dp),
                     colors = ButtonDefaults.buttonColors(
@@ -96,6 +107,7 @@ fun RandomChampionsScreen() {
                 ) {
                     Text(text = stringResource(id = R.string.roll_again))
                 }
+
 
                 LazyColumn(
                     modifier = Modifier.weight(1f)
