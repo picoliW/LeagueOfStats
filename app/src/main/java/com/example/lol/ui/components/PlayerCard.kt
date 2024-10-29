@@ -42,20 +42,38 @@ fun PlayerCard(player: ParticipantData, championIcons: Map<String, Bitmap?>) {
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                championIcons[player.championName]?.let { bitmap ->
-                    Image(
-                        bitmap = bitmap.asImageBitmap(),
-                        contentDescription = "${player.championName} Icon",
-                        modifier = Modifier.size(40.dp),
-                        contentScale = ContentScale.Crop
+                Box {
+                    championIcons[player.championName]?.let { bitmap ->
+                        Image(
+                            bitmap = bitmap.asImageBitmap(),
+                            contentDescription = "${player.championName} Icon",
+                            modifier = Modifier.size(40.dp),
+                            contentScale = ContentScale.Crop
+                        )
+                    } ?: Box(
+                        modifier = Modifier
+                            .size(40.dp)
+                            .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.2f))
                     )
-                } ?: Box(
-                    modifier = Modifier
-                        .size(40.dp)
-                        .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.2f))
-                )
-                val kda = "${player.kills}/${player.deaths}/${player.assists}"
+
+                    Box(
+                        modifier = Modifier
+                            .size(16.dp)
+                            .background(Color.White, shape = MaterialTheme.shapes.small)
+                            .align(Alignment.BottomStart),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = player.champLevel.toString(),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = Color.Black
+                        )
+                    }
+                }
+
                 Spacer(modifier = Modifier.width(8.dp))
+
+                val kda = "${player.kills}/${player.deaths}/${player.assists}"
                 Column {
                     Text(
                         text = player.riotIdGameName,
@@ -95,3 +113,5 @@ fun PlayerCard(player: ParticipantData, championIcons: Map<String, Bitmap?>) {
         }
     }
 }
+
+
