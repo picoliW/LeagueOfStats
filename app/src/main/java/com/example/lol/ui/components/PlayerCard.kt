@@ -3,6 +3,7 @@ package com.example.lol.ui.components
 import android.graphics.Bitmap
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -20,8 +21,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
+import com.example.lol.R
 
 @Composable
 fun PlayerCard(player: ParticipantData, championIcons: Map<String, Bitmap?>) {
@@ -33,33 +36,56 @@ fun PlayerCard(player: ParticipantData, championIcons: Map<String, Bitmap?>) {
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(8.dp)
+            modifier = Modifier.padding(8.dp),
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            championIcons[player.championName]?.let { bitmap ->
-                Image(
-                    bitmap = bitmap.asImageBitmap(),
-                    contentDescription = "${player.championName} Icon",
-                    modifier = Modifier.size(40.dp),
-                    contentScale = ContentScale.Crop
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                championIcons[player.championName]?.let { bitmap ->
+                    Image(
+                        bitmap = bitmap.asImageBitmap(),
+                        contentDescription = "${player.championName} Icon",
+                        modifier = Modifier.size(40.dp),
+                        contentScale = ContentScale.Crop
+                    )
+                } ?: Box(
+                    modifier = Modifier
+                        .size(40.dp)
+                        .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.2f))
                 )
-            } ?: Box(
-                modifier = Modifier
-                    .size(40.dp)
-                    .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.2f))
-            )
-            Spacer(modifier = Modifier.width(8.dp))
-            Column {
-                Text(
-                    text = player.riotIdGameName,
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = Color.White
-                )
-                Text(
-                    text = player.championName,
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = Color.White
-                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Column {
+                    Text(
+                        text = player.riotIdGameName,
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = Color.White
+                    )
+                    Text(
+                        text = player.championName,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = Color.White
+                    )
+                }
             }
+
+            Spacer(modifier = Modifier.weight(1f))
+
+            val positionIconRes = when (player.individualPosition) {
+                "TOP" -> R.drawable.lane1_top
+                "JUNGLE" -> R.drawable.lane2_jg
+                "MIDDLE" -> R.drawable.lane3_mid
+                "BOTTOM" -> R.drawable.lane4_adc
+                "UTILITY" -> R.drawable.lane5_sup
+                else -> R.drawable.teste222
+            }
+
+            Image(
+                painter = painterResource(id = positionIconRes),
+                contentDescription = "${player.individualPosition} Icon",
+                modifier = Modifier.size(24.dp),
+                contentScale = ContentScale.Crop
+            )
         }
     }
 }
