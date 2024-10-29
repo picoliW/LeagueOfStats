@@ -32,7 +32,12 @@
     <string name="summoner_lvl">Summoner Level: %1$s</string>
     <string name="champion">Champion:</string>
     <string name="show_mastery">Level: %1$s, Points: %2$s</string>
-
+    <string name="blue_side">Blue Side</string>
+    <string name="red_side">Red Side</string>
+    <string name="recent_matches">Recent Matches</string>
+    <string name="duration">Duration: %1$s minutes</string>
+    <string name="game_id">Game ID: %1$s</string>
+    <string name="game_mode">Game Mode: %1$s</string>
 
 
 </resources>

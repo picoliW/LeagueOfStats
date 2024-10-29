@@ -21,4 +21,8 @@ interface ChampionDao {
 
     @Query("SELECT * FROM champions WHERE isFavorited = 1")
     suspend fun getFavoritedChampions(): List<ChampionStatsEntity>
+
+    @Query("SELECT icon FROM champions WHERE name = :championName LIMIT 1")
+    suspend fun getChampionIconByChampionName(championName: String): String?
+
 }

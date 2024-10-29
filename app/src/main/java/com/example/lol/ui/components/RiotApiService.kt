@@ -151,6 +151,14 @@ data class Participant(
     val riotIdTagLine: String,
     val championName: String,
     val individualPosition: String,
+    val teamId: String,
+)
+
+data class ParticipantData(
+    val riotIdGameName: String,
+    val championName: String,
+    val individualPosition: String,
+    val teamId: String
 )
 
 
@@ -185,16 +193,16 @@ suspend fun getSummonerNamesByPUUIDs(participants: List<String>, region: String)
 
     return summonerNames }
 
-suspend fun getMatchDetailsWithSummonerNamesAndChampions(matchId: String, region: String): List<Triple<String, String, String>> {
+suspend fun getMatchDetailsWithSummonerNamesAndChampions(matchId: String, region: String): List<ParticipantData> {
     val matchDetails = getMatchDetails(matchId, region)
-
-    val playersChampionsAndRoles = mutableListOf<Triple<String, String, String>>()
-
-    for (participant in matchDetails.info.participants) {
-        playersChampionsAndRoles.add(Triple(participant.riotIdGameName, participant.championName, participant.individualPosition))
+    return matchDetails.info.participants.map { participant ->
+        ParticipantData(
+            riotIdGameName = participant.riotIdGameName,
+            championName = participant.championName,
+            individualPosition = participant.individualPosition,
+            teamId = participant.teamId
+        )
     }
-
-    return playersChampionsAndRoles
 }
 
 

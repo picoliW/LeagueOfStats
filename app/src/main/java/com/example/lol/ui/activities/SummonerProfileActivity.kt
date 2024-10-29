@@ -165,9 +165,9 @@ fun SummonerProfileScreen(summonerLevel: Int, puuid: String, summonerName: Strin
             item {
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
-                    text = "Partidas Recentes",
+                    text = stringResource(id = R.string.recent_matches),
                     color = Color.White,
-                    style = MaterialTheme.typography.bodySmall
+                    style = MaterialTheme.typography.headlineMedium
                 )
                 Spacer(modifier = Modifier.height(8.dp))
             }
@@ -191,17 +191,18 @@ fun SummonerProfileScreen(summonerLevel: Int, puuid: String, summonerName: Strin
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Column {
+                            val gameDuration2 = match.info.gameDuration / 60
                             Text(
-                                text = "ID do Jogo: ${match.metadata.matchId}",
+                                text = stringResource(id = R.string.game_id, match.metadata.matchId.toString()),
                                 style = MaterialTheme.typography.bodyMedium.copy(color = Color.White)
                             )
                             Text(
-                                text = "Duração: ${match.info.gameDuration / 60} minutos",
+                                text = stringResource(id = R.string.duration, gameDuration2.toString()),
                                 style = MaterialTheme.typography.bodySmall,
                                 color = Color.Gray
                             )
                             Text(
-                                text = "Modo de Jogo: ${match.info.gameMode}",
+                                text = stringResource(id = R.string.game_mode, match.info.gameMode.toString()),
                                 style = MaterialTheme.typography.bodySmall,
                                 color = Color.Gray
                             )

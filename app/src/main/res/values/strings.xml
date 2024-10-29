@@ -31,5 +31,12 @@
     <string name="summoner_lvl">Nível do Invocador: %1$s</string>
     <string name="champion">Campeao:</string>
     <string name="show_mastery">Nível: %1$s, Pontos: %2$s</string>
+    <string name="blue_side">Lado Azul</string>
+    <string name="red_side">Lado Vermelho</string>
+    <string name="recent_matches">Partidas Recentes</string>
+    <string name="duration">Duração: %1$s minutos</string>
+    <string name="game_id">ID do Jogo: %1$s</string>
+    <string name="game_mode">Modo de Jogo: %1$s</string>
+
 
 </resources>
