@@ -54,6 +54,7 @@ fun PlayerCard(player: ParticipantData, championIcons: Map<String, Bitmap?>) {
                         .size(40.dp)
                         .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.2f))
                 )
+                val kda = "${player.kills}/${player.deaths}/${player.assists}"
                 Spacer(modifier = Modifier.width(8.dp))
                 Column {
                     Text(
@@ -63,6 +64,11 @@ fun PlayerCard(player: ParticipantData, championIcons: Map<String, Bitmap?>) {
                     )
                     Text(
                         text = player.championName,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = Color.White
+                    )
+                    Text(
+                        text = kda,
                         style = MaterialTheme.typography.bodyMedium,
                         color = Color.White
                     )

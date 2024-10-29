@@ -152,13 +152,19 @@ data class Participant(
     val championName: String,
     val individualPosition: String,
     val teamId: String,
+    val kills: String,
+    val deaths: String,
+    val assists: String,
 )
 
 data class ParticipantData(
     val riotIdGameName: String,
     val championName: String,
     val individualPosition: String,
-    val teamId: String
+    val teamId: String,
+    val kills: String,
+    val deaths: String,
+    val assists: String,
 )
 
 
@@ -200,7 +206,10 @@ suspend fun getMatchDetailsWithSummonerNamesAndChampions(matchId: String, region
             riotIdGameName = participant.riotIdGameName,
             championName = participant.championName,
             individualPosition = participant.individualPosition,
-            teamId = participant.teamId
+            teamId = participant.teamId,
+            kills = participant.kills,
+            deaths = participant.deaths,
+            assists = participant.assists
         )
     }
 }
