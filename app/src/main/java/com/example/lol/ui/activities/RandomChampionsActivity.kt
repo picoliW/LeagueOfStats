@@ -40,6 +40,8 @@ import com.example.lol.R
 import com.example.lol.models.ChampionIconModel
 import com.example.lol.models.ItemsModel
 import com.example.lol.models.Price
+import com.example.lol.ui.components.CustomCircularProgressIndicator
+import com.example.lol.ui.components.ItemModal
 import com.example.lol.ui.components.loadImageFromUrl
 import com.example.lol.ui.components.scheduleNotification
 import kotlinx.coroutines.withContext
@@ -64,11 +66,14 @@ fun RandomChampionsScreen() {
     val champions = remember { mutableStateOf(listOf<ChampionIconModel>()) }
     val randomChampions = remember { mutableStateListOf<ChampionIconModel>() }
     val context = LocalContext.current
-
+    var isLoading by remember { mutableStateOf(true) }  // Estado de carregamento
     var selectedChampion by remember { mutableStateOf<Pair<ChampionIconModel, List<ItemsModel>>?>(null) }
 
     LaunchedEffect(Unit) {
-        fetchChampionIcons(champions, context)
+        isLoading = true
+        fetchChampionIcons(champions, context) {
+            isLoading = false
+        }
     }
 
     LaunchedEffect(champions.value) {
@@ -90,7 +95,17 @@ fun RandomChampionsScreen() {
         R.drawable.lane5_sup
     )
 
-    if (randomChampions.size == 10) {
+    if (isLoading) {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            CustomCircularProgressIndicator(
+                color = MaterialTheme.colorScheme.primary,
+                strokeWidth = 4.dp
+            )
+        }
+    } else if (randomChampions.size == 10) {
         val team1 = randomChampions.take(5)
         val team2 = randomChampions.takeLast(5)
 
@@ -148,11 +163,11 @@ fun RandomChampionsScreen() {
                                 champion = champion1,
                                 onChampionClick = {
                                     fetchRandomItems(context) { randomItems ->
-                                        selectedChampion = champion1 to randomItems // Abre o modal para o campeão 1
+                                        selectedChampion = champion1 to randomItems
                                     }
                                 },
                                 onDiceClick = {
-                                    randomChampions[index] = champions.value.random() // Troca o campeão 1
+                                    randomChampions[index] = champions.value.random()
                                 }
                             )
 
@@ -171,12 +186,10 @@ fun RandomChampionsScreen() {
                                     fetchRandomItems(context) { randomItems ->
                                         selectedChampion = champion2 to randomItems
                                     }
-                                    },
+                                },
                                 onDiceClick = {
                                     randomChampions[index] = champions.value.random()
                                 }
-
-
                             )
                         }
                         Spacer(modifier = Modifier.height(16.dp))
@@ -185,57 +198,6 @@ fun RandomChampionsScreen() {
             }
         }
     }
-}
-
-
-
-
-@Composable
-fun ItemModal(champion: ChampionIconModel, items: List<ItemsModel>, onDismiss: () -> Unit) {
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = { Text(text = "Itens para ${champion.name}") },
-        text = {
-            Column {
-                items.forEach { item ->
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.padding(vertical = 4.dp)
-                    ) {
-                        var bitmap by remember { mutableStateOf<Bitmap?>(null) }
-
-                        LaunchedEffect(item.iconUrl) {
-                            CoroutineScope(Dispatchers.IO).launch {
-                                bitmap = loadImageFromUrl(item.iconUrl)
-                            }
-                        }
-
-                        bitmap?.let {
-                            Image(
-                                bitmap = it.asImageBitmap(),
-                                contentDescription = "${item.name} Icon",
-                                modifier = Modifier
-                                    .size(40.dp)
-                                    .padding(end = 8.dp),
-                                contentScale = ContentScale.Crop
-                            )
-                        } ?: Box(
-                            modifier = Modifier
-                                .size(40.dp)
-                                .background(Color.Gray)
-                        )
-
-                        Text(text = item.name)
-                    }
-                }
-            }
-        },
-        confirmButton = {
-            TextButton(onClick = onDismiss) {
-                Text("Fechar")
-            }
-        }
-    )
 }
 
 
@@ -360,7 +322,12 @@ fun fetchRandomItems(context: Context, onResult: (List<ItemsModel>) -> Unit) {
 
 
 
-fun fetchChampionIcons(icons: MutableState<List<ChampionIconModel>>, context: Context) {
+
+fun fetchChampionIcons(
+    icons: MutableState<List<ChampionIconModel>>,
+    context: Context,
+    onComplete: () -> Unit
+) {
     CoroutineScope(Dispatchers.IO).launch {
         val allChampions = mutableListOf<ChampionIconModel>()
         var currentPage = 1
@@ -397,6 +364,7 @@ fun fetchChampionIcons(icons: MutableState<List<ChampionIconModel>>, context: Co
 
         withContext(Dispatchers.Main) {
             icons.value = allChampions
+            onComplete()
         }
     }
 }

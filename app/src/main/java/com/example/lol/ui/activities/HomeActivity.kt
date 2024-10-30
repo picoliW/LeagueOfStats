@@ -90,28 +90,6 @@ fun HomeScreen() {
 
             Button(
                 onClick = {
-                    val intent = Intent(context, TierListActivity::class.java)
-                    context.startActivity(intent)
-                },
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(12.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.secondary
-                )
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.champions),
-                    contentDescription = "Navigate Icon",
-                    modifier = Modifier.size(24.dp)
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(text = stringResource(id = R.string.view_tier_list), style = MaterialTheme.typography.bodyLarge)
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Button(
-                onClick = {
                     val intent = Intent(context, RandomChampionsActivity::class.java)
                     context.startActivity(intent)
                 },
