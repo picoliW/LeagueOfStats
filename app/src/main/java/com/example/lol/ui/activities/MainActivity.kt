@@ -10,7 +10,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -41,8 +43,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             LolTheme {
-                val champions = remember { mutableStateOf(listOf<ChampionStats>()) }
-                fetchAllChampions(champions, context = LocalContext.current)
+
 
                 ChampionsScreen()
             }
@@ -50,7 +51,7 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-fun fetchAllChampions(champions: MutableState<List<ChampionStats>>, context: Context) {
+fun fetchAllChampions(champions: MutableState<List<ChampionStats>>, context: Context, loadCount: Int) {
     CoroutineScope(Dispatchers.IO).launch {
         val db = ChampionDatabase.getDatabase(context)
         val championDao = db.championDao()
@@ -60,7 +61,8 @@ fun fetchAllChampions(champions: MutableState<List<ChampionStats>>, context: Con
         val locale = context.resources.configuration.locales.get(0)
         val isPortuguese = locale.language == "pt"
 
-        if (cachedChampions.isNotEmpty()) {
+
+        if (cachedChampions.size > loadCount) {
             withContext(Dispatchers.Main) {
                 champions.value = cachedChampions.map {
                     ChampionStats(
@@ -102,7 +104,7 @@ fun fetchAllChampions(champions: MutableState<List<ChampionStats>>, context: Con
                 }
             }
         } else {
-            val url = URL("http://girardon.com.br:3001/champions")
+            val url = URL("http://girardon.com.br:3001/champions?page=1&size=${loadCount}")
             val connection = url.openConnection() as HttpURLConnection
 
             try {
@@ -218,42 +220,59 @@ fun fetchAllChampions(champions: MutableState<List<ChampionStats>>, context: Con
 
 
 
+
 @Composable
 fun ChampionsScreen() {
     var searchQuery by remember { mutableStateOf("") }
     val champions = remember { mutableStateOf(listOf<ChampionStats>()) }
-    fetchAllChampions(champions, context = LocalContext.current)
+    var loadCount by remember { mutableStateOf(20) }
+    var context = LocalContext.current
 
-    val filteredChampions = champions.value.filter {
-        it.name.contains(searchQuery, ignoreCase = true) || it.title.contains(searchQuery, ignoreCase = true)
+    val listState = rememberLazyListState()
+
+    LaunchedEffect(loadCount) {
+        fetchAllChampions(champions, context , loadCount)
+    }
+
+    LaunchedEffect(listState) {
+        snapshotFlow {
+            listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index == listState.layoutInfo.totalItemsCount - 1
+        }.collect { atEnd ->
+            if (atEnd) {
+                loadCount+= 20
+                fetchAllChampions(champions, context , loadCount)
+                Log.d("ChampionsScreen", "Chegou ao fim da lista! Incrementando variável: $loadCount")
+            }
+        }
     }
 
     Column(
         modifier = Modifier
-        .fillMaxSize()
-        .background(
-            brush = Brush.verticalGradient(
-                colors = listOf(Color(0xFF0F2027), Color(0xFF203A43), Color(0xFF2C5364))
+            .fillMaxSize()
+            .background(
+                brush = Brush.verticalGradient(
+                    colors = listOf(Color(0xFF0F2027), Color(0xFF203A43), Color(0xFF2C5364))
+                )
             )
-        )
     ) {
         SearchBar(
             searchQuery = searchQuery,
             onQueryChanged = { searchQuery = it }
         )
 
-        ChampionsList(filteredChampions)
+        ChampionsList(champions = champions.value, listState = listState)
     }
 }
 
 @Composable
-fun ChampionsList(champions: List<ChampionStats>) {
-    LazyColumn {
+fun ChampionsList(champions: List<ChampionStats>, listState: LazyListState) {
+    LazyColumn(state = listState) {
         items(champions) { champion ->
             ChampionCard(champion = champion, onClick = {})
         }
     }
 }
+
 
 
 fun translateText(text: String, targetLanguage: String): String {

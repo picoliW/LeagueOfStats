@@ -63,7 +63,7 @@ fun RandomChampionsScreen() {
         R.drawable.lane5_sup
     )
 
-    fetchAllChampions(champions, context = LocalContext.current)
+//    fetchAllChampions(champions, context = LocalContext.current)
 
     LaunchedEffect(champions.value) {
         randomChampions.clear()

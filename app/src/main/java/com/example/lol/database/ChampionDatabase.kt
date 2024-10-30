@@ -7,7 +7,7 @@ import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import android.content.Context
 
-@Database(entities = [ChampionStatsEntity::class], version = 6)
+@Database(entities = [ChampionStatsEntity::class], version = 10)
 abstract class ChampionDatabase : RoomDatabase() {
     abstract fun championDao(): ChampionDao
 

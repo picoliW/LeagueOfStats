@@ -52,7 +52,7 @@ fun TierListScreen() {
     val sortedByDescending = remember { mutableStateOf(false) }
     val tiers = remember { mutableStateMapOf<String, Int>() }
 
-    fetchAllChampions(champions, context = LocalContext.current)
+//    fetchAllChampions(champions, context = LocalContext.current)
 
     Scaffold(
         topBar = {
