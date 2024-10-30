@@ -57,16 +57,16 @@ class MainActivity : ComponentActivity() {
 fun savePaginationValues(context: Context, size: Int, page: Int) {
     val sharedPreferences = context.getSharedPreferences("LeagueOfStatsPrefs", Context.MODE_PRIVATE)
     sharedPreferences.edit().apply {
-        putInt("SIZE_KEY17", size)
-        putInt("PAGE_KEY17", page)
+        putInt("SIZE_KEY18", size)
+        putInt("PAGE_KEY18", page)
         apply()
     }
 }
 
 fun loadPaginationValues(context: Context): Pair<Int, Int> {
     val sharedPreferences = context.getSharedPreferences("LeagueOfStatsPrefs", Context.MODE_PRIVATE)
-    val size = sharedPreferences.getInt("SIZE_KEY17", 20)
-    val page = sharedPreferences.getInt("PAGE_KEY17", 1)
+    val size = sharedPreferences.getInt("SIZE_KEY18", 20)
+    val page = sharedPreferences.getInt("PAGE_KEY18", 1)
     return Pair(size, page)
 }
 

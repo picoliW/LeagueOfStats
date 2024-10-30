@@ -1,5 +1,6 @@
 package com.example.lol.ui.activities
 
+import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -33,9 +34,13 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.example.lol.R
+import com.example.lol.models.ChampionIconModel
 import com.example.lol.ui.components.loadImageFromUrl
 import com.example.lol.ui.components.scheduleNotification
-
+import kotlinx.coroutines.withContext
+import org.json.JSONArray
+import java.net.HttpURLConnection
+import java.net.URL
 
 
 class RandomChampionsActivity : ComponentActivity() {
@@ -51,9 +56,18 @@ class RandomChampionsActivity : ComponentActivity() {
 
 @Composable
 fun RandomChampionsScreen() {
-    val champions = remember { mutableStateOf(listOf<ChampionStats>()) }
-    val randomChampions = remember { mutableStateListOf<ChampionStats>() }
+    val champions = remember { mutableStateOf(listOf<ChampionIconModel>()) }
+    val randomChampions = remember { mutableStateListOf<ChampionIconModel>() }
     val context = LocalContext.current
+
+    LaunchedEffect(Unit) {
+        fetchChampionIcons(champions, context, size = 20, page = 1)
+    }
+
+    LaunchedEffect(champions.value) {
+        randomChampions.clear()
+        randomChampions.addAll(champions.value.shuffled().take(10))
+    }
 
     val vsImages = listOf(
         R.drawable.lane1_top,
@@ -62,13 +76,6 @@ fun RandomChampionsScreen() {
         R.drawable.lane4_adc,
         R.drawable.lane5_sup
     )
-
-//    fetchAllChampions(champions, context = LocalContext.current)
-
-    LaunchedEffect(champions.value) {
-        randomChampions.clear()
-        randomChampions.addAll(champions.value.shuffled().take(10))
-    }
 
     if (randomChampions.size == 10) {
         val team1 = randomChampions.take(5)
@@ -107,6 +114,8 @@ fun RandomChampionsScreen() {
                 ) {
                     Text(text = stringResource(id = R.string.roll_again))
                 }
+
+
 
 
                 LazyColumn(
@@ -160,7 +169,7 @@ fun RandomChampionsScreen() {
 
 
 @Composable
-fun ChampionWithDiceIcon(champion: ChampionStats, onDiceClick: () -> Unit) {
+fun ChampionWithDiceIcon(champion: ChampionIconModel, onDiceClick: () -> Unit) {
     Box(
         modifier = Modifier.size(96.dp)
     ) {
@@ -188,12 +197,12 @@ fun ChampionWithDiceIcon(champion: ChampionStats, onDiceClick: () -> Unit) {
 
 
 @Composable
-fun ChampionIcon(champion: ChampionStats) {
+fun ChampionIcon(champion: ChampionIconModel) {
     var bitmap by remember { mutableStateOf<Bitmap?>(null) }
 
-    LaunchedEffect(champion.icon) {
+    LaunchedEffect(champion.iconUrl) {
         CoroutineScope(Dispatchers.IO).launch {
-            bitmap = loadImageFromUrl(champion.icon)
+            bitmap = loadImageFromUrl(champion.iconUrl)
         }
     }
 
@@ -211,4 +220,35 @@ fun ChampionIcon(champion: ChampionStats) {
             .size(96.dp)
             .background(Color.Gray, shape = MaterialTheme.shapes.medium)
     )
+}
+
+
+fun fetchChampionIcons(icons: MutableState<List<ChampionIconModel>>, context: Context, size: Int, page: Int) {
+    CoroutineScope(Dispatchers.IO).launch {
+        val url = URL("http://girardon.com.br:3001/champions?page=${page}&size=${size}")
+        val connection = url.openConnection() as HttpURLConnection
+        connection.requestMethod = "GET"
+
+        try {
+            connection.connect()
+            val response = connection.inputStream.bufferedReader().use { it.readText() }
+            val jsonArray = JSONArray(response)
+            val iconList = mutableListOf<ChampionIconModel>()
+
+            for (i in 0 until jsonArray.length()) {
+                val champion = jsonArray.getJSONObject(i)
+                val icon = ChampionIconModel(
+                    name = champion.getString("name"),
+                    iconUrl = champion.getString("icon").replace("http://", "https://")
+                )
+                iconList.add(icon)
+            }
+
+            withContext(Dispatchers.Main) {
+                icons.value = iconList
+            }
+        } finally {
+            connection.disconnect()
+        }
+    }
 }
