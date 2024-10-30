@@ -24,17 +24,22 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import android.graphics.Bitmap
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.TextButton
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.example.lol.R
 import com.example.lol.models.ChampionIconModel
+import com.example.lol.models.ItemsModel
+import com.example.lol.models.Price
 import com.example.lol.ui.components.loadImageFromUrl
 import com.example.lol.ui.components.scheduleNotification
 import kotlinx.coroutines.withContext
@@ -60,13 +65,21 @@ fun RandomChampionsScreen() {
     val randomChampions = remember { mutableStateListOf<ChampionIconModel>() }
     val context = LocalContext.current
 
+    var selectedChampion by remember { mutableStateOf<Pair<ChampionIconModel, List<ItemsModel>>?>(null) }
+
     LaunchedEffect(Unit) {
-        fetchChampionIcons(champions, context, size = 20, page = 1)
+        fetchChampionIcons(champions, context)
     }
 
     LaunchedEffect(champions.value) {
         randomChampions.clear()
         randomChampions.addAll(champions.value.shuffled().take(10))
+    }
+
+    selectedChampion?.let { (champion, items) ->
+        ItemModal(champion, items) {
+            selectedChampion = null
+        }
     }
 
     val vsImages = listOf(
@@ -95,56 +108,35 @@ fun RandomChampionsScreen() {
                     .padding(horizontal = 16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Button(
-                    onClick = {
-                        randomChampions.clear()
-                        randomChampions.addAll(champions.value.shuffled().take(10))
-
-                        val team1Names = randomChampions.take(5).joinToString(", ") { it.name }
-                        val team2Names = randomChampions.takeLast(5).joinToString(", ") { it.name }
-                        val notificationText = "Time 1: $team1Names\nTime 2: $team2Names"
-
-
-                        scheduleNotification(context, notificationText)
-                    },
-                    modifier = Modifier.padding(vertical = 16.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.secondary
-                    )
-                ) {
-                    Text(text = stringResource(id = R.string.roll_again))
-                }
-
-
-
-
                 LazyColumn(
                     modifier = Modifier.weight(1f)
                 ) {
                     items(team1.size) { index ->
                         val champion1 = team1[index]
                         val champion2 = team2[index]
+                        val vsImage = vsImages.getOrNull(index) ?: R.drawable.test
 
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .border(4.dp, Color(0xFFC89B3C))
                                 .background(Color(0xFF0A1428))
-                                .padding(vertical = 16.dp)
-                                .padding(8.dp),
+                                .padding(vertical = 16.dp, horizontal = 8.dp),
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.SpaceEvenly
                         ) {
                             ChampionWithDiceIcon(
                                 champion = champion1,
-                                onDiceClick = {
-                                    randomChampions[index] = champions.value.random()
+                                onChampionClick = {
+                                    fetchRandomItems(context) { randomItems ->
+                                        selectedChampion = champion1 to randomItems
+                                    }
                                 }
                             )
 
                             Image(
-                                painter = painterResource(id = vsImages[index]),
-                                contentDescription = null,
+                                painter = painterResource(id = vsImage),
+                                contentDescription = "VS Icon",
                                 modifier = Modifier
                                     .size(64.dp)
                                     .padding(horizontal = 16.dp),
@@ -153,12 +145,13 @@ fun RandomChampionsScreen() {
 
                             ChampionWithDiceIcon(
                                 champion = champion2,
-                                onDiceClick = {
-                                    randomChampions[5 + index] = champions.value.random()
+                                onChampionClick = {
+                                    fetchRandomItems(context) { randomItems ->
+                                        selectedChampion = champion2 to randomItems
+                                    }
                                 }
                             )
                         }
-
                         Spacer(modifier = Modifier.height(16.dp))
                     }
                 }
@@ -168,12 +161,64 @@ fun RandomChampionsScreen() {
 }
 
 
+
 @Composable
-fun ChampionWithDiceIcon(champion: ChampionIconModel, onDiceClick: () -> Unit) {
+fun ItemModal(champion: ChampionIconModel, items: List<ItemsModel>, onDismiss: () -> Unit) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(text = "Itens para ${champion.name}") },
+        text = {
+            Column {
+                items.forEach { item ->
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.padding(vertical = 4.dp)
+                    ) {
+                        // Carregar a imagem do item
+                        var bitmap by remember { mutableStateOf<Bitmap?>(null) }
+
+                        LaunchedEffect(item.iconUrl) {
+                            CoroutineScope(Dispatchers.IO).launch {
+                                bitmap = loadImageFromUrl(item.iconUrl)
+                            }
+                        }
+
+                        bitmap?.let {
+                            Image(
+                                bitmap = it.asImageBitmap(),
+                                contentDescription = "${item.name} Icon",
+                                modifier = Modifier
+                                    .size(40.dp)
+                                    .padding(end = 8.dp),
+                                contentScale = ContentScale.Crop
+                            )
+                        } ?: Box(
+                            modifier = Modifier
+                                .size(40.dp)
+                                .background(Color.Gray)
+                        )
+
+                        Text(text = item.name)
+                    }
+                }
+            }
+        },
+        confirmButton = {
+            TextButton(onClick = onDismiss) {
+                Text("Fechar")
+            }
+        }
+    )
+}
+
+
+
+@Composable
+fun ChampionWithDiceIcon(champion: ChampionIconModel, onChampionClick: () -> Unit) {
     Box(
         modifier = Modifier.size(96.dp)
     ) {
-        ChampionIcon(champion = champion)
+        ChampionIcon(champion = champion, onClick = onChampionClick)
 
         Box(
             modifier = Modifier
@@ -183,7 +228,7 @@ fun ChampionWithDiceIcon(champion: ChampionIconModel, onDiceClick: () -> Unit) {
             contentAlignment = Alignment.Center
         ) {
             IconButton(
-                onClick = onDiceClick,
+                onClick = {  },
                 modifier = Modifier.size(32.dp)
             ) {
                 Image(
@@ -195,9 +240,8 @@ fun ChampionWithDiceIcon(champion: ChampionIconModel, onDiceClick: () -> Unit) {
     }
 }
 
-
 @Composable
-fun ChampionIcon(champion: ChampionIconModel) {
+fun ChampionIcon(champion: ChampionIconModel, onClick: () -> Unit) {
     var bitmap by remember { mutableStateOf<Bitmap?>(null) }
 
     LaunchedEffect(champion.iconUrl) {
@@ -212,7 +256,8 @@ fun ChampionIcon(champion: ChampionIconModel) {
             contentDescription = "${champion.name} Icon",
             modifier = Modifier
                 .size(96.dp)
-                .shadow(8.dp, shape = MaterialTheme.shapes.medium),
+                .shadow(8.dp, shape = MaterialTheme.shapes.medium)
+                .clickable(onClick = onClick), // Abre o modal ao clicar no ícone
             contentScale = ContentScale.Crop
         )
     } ?: Box(
@@ -223,32 +268,101 @@ fun ChampionIcon(champion: ChampionIconModel) {
 }
 
 
-fun fetchChampionIcons(icons: MutableState<List<ChampionIconModel>>, context: Context, size: Int, page: Int) {
+
+fun fetchRandomItems(context: Context, onResult: (List<ItemsModel>) -> Unit) {
     CoroutineScope(Dispatchers.IO).launch {
-        val url = URL("http://girardon.com.br:3001/champions?page=${page}&size=${size}")
-        val connection = url.openConnection() as HttpURLConnection
-        connection.requestMethod = "GET"
+        val allItems = mutableListOf<ItemsModel>()
+        var currentPage = 1
+        val size = 20
+        var hasMore = true
 
-        try {
-            connection.connect()
-            val response = connection.inputStream.bufferedReader().use { it.readText() }
-            val jsonArray = JSONArray(response)
-            val iconList = mutableListOf<ChampionIconModel>()
+        while (hasMore) {
+            val url = URL("http://girardon.com.br:3001/items?page=$currentPage&size=$size")
+            val connection = url.openConnection() as HttpURLConnection
+            connection.requestMethod = "GET"
 
-            for (i in 0 until jsonArray.length()) {
-                val champion = jsonArray.getJSONObject(i)
-                val icon = ChampionIconModel(
-                    name = champion.getString("name"),
-                    iconUrl = champion.getString("icon").replace("http://", "https://")
-                )
-                iconList.add(icon)
+            try {
+                connection.connect()
+                val response = connection.inputStream.bufferedReader().use { it.readText() }
+                val jsonArray = JSONArray(response)
+
+                if (jsonArray.length() == 0) {
+                    hasMore = false
+                } else {
+                    for (i in 0 until jsonArray.length()) {
+                        val item = jsonArray.getJSONObject(i)
+                        val priceJson = item.getJSONObject("price")
+                        val totalPrice = priceJson.getInt("total")
+
+                        if (totalPrice > 2000) {
+                            val itemModel = ItemsModel(
+                                name = item.getString("name"),
+                                description = item.getString("description"),
+                                price = Price(
+                                    base = priceJson.getInt("base"),
+                                    total = totalPrice,
+                                    sell = priceJson.getInt("sell")
+                                ),
+                                purchasable = item.getBoolean("purchasable"),
+                                iconUrl = item.getString("icon").replace("http://", "https://")
+                            )
+                            allItems.add(itemModel)
+                        }
+                    }
+                    currentPage++
+                }
+            } finally {
+                connection.disconnect()
             }
+        }
 
-            withContext(Dispatchers.Main) {
-                icons.value = iconList
+        withContext(Dispatchers.Main) {
+            onResult(allItems.shuffled().take(5))
+        }
+    }
+}
+
+
+
+
+
+fun fetchChampionIcons(icons: MutableState<List<ChampionIconModel>>, context: Context) {
+    CoroutineScope(Dispatchers.IO).launch {
+        val allChampions = mutableListOf<ChampionIconModel>()
+        var currentPage = 1
+        val size = 20
+        var hasMore = true
+
+        while (hasMore) {
+            val url = URL("http://girardon.com.br:3001/champions?page=$currentPage&size=$size")
+            val connection = url.openConnection() as HttpURLConnection
+            connection.requestMethod = "GET"
+
+            try {
+                connection.connect()
+                val response = connection.inputStream.bufferedReader().use { it.readText() }
+                val jsonArray = JSONArray(response)
+
+                if (jsonArray.length() == 0) {
+                    hasMore = false
+                } else {
+                    for (i in 0 until jsonArray.length()) {
+                        val champion = jsonArray.getJSONObject(i)
+                        val icon = ChampionIconModel(
+                            name = champion.getString("name"),
+                            iconUrl = champion.getString("icon").replace("http://", "https://")
+                        )
+                        allChampions.add(icon)
+                    }
+                    currentPage++
+                }
+            } finally {
+                connection.disconnect()
             }
-        } finally {
-            connection.disconnect()
+        }
+
+        withContext(Dispatchers.Main) {
+            icons.value = allChampions
         }
     }
 }
