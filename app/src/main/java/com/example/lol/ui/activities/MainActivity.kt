@@ -51,7 +51,7 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-fun fetchAllChampions(champions: MutableState<List<ChampionStats>>, context: Context, loadCount: Int) {
+fun fetchAllChampions(champions: MutableState<List<ChampionStats>>, context: Context, size: Int, page: Int) {
     CoroutineScope(Dispatchers.IO).launch {
         val db = ChampionDatabase.getDatabase(context)
         val championDao = db.championDao()
@@ -61,10 +61,9 @@ fun fetchAllChampions(champions: MutableState<List<ChampionStats>>, context: Con
         val locale = context.resources.configuration.locales.get(0)
         val isPortuguese = locale.language == "pt"
 
-
-        if (cachedChampions.size > loadCount) {
+        if (cachedChampions.size > size) {
             withContext(Dispatchers.Main) {
-                champions.value = cachedChampions.map {
+                champions.value = champions.value + cachedChampions.map {
                     ChampionStats(
                         id = it.id,
                         key = it.key,
@@ -104,7 +103,7 @@ fun fetchAllChampions(champions: MutableState<List<ChampionStats>>, context: Con
                 }
             }
         } else {
-            val url = URL("http://girardon.com.br:3001/champions?page=1&size=${loadCount}")
+            val url = URL("http://girardon.com.br:3001/champions?page=${page}&size=20")
             val connection = url.openConnection() as HttpURLConnection
 
             try {
@@ -167,11 +166,12 @@ fun fetchAllChampions(champions: MutableState<List<ChampionStats>>, context: Con
 
                     championList.add(championStatsEntity)
 
+                    // Insere todos os campeões novos no banco
                     championDao.insertAll(listOf(championStatsEntity))
                 }
 
                 withContext(Dispatchers.Main) {
-                    champions.value = championList.map {
+                    champions.value = champions.value + championList.map {
                         ChampionStats(
                             id = it.id,
                             key = it.key,
@@ -218,20 +218,18 @@ fun fetchAllChampions(champions: MutableState<List<ChampionStats>>, context: Con
 }
 
 
-
-
-
 @Composable
 fun ChampionsScreen() {
     var searchQuery by remember { mutableStateOf("") }
     val champions = remember { mutableStateOf(listOf<ChampionStats>()) }
-    var loadCount by remember { mutableStateOf(20) }
+    var size by remember { mutableStateOf(20) }
+    var page by remember { mutableStateOf(1) }
     var context = LocalContext.current
 
     val listState = rememberLazyListState()
 
-    LaunchedEffect(loadCount) {
-        fetchAllChampions(champions, context , loadCount)
+    LaunchedEffect(size) {
+        fetchAllChampions(champions, context , size, page)
     }
 
     LaunchedEffect(listState) {
@@ -239,9 +237,10 @@ fun ChampionsScreen() {
             listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index == listState.layoutInfo.totalItemsCount - 1
         }.collect { atEnd ->
             if (atEnd) {
-                loadCount+= 20
-                fetchAllChampions(champions, context , loadCount)
-                Log.d("ChampionsScreen", "Chegou ao fim da lista! Incrementando variável: $loadCount")
+                size+= 20
+                page+= 1
+                fetchAllChampions(champions, context , size, page)
+                Log.d("ChampionsScreen", "Chegou ao fim da lista! Incrementando variável: $size")
             }
         }
     }
@@ -287,4 +286,3 @@ fun translateText(text: String, targetLanguage: String): String {
     )
     return translation.translatedText
 }
-
