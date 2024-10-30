@@ -108,6 +108,25 @@ fun RandomChampionsScreen() {
                     .padding(horizontal = 16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                Button(
+                    onClick = {
+                        randomChampions.clear()
+                        randomChampions.addAll(champions.value.shuffled().take(10))
+
+                        val team1Names = randomChampions.take(5).joinToString(", ") { it.name }
+                        val team2Names = randomChampions.takeLast(5).joinToString(", ") { it.name }
+                        val notificationText = "Time 1: $team1Names\nTime 2: $team2Names"
+
+                        scheduleNotification(context, notificationText)
+                    },
+                    modifier = Modifier.padding(vertical = 16.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.secondary
+                    )
+                ) {
+                    Text(text = stringResource(id = R.string.roll_again))
+                }
+
                 LazyColumn(
                     modifier = Modifier.weight(1f)
                 ) {
@@ -129,8 +148,11 @@ fun RandomChampionsScreen() {
                                 champion = champion1,
                                 onChampionClick = {
                                     fetchRandomItems(context) { randomItems ->
-                                        selectedChampion = champion1 to randomItems
+                                        selectedChampion = champion1 to randomItems // Abre o modal para o campeão 1
                                     }
+                                },
+                                onDiceClick = {
+                                    randomChampions[index] = champions.value.random() // Troca o campeão 1
                                 }
                             )
 
@@ -149,7 +171,12 @@ fun RandomChampionsScreen() {
                                     fetchRandomItems(context) { randomItems ->
                                         selectedChampion = champion2 to randomItems
                                     }
+                                    },
+                                onDiceClick = {
+                                    randomChampions[index] = champions.value.random()
                                 }
+
+
                             )
                         }
                         Spacer(modifier = Modifier.height(16.dp))
@@ -159,6 +186,7 @@ fun RandomChampionsScreen() {
         }
     }
 }
+
 
 
 
@@ -174,7 +202,6 @@ fun ItemModal(champion: ChampionIconModel, items: List<ItemsModel>, onDismiss: (
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier.padding(vertical = 4.dp)
                     ) {
-                        // Carregar a imagem do item
                         var bitmap by remember { mutableStateOf<Bitmap?>(null) }
 
                         LaunchedEffect(item.iconUrl) {
@@ -214,11 +241,18 @@ fun ItemModal(champion: ChampionIconModel, items: List<ItemsModel>, onDismiss: (
 
 
 @Composable
-fun ChampionWithDiceIcon(champion: ChampionIconModel, onChampionClick: () -> Unit) {
+fun ChampionWithDiceIcon(
+    champion: ChampionIconModel,
+    onChampionClick: () -> Unit,
+    onDiceClick: () -> Unit
+) {
     Box(
         modifier = Modifier.size(96.dp)
     ) {
-        ChampionIcon(champion = champion, onClick = onChampionClick)
+        ChampionIcon(
+            champion = champion,
+            onClick = onChampionClick
+        )
 
         Box(
             modifier = Modifier
@@ -228,7 +262,7 @@ fun ChampionWithDiceIcon(champion: ChampionIconModel, onChampionClick: () -> Uni
             contentAlignment = Alignment.Center
         ) {
             IconButton(
-                onClick = {  },
+                onClick = onDiceClick,
                 modifier = Modifier.size(32.dp)
             ) {
                 Image(
@@ -257,7 +291,7 @@ fun ChampionIcon(champion: ChampionIconModel, onClick: () -> Unit) {
             modifier = Modifier
                 .size(96.dp)
                 .shadow(8.dp, shape = MaterialTheme.shapes.medium)
-                .clickable(onClick = onClick), // Abre o modal ao clicar no ícone
+                .clickable(onClick = onClick),
             contentScale = ContentScale.Crop
         )
     } ?: Box(
