@@ -60,10 +60,12 @@ fun fetchAllChampions(champions: MutableState<List<ChampionStats>>, context: Con
 
         val locale = context.resources.configuration.locales.get(0)
         val isPortuguese = locale.language == "pt"
+        Log.d("sexo", "Cached size: ${cachedChampions.size}")
+        Log.d("sexo", "size: $size")
 
-        if (cachedChampions.size > size) {
+        if (cachedChampions.size >= size) {
             withContext(Dispatchers.Main) {
-                champions.value = champions.value + cachedChampions.map {
+                champions.value += cachedChampions.map {
                     ChampionStats(
                         id = it.id,
                         key = it.key,
@@ -217,14 +219,33 @@ fun fetchAllChampions(champions: MutableState<List<ChampionStats>>, context: Con
     }
 }
 
+fun savePaginationValues(context: Context, size: Int, page: Int) {
+    val sharedPreferences = context.getSharedPreferences("LeagueOfStatsPrefs", Context.MODE_PRIVATE)
+    sharedPreferences.edit().apply {
+        putInt("SIZE_KEY02", size)
+        putInt("PAGE_KEY02", page)
+        apply()
+    }
+}
+
+fun loadPaginationValues(context: Context): Pair<Int, Int> {
+    val sharedPreferences = context.getSharedPreferences("LeagueOfStatsPrefs", Context.MODE_PRIVATE)
+    val size = sharedPreferences.getInt("SIZE_KEY02", 20)
+    val page = sharedPreferences.getInt("PAGE_KEY02", 1)
+    return Pair(size, page)
+}
+
 
 @Composable
 fun ChampionsScreen() {
     var searchQuery by remember { mutableStateOf("") }
     val champions = remember { mutableStateOf(listOf<ChampionStats>()) }
-    var size by remember { mutableStateOf(20) }
-    var page by remember { mutableStateOf(1) }
-    var context = LocalContext.current
+    val context = LocalContext.current
+
+    // Carregar valores salvos do SharedPreferences
+    val (savedSize, savedPage) = loadPaginationValues(context)
+    var size by remember { mutableStateOf(savedSize) }
+    var page by remember { mutableStateOf(savedPage) }
 
     val listState = rememberLazyListState()
 
@@ -237,10 +258,12 @@ fun ChampionsScreen() {
             listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index == listState.layoutInfo.totalItemsCount - 1
         }.collect { atEnd ->
             if (atEnd) {
-                size+= 20
-                page+= 1
+                size += 20
+                page += 1
                 fetchAllChampions(champions, context , size, page)
                 Log.d("ChampionsScreen", "Chegou ao fim da lista! Incrementando variável: $size")
+
+                savePaginationValues(context, size, page)
             }
         }
     }
