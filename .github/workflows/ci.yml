@@ -34,19 +34,19 @@ jobs:
           build-tools: ${{ env.ANDROID_BUILD_TOOLS }}
           cache: gradle
 
-      - name: Install emulator system image
+      - name: Install ARM emulator system image
         run: |
-          echo "Installing emulator system image..."
-          sdkmanager --install "system-images;android-30;google_apis;x86_64"
+          echo "Installing ARM emulator system image..."
+          sdkmanager --install "system-images;android-30;google_apis;arm64-v8a"
 
-      - name: Create AVD
+      - name: Create AVD with ARM image
         run: |
-          echo "Creating AVD..."
-          echo "no" | avdmanager create avd -n test -k "system-images;android-30;google_apis;x86_64" --device "pixel"
+          echo "Creating AVD with ARM image..."
+          echo "no" | avdmanager create avd -n test -k "system-images;android-30;google_apis;arm64-v8a" --device "pixel"
 
-      - name: Start emulator
+      - name: Start ARM emulator
         run: |
-          echo "Starting emulator..."
+          echo "Starting ARM emulator..."
           nohup $ANDROID_SDK_ROOT/emulator/emulator -avd test -no-snapshot -no-window -gpu off &
           adb wait-for-device
           adb shell input keyevent 82 &
