@@ -22,7 +22,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.example.lol.R
 import com.example.lol.data.models.ChampionIconModel
 import com.example.lol.data.models.ItemsModel
 import com.example.lol.ui.components.loadImageFromUrl
@@ -34,9 +36,18 @@ import kotlinx.coroutines.launch
 fun ItemModal(champion: ChampionIconModel, items: List<ItemsModel>, onDismiss: () -> Unit) {
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text(text = "Itens para ${champion.name}") },
+        title = {
+            Text(
+                text = stringResource(id = R.string.items_for, champion.name) ,
+                color = Color.White
+            )
+        },
         text = {
-            Column {
+            Column(
+                modifier = Modifier
+                    .background(Color.Black)
+                    .padding(8.dp)
+            ) {
                 items.forEach { item ->
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
@@ -65,15 +76,19 @@ fun ItemModal(champion: ChampionIconModel, items: List<ItemsModel>, onDismiss: (
                                 .background(Color.Gray)
                         )
 
-                        Text(text = item.name)
+                        Text(
+                            text = item.name,
+                            color = Color.White
+                        )
                     }
                 }
             }
         },
         confirmButton = {
             TextButton(onClick = onDismiss) {
-                Text("Fechar")
+                Text("Fechar", color = Color.White)
             }
-        }
+        },
+        containerColor = Color.Black
     )
 }

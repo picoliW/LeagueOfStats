@@ -82,7 +82,7 @@ fun MatchDetailScreen(
 
             response.forEach { playerData ->
                 coroutineScope.launch(Dispatchers.IO) {
-                    val iconUrl = championDao.getChampionIconByChampionName(playerData.championName)
+                    val iconUrl = championDao.getChampionIconByChampionId2(playerData.championId.toString())
                     if (iconUrl != null) {
                         championIcons[playerData.championName] = loadImageFromUrl(iconUrl)
                     }

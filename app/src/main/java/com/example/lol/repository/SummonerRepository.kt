@@ -49,6 +49,7 @@ class RiotRepository(
         return matchDetails.info.participants.map { participant ->
             ParticipantData(
                 riotIdGameName = participant.riotIdGameName,
+                championId = participant.championId,
                 championName = participant.championName,
                 individualPosition = participant.individualPosition,
                 teamId = participant.teamId,
