@@ -48,7 +48,6 @@ fun ChampionsScreen() {
     var page by remember { mutableStateOf(savedPage) }
 
     val listState = rememberLazyListState()
-
     var isLoaded by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
@@ -74,6 +73,11 @@ fun ChampionsScreen() {
         }
     }
 
+    val filteredChampions = champions.value.filter {
+        it.name.contains(searchQuery, ignoreCase = true) ||
+                it.title.contains(searchQuery, ignoreCase = true)
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -88,6 +92,7 @@ fun ChampionsScreen() {
             onQueryChanged = { searchQuery = it }
         )
 
-        ChampionsList(champions = champions.value, listState = listState)
+        ChampionsList(champions = filteredChampions, listState = listState)
     }
 }
+
