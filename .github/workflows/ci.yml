@@ -52,6 +52,9 @@ jobs:
           adb shell input keyevent 82 &
         timeout-minutes: 10
 
+      - name: Grant execute permission for Gradlew
+        run: chmod +x ./gradlew
+
       - name: Build app
         run: ./gradlew assembleDebug
 
