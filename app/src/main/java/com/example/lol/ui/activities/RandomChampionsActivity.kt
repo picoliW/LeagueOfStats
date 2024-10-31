@@ -53,6 +53,9 @@ fun RandomChampionsScreen() {
     var isLoading by remember { mutableStateOf(true) }
     var selectedChampion by remember { mutableStateOf<Pair<ChampionIconModel, List<ItemsModel>>?>(null) }
 
+    val team1 = remember { mutableStateListOf<ChampionIconModel>() }
+    val team2 = remember { mutableStateListOf<ChampionIconModel>() }
+
     LaunchedEffect(Unit) {
         isLoading = true
         fetchChampionIcons(champions, context) {
@@ -63,6 +66,12 @@ fun RandomChampionsScreen() {
     LaunchedEffect(champions.value) {
         randomChampions.clear()
         randomChampions.addAll(champions.value.shuffled().take(10))
+
+        team1.clear()
+        team1.addAll(randomChampions.take(5))
+
+        team2.clear()
+        team2.addAll(randomChampions.takeLast(5))
     }
 
     selectedChampion?.let { (champion, items) ->
@@ -90,9 +99,6 @@ fun RandomChampionsScreen() {
             )
         }
     } else if (randomChampions.size == 10) {
-        val team1 = randomChampions.take(5)
-        val team2 = randomChampions.takeLast(5)
-
         Box(modifier = Modifier.fillMaxSize()) {
             Image(
                 painter = painterResource(id = R.drawable.background1),
@@ -112,8 +118,14 @@ fun RandomChampionsScreen() {
                         randomChampions.clear()
                         randomChampions.addAll(champions.value.shuffled().take(10))
 
-                        val team1Names = randomChampions.take(5).joinToString(", ") { it.name }
-                        val team2Names = randomChampions.takeLast(5).joinToString(", ") { it.name }
+                        team1.clear()
+                        team1.addAll(randomChampions.take(5))
+
+                        team2.clear()
+                        team2.addAll(randomChampions.takeLast(5))
+
+                        val team1Names = team1.joinToString(", ") { it.name }
+                        val team2Names = team2.joinToString(", ") { it.name }
                         val notificationText = "Time 1: $team1Names\nTime 2: $team2Names"
 
                         scheduleNotification(context, notificationText)
@@ -151,7 +163,11 @@ fun RandomChampionsScreen() {
                                     }
                                 },
                                 onDiceClick = {
-                                    randomChampions[index] = champions.value.random()
+                                    var newChampion: ChampionIconModel
+                                    do {
+                                        newChampion = champions.value.shuffled().first()
+                                    } while (newChampion == team1[index])
+                                    team1[index] = newChampion
                                 }
                             )
 
@@ -172,7 +188,11 @@ fun RandomChampionsScreen() {
                                     }
                                 },
                                 onDiceClick = {
-                                    randomChampions[index] = champions.value.random()
+                                    var newChampion: ChampionIconModel
+                                    do {
+                                        newChampion = champions.value.shuffled().first()
+                                    } while (newChampion == team2[index])
+                                    team2[index] = newChampion
                                 }
                             )
                         }
@@ -183,7 +203,6 @@ fun RandomChampionsScreen() {
         }
     }
 }
-
 
 
 
