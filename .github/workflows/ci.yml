@@ -34,22 +34,26 @@ jobs:
           build-tools: ${{ env.ANDROID_BUILD_TOOLS }}
           cache: gradle
 
-      - name: Grant execution permission for gradlew
-        run: chmod +x ./gradlew
+      - name: Install emulator system image
+        run: |
+          echo "Installing emulator system image..."
+          sdkmanager --install "system-images;android-30;google_apis;x86_64"
 
-      - name: Build app
-        run: ./gradlew assembleDebug
+      - name: Create AVD
+        run: |
+          echo "Creating AVD..."
+          echo "no" | avdmanager create avd -n test -k "system-images;android-30;google_apis;x86_64" --device "pixel"
 
       - name: Start emulator
         run: |
-          sudo apt-get update
-          sudo apt-get install -yq android-sdk
-          echo "y" | sdkmanager "system-images;android-30;google_apis;x86_64"
-          echo "no" | avdmanager create avd -n test -k "system-images;android-30;google_apis;x86_64" --device "pixel"
-          nohup emulator -avd test -no-snapshot -no-window -gpu off &
+          echo "Starting emulator..."
+          nohup $ANDROID_SDK_ROOT/emulator/emulator -avd test -no-snapshot -no-window -gpu off &
           adb wait-for-device
           adb shell input keyevent 82 &
         timeout-minutes: 10
+
+      - name: Build app
+        run: ./gradlew assembleDebug
 
       - name: Run connected Android tests
         run: ./gradlew connectedAndroidTest
