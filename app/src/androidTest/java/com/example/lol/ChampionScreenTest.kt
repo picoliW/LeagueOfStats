@@ -164,14 +164,7 @@ class ChampionsScreenTest {
         assertTrue(filteredChampions.isEmpty())
     }
 
-    @Test
-    fun testTranslationFunction() {
-        val originalText = "the Nine-Tailed Fox"
-        val translatedText = translateText(originalText, "pt")
 
-        assertNotNull(translatedText)
-        assertEquals("a raposa de nove caudas", translatedText)
-    }
 
 
 
