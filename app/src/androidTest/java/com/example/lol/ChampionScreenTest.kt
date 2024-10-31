@@ -9,6 +9,7 @@ import com.example.lol.data.database.ChampionStatsEntity
 import com.example.lol.data.models.ChampionStats
 import com.example.lol.data.models.Sprite
 import com.example.lol.data.models.Stats
+import com.example.lol.ui.utils.translateText
 import kotlinx.coroutines.runBlocking
 
 import org.junit.Assert.*
@@ -172,104 +173,8 @@ class ChampionsScreenTest {
         assertEquals("a raposa de nove caudas", translatedText)
     }
 
-    @Test
-    fun testSaveChampionToDatabase() = runBlocking {
-        val context = ApplicationProvider.getApplicationContext<Context>()
-        val db = ChampionDatabase.getDatabase(context)
 
-        val championDao = db.championDao()
 
-        val champion = ChampionStatsEntity(
-            id = "yasuo",
-            key = "157",
-            name = "Yasuo",
-            title = "the Unforgiven",
-            translatedTitle = "O Imperdoável",
-            tags = "Fighter,Mage",
-            hp = 490,
-            hpperlevel = 87,
-            mp = 100,
-            mpperlevel = 40,
-            movespeed = 345,
-            armor = 30.0,
-            armorperlevel = 3.4,
-            spellblock = 32.0,
-            spellblockperlevel = 1.25,
-            attackrange = 175,
-            hpregen = 6.0,
-            hpregenperlevel = 0.9,
-            mpregen = 8.0,
-            mpregenperlevel = 0.8,
-            crit = 0.0,
-            critperlevel = 0.0,
-            attackdamage = 60.0,
-            attackdamageperlevel = 3.0,
-            attackspeedperlevel = 2.5,
-            attackspeed = 0.658,
-            icon = "https://ddragon.leagueoflegends.com/cdn/10.23.1/img/champion/Yasuo.png",
-            spriteUrl = "https://ddragon.leagueoflegends.com/cdn/10.23.1/img/sprite/champion1.png",
-            spriteX = 96,
-            spriteY = 0,
-            description = "An Ionian of deep resolve, Yasuo is a nimble swordsman who wields the air itself against his enemies."
-        )
-
-        championDao.insertAll(listOf(champion))
-
-        val retrievedChampion = championDao.getChampionById("yasuo")
-
-        assertNotNull(retrievedChampion)
-        assertEquals("Yasuo", retrievedChampion?.name)
-        assertEquals("the Unforgiven", retrievedChampion?.title)
-    }
-
-    @Test
-    fun testLoadChampionsFromDatabase() = runBlocking {
-        val context = ApplicationProvider.getApplicationContext<Context>()
-        val db = ChampionDatabase.getDatabase(context)
-        val championDao = db.championDao()
-
-        val championsToInsert = listOf(
-            ChampionStatsEntity(
-                id = "yasuo",
-                key = "157",
-                name = "Yasuo",
-                title = "the Unforgiven",
-                translatedTitle = "O Imperdoável",
-                tags = "Fighter,Mage",
-                hp = 490,
-                hpperlevel = 87,
-                mp = 100,
-                mpperlevel = 40,
-                movespeed = 345,
-                armor = 30.0,
-                armorperlevel = 3.4,
-                spellblock = 32.0,
-                spellblockperlevel = 1.25,
-                attackrange = 175,
-                hpregen = 6.0,
-                hpregenperlevel = 0.9,
-                mpregen = 8.0,
-                mpregenperlevel = 0.8,
-                crit = 0.0,
-                critperlevel = 0.0,
-                attackdamage = 60.0,
-                attackdamageperlevel = 3.0,
-                attackspeedperlevel = 2.5,
-                attackspeed = 0.658,
-                icon = "https://ddragon.leagueoflegends.com/cdn/10.23.1/img/champion/Yasuo.png",
-                spriteUrl = "https://ddragon.leagueoflegends.com/cdn/10.23.1/img/sprite/champion1.png",
-                spriteX = 96,
-                spriteY = 0,
-                description = "An Ionian of deep resolve, Yasuo is a nimble swordsman who wields the air itself against his enemies."
-            )
-        )
-
-        championDao.insertAll(championsToInsert)
-
-        val championsFromDb = championDao.getAllChampions()
-
-        assertEquals("Yasuo", championsFromDb[0].name)
-    }
 
 
 

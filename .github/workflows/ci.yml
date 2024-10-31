@@ -41,7 +41,7 @@ jobs:
         run: ./gradlew assembleDebug
 
       - name: Run unit tests
-        run: ./gradlew ChampionScreenTest
+        run: ./gradlew connectedAndroidTest
 
       - name: Upload APK
         if: success()
