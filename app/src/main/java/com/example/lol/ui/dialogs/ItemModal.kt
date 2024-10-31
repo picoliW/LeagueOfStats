@@ -34,9 +34,18 @@ import kotlinx.coroutines.launch
 fun ItemModal(champion: ChampionIconModel, items: List<ItemsModel>, onDismiss: () -> Unit) {
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text(text = "Itens para ${champion.name}") },
+        title = {
+            Text(
+                text = "Itens para ${champion.name}",
+                color = Color.White
+            )
+        },
         text = {
-            Column {
+            Column(
+                modifier = Modifier
+                    .background(Color.Black)
+                    .padding(8.dp)
+            ) {
                 items.forEach { item ->
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
@@ -65,15 +74,19 @@ fun ItemModal(champion: ChampionIconModel, items: List<ItemsModel>, onDismiss: (
                                 .background(Color.Gray)
                         )
 
-                        Text(text = item.name)
+                        Text(
+                            text = item.name,
+                            color = Color.White
+                        )
                     }
                 }
             }
         },
         confirmButton = {
             TextButton(onClick = onDismiss) {
-                Text("Fechar")
+                Text("Fechar", color = Color.White)
             }
-        }
+        },
+        containerColor = Color.Black
     )
 }
