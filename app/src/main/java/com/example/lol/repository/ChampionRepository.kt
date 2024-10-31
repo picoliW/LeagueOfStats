@@ -206,7 +206,7 @@ fun fetchChampionIcons(
         val cachedIcons = database.championDao().getAllIcons()
         if (cachedIcons.isNotEmpty()) {
             withContext(Dispatchers.Main) {
-                icons.value = cachedIcons.map { ChampionIconModel(it.name, it.iconUrl) }
+                icons.value = cachedIcons.map { ChampionIconModel(it.name, it.key, it.iconUrl) }
                 onComplete()
             }
         } else {
@@ -232,6 +232,7 @@ fun fetchChampionIcons(
                             val champion = jsonArray.getJSONObject(i)
                             val icon = ChampionIconModel(
                                 name = champion.getString("name"),
+                                key = champion.getInt("key"),
                                 iconUrl = champion.getString("icon").replace("http://", "https://")
                             )
                             allChampions.add(icon)
@@ -243,7 +244,7 @@ fun fetchChampionIcons(
                 }
             }
 
-            val iconEntities = allChampions.map { ChampionIconEntity(it.name, it.iconUrl) }
+            val iconEntities = allChampions.map { ChampionIconEntity(it.name, it.key, it.iconUrl) }
             database.championDao().insertIcons(iconEntities)
 
             withContext(Dispatchers.Main) {

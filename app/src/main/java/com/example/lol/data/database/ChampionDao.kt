@@ -28,6 +28,9 @@ interface ChampionDao {
     @Query("SELECT icon FROM champions WHERE [key] = :key")
     suspend fun getChampionIconByChampionId(key: String): String?
 
+    @Query("SELECT iconUrl FROM champion_icons WHERE [key] = :key")
+    suspend fun getChampionIconByChampionId2(key: String): String?
+
     @Query("SELECT iconUrl FROM champion_icons WHERE name = :championName LIMIT 1")
     suspend fun getChampionIconByChampionName2(championName: String): String?
 
@@ -37,4 +40,6 @@ interface ChampionDao {
     @Query("SELECT * FROM champion_icons")
     suspend fun getAllIcons(): List<ChampionIconEntity>
 
+    @Query("SELECT * FROM champion_icons WHERE [key] = :key LIMIT 1")
+    suspend fun getChampionById2(key: String): ChampionIconEntity?
 }

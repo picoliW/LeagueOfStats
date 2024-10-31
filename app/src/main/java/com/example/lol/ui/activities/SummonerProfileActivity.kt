@@ -87,14 +87,15 @@ fun SummonerProfileScreen(summonerLevel: Int, puuid: String, summonerName: Strin
                     val names = mutableMapOf<Int, String>()
                     val icons = mutableMapOf<String, String?>()
                     for (mastery in masteryList) {
-                        val championEntity = db.championDao().getChampionById(mastery.championId.toString())
+                        val championEntity = db.championDao().getChampionById2(mastery.championId.toString())
                         Log.d("caceete", "championId: ${mastery.championId}")
 
                         if (championEntity != null) {
+                            Log.d("caceete", "sadsad: ${championEntity.key}")
                             names[mastery.championId] = championEntity.name
 
                             val iconUrl = withContext(Dispatchers.IO) {
-                                db.championDao().getChampionIconByChampionId(mastery.championId.toString())
+                                db.championDao().getChampionIconByChampionId2(mastery.championId.toString())
                             }
                             icons[championEntity.name] = iconUrl
                         }

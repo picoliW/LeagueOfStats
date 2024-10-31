@@ -55,6 +55,7 @@ data class Info(
 data class Participant(
     val puuid: String,
     val riotIdGameName: String,
+    val championId: Int,
     val riotIdTagLine: String,
     val championName: String,
     val individualPosition: String,
@@ -67,6 +68,7 @@ data class Participant(
 
 data class ParticipantData(
     val riotIdGameName: String,
+    val championId: Int,
     val championName: String,
     val individualPosition: String,
     val teamId: String,
