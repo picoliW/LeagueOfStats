@@ -37,6 +37,8 @@ import kotlinx.coroutines.withContext
 import com.example.lol.data.database.ChampionDatabase
 import com.example.lol.data.models.Sprite
 import com.example.lol.data.models.Stats
+import com.example.lol.ui.utils.FavoriteChampionsList
+import com.example.lol.ui.utils.NoFavoritesMessage
 
 class FavoriteChampionsActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -133,28 +135,7 @@ fun FavoriteChampionsScreen(favoriteChampions: List<ChampionStats>) {
     }
 }
 
-@Composable
-fun FavoriteChampionsList(champions: List<ChampionStats>) {
-    LazyColumn {
-        items(champions) { champion ->
-            ChampionCard(champion = champion, onClick = {})
-        }
-    }
-}
 
-@Composable
-fun NoFavoritesMessage() {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(
-            text = stringResource(id = R.string.favorites_empty_message),
-            fontSize = 20.sp,
-            fontWeight = FontWeight.Bold,
-            color = Color.White
-        )
-    }
-}
+
+
+

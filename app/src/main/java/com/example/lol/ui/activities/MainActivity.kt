@@ -1,6 +1,5 @@
 package com.example.lol.ui.activities
 
-import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -9,23 +8,20 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import com.example.lol.BuildConfig
 import com.example.lol.data.models.ChampionStats
 import com.example.lol.repository.fetchAllChampions
-import com.example.lol.ui.components.ChampionCard
 import com.example.lol.ui.components.SearchBar
 import com.example.lol.ui.theme.LolTheme
-import com.google.cloud.translate.Translate
-import com.google.cloud.translate.TranslateOptions
+import com.example.lol.ui.utils.ChampionsList
+import com.example.lol.ui.utils.loadPaginationValues
+import com.example.lol.ui.utils.savePaginationValues
+
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,25 +36,6 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
-
-
-
-fun savePaginationValues(context: Context, size: Int, page: Int) {
-    val sharedPreferences = context.getSharedPreferences("LeagueOfStatsPrefs", Context.MODE_PRIVATE)
-    sharedPreferences.edit().apply {
-        putInt("SIZE_KEY20", size)
-        putInt("PAGE_KEY20", page)
-        apply()
-    }
-}
-
-fun loadPaginationValues(context: Context): Pair<Int, Int> {
-    val sharedPreferences = context.getSharedPreferences("LeagueOfStatsPrefs", Context.MODE_PRIVATE)
-    val size = sharedPreferences.getInt("SIZE_KEY20", 20)
-    val page = sharedPreferences.getInt("PAGE_KEY20", 1)
-    return Pair(size, page)
-}
-
 
 @Composable
 fun ChampionsScreen() {
@@ -113,29 +90,4 @@ fun ChampionsScreen() {
 
         ChampionsList(champions = champions.value, listState = listState)
     }
-}
-
-
-@Composable
-fun ChampionsList(champions: List<ChampionStats>, listState: LazyListState) {
-    LazyColumn(state = listState) {
-        items(champions) { champion ->
-            ChampionCard(champion = champion, onClick = {})
-        }
-    }
-}
-
-
-
-fun translateText(text: String, targetLanguage: String): String {
-
-    val apiKey = BuildConfig.GOOGLE_API_KEY
-
-    val translate = TranslateOptions.newBuilder().setApiKey(apiKey).build().service
-
-    val translation = translate.translate(
-        text,
-        Translate.TranslateOption.targetLanguage(targetLanguage)
-    )
-    return translation.translatedText
 }

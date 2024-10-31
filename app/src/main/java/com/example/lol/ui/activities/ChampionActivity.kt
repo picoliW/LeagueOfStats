@@ -1,8 +1,6 @@
 package com.example.lol.ui.activities
 
-import android.content.Intent
 import android.graphics.Bitmap
-import android.media.MediaPlayer
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -33,10 +31,10 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import com.example.lol.data.models.ChampionStats
-import com.example.lol.repository.SoundManager
-import com.example.lol.repository.shareChampion
 import com.example.lol.ui.components.loadImageFromUrl
 import com.example.lol.ui.components.DisplayImg
+import com.example.lol.ui.utils.SoundManager
+import com.example.lol.ui.utils.shareChampion
 
 class ChampionActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

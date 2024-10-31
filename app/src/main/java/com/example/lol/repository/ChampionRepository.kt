@@ -1,7 +1,6 @@
 package com.example.lol.repository
 
 import android.content.Context
-import android.content.Intent
 import android.util.Log
 import androidx.compose.runtime.MutableState
 import com.example.lol.data.database.ChampionDatabase
@@ -9,7 +8,6 @@ import com.example.lol.data.database.ChampionStatsEntity
 import com.example.lol.data.models.ChampionStats
 import com.example.lol.data.models.Sprite
 import com.example.lol.data.models.Stats
-import com.example.lol.ui.activities.translateText
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -18,8 +16,11 @@ import org.json.JSONArray
 import java.net.HttpURLConnection
 import java.net.URL
 import com.example.lol.data.database.ChampionDao
-import android.media.MediaPlayer
-import com.example.lol.R
+import com.example.lol.data.models.ChampionIconModel
+import com.example.lol.data.models.ItemsModel
+import com.example.lol.data.models.Price
+import com.example.lol.ui.utils.translateText
+
 
 fun fetchAllChampions(champions: MutableState<List<ChampionStats>>, context: Context, size: Int, page: Int) {
     CoroutineScope(Dispatchers.IO).launch {
@@ -189,51 +190,106 @@ fun fetchAllChampions(champions: MutableState<List<ChampionStats>>, context: Con
     }
 }
 
-
-
 suspend fun getChampionNameById(championId: Int, dao: ChampionDao): String? {
     val champion = dao.getChampionById(championId.toString())
     return champion?.name
 }
 
+fun fetchChampionIcons(
+    icons: MutableState<List<ChampionIconModel>>,
+    context: Context,
+    onComplete: () -> Unit
+) {
+    CoroutineScope(Dispatchers.IO).launch {
+        val allChampions = mutableListOf<ChampionIconModel>()
+        var currentPage = 1
+        val size = 20
+        var hasMore = true
 
+        while (hasMore) {
+            val url = URL("http://girardon.com.br:3001/champions?page=$currentPage&size=$size")
+            val connection = url.openConnection() as HttpURLConnection
+            connection.requestMethod = "GET"
 
-class SoundManager(private val context: Context) {
-    private var mediaPlayer: MediaPlayer? = null
+            try {
+                connection.connect()
+                val response = connection.inputStream.bufferedReader().use { it.readText() }
+                val jsonArray = JSONArray(response)
 
-    fun playSound(championName: String) {
-        val soundFileName = championName
-            .lowercase()
-            .replace("'", "")
-            .replace(" ", "_")
-            .replace(".", "")
-            .replace("&", "")
-
-        val soundResId = context.resources.getIdentifier(soundFileName, "raw", context.packageName)
-
-        if (soundResId != 0) {
-            if (mediaPlayer == null) {
-                mediaPlayer = MediaPlayer.create(context, soundResId)
+                if (jsonArray.length() == 0) {
+                    hasMore = false
+                } else {
+                    for (i in 0 until jsonArray.length()) {
+                        val champion = jsonArray.getJSONObject(i)
+                        val icon = ChampionIconModel(
+                            name = champion.getString("name"),
+                            iconUrl = champion.getString("icon").replace("http://", "https://")
+                        )
+                        allChampions.add(icon)
+                    }
+                    currentPage++
+                }
+            } finally {
+                connection.disconnect()
             }
-            mediaPlayer?.start()
-        } else {
-            println("Som não encontrado para o campeão: $championName, nome do arquivo: $soundFileName")
+        }
+
+        withContext(Dispatchers.Main) {
+            icons.value = allChampions
+            onComplete()
         }
     }
-
-    fun release() {
-        mediaPlayer?.release()
-        mediaPlayer = null
-    }
 }
 
-fun shareChampion(context: Context, championName: String) {
-    val shareMessage = context.getString(R.string.share_text, championName.toString())
-    val shareIntent = Intent().apply {
-        action = Intent.ACTION_SEND
-        putExtra(Intent.EXTRA_TEXT, shareMessage)
-        type = "text/plain"
-    }
-    context.startActivity(Intent.createChooser(shareIntent, "Compartilhar via"))
-}
+fun fetchRandomItems(context: Context, onResult: (List<ItemsModel>) -> Unit) {
+    CoroutineScope(Dispatchers.IO).launch {
+        val allItems = mutableListOf<ItemsModel>()
+        var currentPage = 1
+        val size = 20
+        var hasMore = true
 
+        while (hasMore) {
+            val url = URL("http://girardon.com.br:3001/items?page=$currentPage&size=$size")
+            val connection = url.openConnection() as HttpURLConnection
+            connection.requestMethod = "GET"
+
+            try {
+                connection.connect()
+                val response = connection.inputStream.bufferedReader().use { it.readText() }
+                val jsonArray = JSONArray(response)
+
+                if (jsonArray.length() == 0) {
+                    hasMore = false
+                } else {
+                    for (i in 0 until jsonArray.length()) {
+                        val item = jsonArray.getJSONObject(i)
+                        val priceJson = item.getJSONObject("price")
+                        val totalPrice = priceJson.getInt("total")
+
+                        if (totalPrice > 2000) {
+                            val itemModel = ItemsModel(
+                                name = item.getString("name"),
+                                description = item.getString("description"),
+                                price = Price(
+                                    base = priceJson.getInt("base"),
+                                    total = totalPrice,
+                                    sell = priceJson.getInt("sell")
+                                ),
+                                purchasable = item.getBoolean("purchasable"),
+                                iconUrl = item.getString("icon").replace("http://", "https://")
+                            )
+                            allItems.add(itemModel)
+                        }
+                    }
+                    currentPage++
+                }
+            } finally {
+                connection.disconnect()
+            }
+        }
+
+        withContext(Dispatchers.Main) {
+            onResult(allItems.shuffled().take(5))
+        }
+    }
+}
