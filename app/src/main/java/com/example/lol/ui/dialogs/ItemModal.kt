@@ -22,7 +22,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.example.lol.R
 import com.example.lol.data.models.ChampionIconModel
 import com.example.lol.data.models.ItemsModel
 import com.example.lol.ui.components.loadImageFromUrl
@@ -36,7 +38,7 @@ fun ItemModal(champion: ChampionIconModel, items: List<ItemsModel>, onDismiss: (
         onDismissRequest = onDismiss,
         title = {
             Text(
-                text = "Itens para ${champion.name}",
+                text = stringResource(id = R.string.items_for, champion.name) ,
                 color = Color.White
             )
         },

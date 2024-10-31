@@ -37,6 +37,6 @@
     <string name="duration">Duração: %1$s minutos</string>
     <string name="game_id">ID do Jogo: %1$s</string>
     <string name="game_mode">Modo de Jogo: %1$s</string>
-
+    <string name="items_for">Itens Para: %1$s</string>
 
 </resources>
