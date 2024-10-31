@@ -47,7 +47,7 @@ jobs:
       - name: Start x86 emulator with software rendering
         run: |
           echo "Starting x86 emulator with software rendering..."
-          nohup $ANDROID_SDK_ROOT/emulator/emulator -avd test -no-snapshot -no-window -gpu swiftshader_indirect &
+          nohup $ANDROID_SDK_ROOT/emulator/emulator -avd test -no-snapshot -no-window -gpu swiftshader_indirect -no-accel &
           adb wait-for-device
           adb shell input keyevent 82 &
         timeout-minutes: 10
