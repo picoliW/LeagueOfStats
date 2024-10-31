@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -16,26 +15,42 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.lol.R
-import com.example.lol.database.ChampionDao
-import com.example.lol.database.ChampionDatabase
-import com.example.lol.ui.components.ParticipantData
+import com.example.lol.data.database.ChampionDao
+import com.example.lol.data.database.ChampionDatabase
+import com.example.lol.data.network.ParticipantData
+import com.example.lol.data.network.RiotAccountApi
+import com.example.lol.data.network.RiotChampionMasteryApi
+import com.example.lol.data.network.RiotMatchApi
+import com.example.lol.data.network.RiotSummonerApi
+import com.example.lol.data.network.provideRetrofit
+import com.example.lol.data.network.provideSummonerRetrofit
+import com.example.lol.repository.RiotRepository
 import com.example.lol.ui.components.PlayerCard
-import com.example.lol.ui.components.getMatchDetailsWithSummonerNamesAndChampions
 import com.example.lol.ui.components.loadImageFromUrl
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.net.HttpURLConnection
-import java.net.URL
+
 
 class MatchDetailActivity : ComponentActivity() {
+    private lateinit var riotRepository: RiotRepository
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val riotAccountApi = provideRetrofit().create(RiotAccountApi::class.java)
+        val riotSummonerApi = provideSummonerRetrofit("br1").create(RiotSummonerApi::class.java)
+        val riotChampionMasteryApi = provideSummonerRetrofit("br1").create(RiotChampionMasteryApi::class.java)
+        val riotMatchApi = provideRetrofit().create(RiotMatchApi::class.java)
+
+        riotRepository = RiotRepository(
+            riotAccountApi,
+        riotSummonerApi,
+        riotChampionMasteryApi,
+        riotMatchApi
+        )
 
         val matchId = intent.getStringExtra("match_id") ?: ""
 
@@ -43,7 +58,7 @@ class MatchDetailActivity : ComponentActivity() {
         val championDao = db.championDao()
 
         setContent {
-            MatchDetailScreen(matchId, championDao)
+            MatchDetailScreen(matchId, championDao, riotRepository)
         }
     }
 }
@@ -51,21 +66,25 @@ class MatchDetailActivity : ComponentActivity() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MatchDetailScreen(matchId: String, championDao: ChampionDao) {
+fun MatchDetailScreen(
+    matchId: String,
+    championDao: ChampionDao,
+    riotRepository: RiotRepository
+) {
     var playersChampionsAndRoles by remember { mutableStateOf<List<ParticipantData>>(emptyList()) }
     val coroutineScope = rememberCoroutineScope()
     val championIcons = remember { mutableStateMapOf<String, Bitmap?>() }
 
     LaunchedEffect(matchId) {
         try {
-            val response = getMatchDetailsWithSummonerNamesAndChampions(matchId, "americas")
+            val response = riotRepository.getMatchDetailsWithSummonerNamesAndChampions(matchId)
             playersChampionsAndRoles = response
 
-            response.forEach { (_, champion, _, _) ->
+            response.forEach { playerData ->
                 coroutineScope.launch(Dispatchers.IO) {
-                    val iconUrl = championDao.getChampionIconByChampionName(champion)
+                    val iconUrl = championDao.getChampionIconByChampionName(playerData.championName)
                     if (iconUrl != null) {
-                        championIcons[champion] = loadImageFromUrl(iconUrl)
+                        championIcons[playerData.championName] = loadImageFromUrl(iconUrl)
                     }
                 }
             }
@@ -121,6 +140,5 @@ fun MatchDetailScreen(matchId: String, championDao: ChampionDao) {
         }
     }
 }
-
 
 

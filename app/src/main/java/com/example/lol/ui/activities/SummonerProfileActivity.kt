@@ -23,23 +23,34 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.lol.R
-import com.example.lol.database.ChampionDao
-import com.example.lol.database.ChampionDatabase
-import com.example.lol.ui.components.ChampionMasteryResponse
-import com.example.lol.ui.components.MatchDetailsResponse
-import com.example.lol.ui.components.getChampionNameById
-import com.example.lol.ui.components.getMatchDetails
-import com.example.lol.ui.components.getMatchIds
-import com.example.lol.ui.components.getTopChampionMasteries
-import com.example.lol.ui.components.shareChampion
+import com.example.lol.data.database.ChampionDatabase
+import com.example.lol.data.network.ChampionMasteryResponse
+import com.example.lol.data.network.MatchDetailsResponse
+import com.example.lol.data.network.RiotAccountApi
+import com.example.lol.data.network.RiotChampionMasteryApi
+import com.example.lol.data.network.RiotMatchApi
+import com.example.lol.data.network.RiotSummonerApi
+import com.example.lol.data.network.provideRetrofit
+import com.example.lol.data.network.provideSummonerRetrofit
+import com.example.lol.repository.RiotRepository
+import com.example.lol.repository.getChampionNameById
 import com.example.lol.ui.theme.LolTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class SummonerProfileActivity : ComponentActivity() {
+    private lateinit var riotRepository: RiotRepository
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val riotAccountApi = provideRetrofit().create(RiotAccountApi::class.java)
+        val riotSummonerApi = provideSummonerRetrofit("br1").create(RiotSummonerApi::class.java)
+        val riotChampionMasteryApi = provideSummonerRetrofit("br1").create(RiotChampionMasteryApi::class.java)
+        val riotMatchApi = provideRetrofit().create(RiotMatchApi::class.java)
+
+        riotRepository = RiotRepository(riotAccountApi, riotSummonerApi, riotChampionMasteryApi, riotMatchApi)
 
         val summonerLevel = intent.getIntExtra("summoner_level", 0)
         val puuid = intent.getStringExtra("puuid") ?: ""
@@ -47,7 +58,7 @@ class SummonerProfileActivity : ComponentActivity() {
 
         setContent {
             LolTheme {
-                SummonerProfileScreen(summonerLevel, puuid, summonerName)
+                SummonerProfileScreen(summonerLevel, puuid, summonerName, riotRepository)
             }
         }
     }
@@ -55,7 +66,7 @@ class SummonerProfileActivity : ComponentActivity() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SummonerProfileScreen(summonerLevel: Int, puuid: String, summonerName: String) {
+fun SummonerProfileScreen(summonerLevel: Int, puuid: String, summonerName: String, riotRepository: RiotRepository) {
     var masteries by remember { mutableStateOf<List<ChampionMasteryResponse>>(emptyList()) }
     var championNames by remember { mutableStateOf<Map<Int, String>>(emptyMap()) }
     var recentMatches by remember { mutableStateOf<List<MatchDetailsResponse>>(emptyList()) }
@@ -67,7 +78,7 @@ fun SummonerProfileScreen(summonerLevel: Int, puuid: String, summonerName: Strin
         if (puuid.isNotEmpty()) {
             CoroutineScope(Dispatchers.IO).launch {
                 try {
-                    val masteryList = getTopChampionMasteries(puuid, "br1")
+                    val masteryList = riotRepository.getTopChampionMasteries(puuid)
                     masteries = masteryList
 
                     val names = mutableMapOf<Int, String>()
@@ -78,9 +89,10 @@ fun SummonerProfileScreen(summonerLevel: Int, puuid: String, summonerName: Strin
                         }
                     }
                     championNames = names
-                    val matchIds = getMatchIds(puuid, "americas")
-                    val matches = matchIds.take(5).map { matchId ->
-                        getMatchDetails(matchId, "americas")
+
+                    val matchIds = riotRepository.getMatchIds(puuid, start = 0, count = 5)
+                    val matches = matchIds.map { matchId ->
+                        riotRepository.getMatchDetails(matchId)
                     }
                     recentMatches = matches
                 } catch (e: Exception) {

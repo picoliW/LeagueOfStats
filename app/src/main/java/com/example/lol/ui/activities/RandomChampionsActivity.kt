@@ -17,7 +17,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
-import com.example.lol.models.ChampionStats
 import com.example.lol.ui.theme.LolTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -27,21 +26,19 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.TextButton
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.example.lol.R
-import com.example.lol.models.ChampionIconModel
-import com.example.lol.models.ItemsModel
-import com.example.lol.models.Price
+import com.example.lol.data.models.ChampionIconModel
+import com.example.lol.data.models.ItemsModel
+import com.example.lol.data.models.Price
 import com.example.lol.ui.components.CustomCircularProgressIndicator
-import com.example.lol.ui.components.ItemModal
+import com.example.lol.ui.dialogs.ItemModal
 import com.example.lol.ui.components.loadImageFromUrl
 import com.example.lol.ui.components.scheduleNotification
 import kotlinx.coroutines.withContext
@@ -66,7 +63,7 @@ fun RandomChampionsScreen() {
     val champions = remember { mutableStateOf(listOf<ChampionIconModel>()) }
     val randomChampions = remember { mutableStateListOf<ChampionIconModel>() }
     val context = LocalContext.current
-    var isLoading by remember { mutableStateOf(true) }  // Estado de carregamento
+    var isLoading by remember { mutableStateOf(true) }
     var selectedChampion by remember { mutableStateOf<Pair<ChampionIconModel, List<ItemsModel>>?>(null) }
 
     LaunchedEffect(Unit) {

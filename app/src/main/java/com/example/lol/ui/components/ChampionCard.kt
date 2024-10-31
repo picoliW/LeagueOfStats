@@ -25,7 +25,7 @@ import com.example.lol.ui.activities.ChampionActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import com.example.lol.models.ChampionStats
+import com.example.lol.data.models.ChampionStats
 import java.net.HttpURLConnection
 import java.net.URL
 

@@ -1,13 +1,14 @@
-package com.example.lol.ui.components
+package com.example.lol.repository
 
 import android.content.Context
+import android.content.Intent
 import android.util.Log
 import androidx.compose.runtime.MutableState
-import com.example.lol.database.ChampionDatabase
-import com.example.lol.database.ChampionStatsEntity
-import com.example.lol.models.ChampionStats
-import com.example.lol.models.Sprite
-import com.example.lol.models.Stats
+import com.example.lol.data.database.ChampionDatabase
+import com.example.lol.data.database.ChampionStatsEntity
+import com.example.lol.data.models.ChampionStats
+import com.example.lol.data.models.Sprite
+import com.example.lol.data.models.Stats
 import com.example.lol.ui.activities.translateText
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -16,6 +17,9 @@ import kotlinx.coroutines.withContext
 import org.json.JSONArray
 import java.net.HttpURLConnection
 import java.net.URL
+import com.example.lol.data.database.ChampionDao
+import android.media.MediaPlayer
+import com.example.lol.R
 
 fun fetchAllChampions(champions: MutableState<List<ChampionStats>>, context: Context, size: Int, page: Int) {
     CoroutineScope(Dispatchers.IO).launch {
@@ -139,7 +143,7 @@ fun fetchAllChampions(champions: MutableState<List<ChampionStats>>, context: Con
                 }
 
                 withContext(Dispatchers.Main) {
-                    champions.value = champions.value + championList.map {
+                    champions.value += championList.map {
                         ChampionStats(
                             id = it.id,
                             key = it.key,
@@ -184,3 +188,52 @@ fun fetchAllChampions(champions: MutableState<List<ChampionStats>>, context: Con
         }
     }
 }
+
+
+
+suspend fun getChampionNameById(championId: Int, dao: ChampionDao): String? {
+    val champion = dao.getChampionById(championId.toString())
+    return champion?.name
+}
+
+
+
+class SoundManager(private val context: Context) {
+    private var mediaPlayer: MediaPlayer? = null
+
+    fun playSound(championName: String) {
+        val soundFileName = championName
+            .lowercase()
+            .replace("'", "")
+            .replace(" ", "_")
+            .replace(".", "")
+            .replace("&", "")
+
+        val soundResId = context.resources.getIdentifier(soundFileName, "raw", context.packageName)
+
+        if (soundResId != 0) {
+            if (mediaPlayer == null) {
+                mediaPlayer = MediaPlayer.create(context, soundResId)
+            }
+            mediaPlayer?.start()
+        } else {
+            println("Som não encontrado para o campeão: $championName, nome do arquivo: $soundFileName")
+        }
+    }
+
+    fun release() {
+        mediaPlayer?.release()
+        mediaPlayer = null
+    }
+}
+
+fun shareChampion(context: Context, championName: String) {
+    val shareMessage = context.getString(R.string.share_text, championName.toString())
+    val shareIntent = Intent().apply {
+        action = Intent.ACTION_SEND
+        putExtra(Intent.EXTRA_TEXT, shareMessage)
+        type = "text/plain"
+    }
+    context.startActivity(Intent.createChooser(shareIntent, "Compartilhar via"))
+}
+

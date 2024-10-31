@@ -27,15 +27,15 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.lol.R
-import com.example.lol.database.ChampionDatabase
+import com.example.lol.data.database.ChampionDatabase
 import com.example.lol.ui.theme.LolTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import com.example.lol.models.ChampionStats
-import com.example.lol.ui.components.SoundManager
+import com.example.lol.data.models.ChampionStats
+import com.example.lol.repository.SoundManager
+import com.example.lol.repository.shareChampion
 import com.example.lol.ui.components.loadImageFromUrl
-import com.example.lol.ui.components.shareChampion
 import com.example.lol.ui.components.DisplayImg
 
 class ChampionActivity : ComponentActivity() {

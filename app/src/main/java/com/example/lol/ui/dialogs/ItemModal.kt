@@ -1,4 +1,4 @@
-package com.example.lol.ui.components
+package com.example.lol.ui.dialogs
 
 import android.graphics.Bitmap
 import androidx.compose.foundation.Image
@@ -23,8 +23,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
-import com.example.lol.models.ChampionIconModel
-import com.example.lol.models.ItemsModel
+import com.example.lol.data.models.ChampionIconModel
+import com.example.lol.data.models.ItemsModel
+import com.example.lol.ui.components.loadImageFromUrl
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

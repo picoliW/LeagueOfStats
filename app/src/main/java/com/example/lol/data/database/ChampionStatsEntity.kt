@@ -1,23 +1,16 @@
-package com.example.lol.models
+package com.example.lol.data.database
 
-import java.io.Serializable
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 
-
-
-data class ChampionStats(
-    val id: String,
+@Entity(tableName = "champions")
+data class ChampionStatsEntity(
+    @PrimaryKey val id: String,
     val key: String,
     val name: String,
     val title: String,
-    val tags: List<String>,
-    val stats: Stats,
-    val icon: String,
-    val sprite: Sprite,
-    val description: String,
-    var isFavorited: Boolean = false
-) : Serializable
-
-data class Stats(
+    val translatedTitle: String?,
+    val tags: String,
     val hp: Int,
     val hpperlevel: Int,
     val mp: Int,
@@ -37,11 +30,12 @@ data class Stats(
     val attackdamage: Double,
     val attackdamageperlevel: Double,
     val attackspeedperlevel: Double,
-    val attackspeed: Double
-) : Serializable
-
-data class Sprite(
-    val url: String,
-    val x: Int,
-    val y: Int
-) : Serializable
+    val attackspeed: Double,
+    val icon: String,
+    val spriteUrl: String,
+    val spriteX: Int,
+    val spriteY: Int,
+    val description: String,
+    val isFavorited: Boolean = false,
+    val new_column_name: Int = 0
+)

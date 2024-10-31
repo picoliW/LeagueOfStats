@@ -27,16 +27,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.lol.R
-import com.example.lol.models.ChampionStats
+import com.example.lol.data.models.ChampionStats
 import com.example.lol.ui.components.ChampionCard
 import com.example.lol.ui.theme.LolTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import com.example.lol.database.ChampionDatabase
-import com.example.lol.models.Sprite
-import com.example.lol.models.Stats
+import com.example.lol.data.database.ChampionDatabase
+import com.example.lol.data.models.Sprite
+import com.example.lol.data.models.Stats
 
 class FavoriteChampionsActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

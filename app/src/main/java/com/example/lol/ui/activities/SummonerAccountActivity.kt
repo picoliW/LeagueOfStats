@@ -2,11 +2,9 @@ package com.example.lol.ui.activities
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -20,26 +18,42 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import com.example.lol.R
-import com.example.lol.ui.components.getAccountPuuid
-import com.example.lol.ui.components.getSummonerLevel
+import com.example.lol.data.network.*
+import com.example.lol.repository.RiotRepository
 import com.example.lol.ui.theme.LolTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class AccountActivity : ComponentActivity() {
+    private lateinit var riotRepository: RiotRepository
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val riotAccountApi = provideRetrofit().create(RiotAccountApi::class.java)
+        val riotSummonerApi = provideSummonerRetrofit("br1").create(RiotSummonerApi::class.java)
+        val riotChampionMasteryApi = provideSummonerRetrofit("br1").create(RiotChampionMasteryApi::class.java)
+        val riotMatchApi = provideRetrofit().create(RiotMatchApi::class.java)
+
+        riotRepository = RiotRepository(
+            riotAccountApi,
+            riotSummonerApi,
+            riotChampionMasteryApi,
+            riotMatchApi
+        )
+
         setContent {
             LolTheme {
-                AccountScreen()
+                AccountScreen(riotRepository)
             }
         }
     }
 }
 
+
 @Composable
-fun AccountScreen() {
+fun AccountScreen(riotRepository: RiotRepository) {
     var gameName by remember { mutableStateOf(TextFieldValue("")) }
     var tagLine by remember { mutableStateOf(TextFieldValue("")) }
     val context = LocalContext.current
@@ -79,8 +93,8 @@ fun AccountScreen() {
                 if (gameName.text.isNotEmpty() && tagLine.text.isNotEmpty()) {
                     CoroutineScope(Dispatchers.IO).launch {
                         try {
-                            val puuid = getAccountPuuid(gameName.text, tagLine.text)
-                            val level = getSummonerLevel(puuid, "br1")
+                            val puuid = riotRepository.getAccountPuuid(gameName.text, tagLine.text)
+                            val level = riotRepository.getSummonerLevel(puuid)
 
                             CoroutineScope(Dispatchers.Main).launch {
                                 val intent = Intent(context, SummonerProfileActivity::class.java)

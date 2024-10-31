@@ -1,16 +1,23 @@
-package com.example.lol.database
+package com.example.lol.data.models
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
+import java.io.Serializable
 
-@Entity(tableName = "champions")
-data class ChampionStatsEntity(
-    @PrimaryKey val id: String,
+
+
+data class ChampionStats(
+    val id: String,
     val key: String,
     val name: String,
     val title: String,
-    val translatedTitle: String?,
-    val tags: String,
+    val tags: List<String>,
+    val stats: Stats,
+    val icon: String,
+    val sprite: Sprite,
+    val description: String,
+    var isFavorited: Boolean = false
+) : Serializable
+
+data class Stats(
     val hp: Int,
     val hpperlevel: Int,
     val mp: Int,
@@ -30,12 +37,11 @@ data class ChampionStatsEntity(
     val attackdamage: Double,
     val attackdamageperlevel: Double,
     val attackspeedperlevel: Double,
-    val attackspeed: Double,
-    val icon: String,
-    val spriteUrl: String,
-    val spriteX: Int,
-    val spriteY: Int,
-    val description: String,
-    val isFavorited: Boolean = false,
-    val new_column_name: Int = 0
-)
+    val attackspeed: Double
+) : Serializable
+
+data class Sprite(
+    val url: String,
+    val x: Int,
+    val y: Int
+) : Serializable

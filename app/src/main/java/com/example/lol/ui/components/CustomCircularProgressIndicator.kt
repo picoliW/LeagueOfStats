@@ -29,7 +29,7 @@ fun CustomCircularProgressIndicator(
         targetValue = 360f,
         animationSpec = infiniteRepeatable(
             animation = tween(durationMillis = 1000, easing = LinearEasing)
-        )
+        ), label = ""
     )
 
     Canvas(modifier = modifier) {

@@ -1,4 +1,4 @@
-package com.example.lol.database
+package com.example.lol.data.database
 
 import androidx.room.Database
 import androidx.room.Room
@@ -7,7 +7,7 @@ import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import android.content.Context
 
-@Database(entities = [ChampionStatsEntity::class], version = 3)
+@Database(entities = [ChampionStatsEntity::class], version = 20)
 abstract class ChampionDatabase : RoomDatabase() {
     abstract fun championDao(): ChampionDao
 

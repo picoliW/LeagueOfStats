@@ -4,11 +4,11 @@ import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.test.core.app.ApplicationProvider
-import com.example.lol.database.ChampionDatabase
-import com.example.lol.database.ChampionStatsEntity
-import com.example.lol.models.ChampionStats
-import com.example.lol.models.Sprite
-import com.example.lol.models.Stats
+import com.example.lol.data.database.ChampionDatabase
+import com.example.lol.data.database.ChampionStatsEntity
+import com.example.lol.data.models.ChampionStats
+import com.example.lol.data.models.Sprite
+import com.example.lol.data.models.Stats
 import kotlinx.coroutines.runBlocking
 
 import org.junit.Assert.*

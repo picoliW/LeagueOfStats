@@ -19,24 +19,13 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import com.example.lol.BuildConfig
-import com.example.lol.models.ChampionStats
+import com.example.lol.data.models.ChampionStats
+import com.example.lol.repository.fetchAllChampions
 import com.example.lol.ui.components.ChampionCard
 import com.example.lol.ui.components.SearchBar
 import com.example.lol.ui.theme.LolTheme
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import org.json.JSONArray
-import java.net.HttpURLConnection
-import java.net.URL
-import com.example.lol.database.ChampionDatabase
-import com.example.lol.database.ChampionStatsEntity
-import com.example.lol.models.Sprite
-import com.example.lol.models.Stats
-import com.example.lol.ui.components.fetchAllChampions
 import com.google.cloud.translate.Translate
 import com.google.cloud.translate.TranslateOptions
-import kotlinx.coroutines.withContext
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -57,16 +46,16 @@ class MainActivity : ComponentActivity() {
 fun savePaginationValues(context: Context, size: Int, page: Int) {
     val sharedPreferences = context.getSharedPreferences("LeagueOfStatsPrefs", Context.MODE_PRIVATE)
     sharedPreferences.edit().apply {
-        putInt("SIZE_KEY19", size)
-        putInt("PAGE_KEY19", page)
+        putInt("SIZE_KEY20", size)
+        putInt("PAGE_KEY20", page)
         apply()
     }
 }
 
 fun loadPaginationValues(context: Context): Pair<Int, Int> {
     val sharedPreferences = context.getSharedPreferences("LeagueOfStatsPrefs", Context.MODE_PRIVATE)
-    val size = sharedPreferences.getInt("SIZE_KEY19", 20)
-    val page = sharedPreferences.getInt("PAGE_KEY19", 1)
+    val size = sharedPreferences.getInt("SIZE_KEY20", 20)
+    val page = sharedPreferences.getInt("PAGE_KEY20", 1)
     return Pair(size, page)
 }
 

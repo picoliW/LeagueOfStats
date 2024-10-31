@@ -1,4 +1,4 @@
-package com.example.lol.models
+package com.example.lol.data.models
 
 data class ItemsModel(
     val name: String,

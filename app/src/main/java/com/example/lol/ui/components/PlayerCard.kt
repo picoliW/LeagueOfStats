@@ -25,6 +25,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import com.example.lol.R
+import com.example.lol.data.network.ParticipantData
 
 @Composable
 fun PlayerCard(player: ParticipantData, championIcons: Map<String, Bitmap?>) {
