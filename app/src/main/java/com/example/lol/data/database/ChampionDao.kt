@@ -25,4 +25,16 @@ interface ChampionDao {
     @Query("SELECT icon FROM champions WHERE name = :championName LIMIT 1")
     suspend fun getChampionIconByChampionName(championName: String): String?
 
+    @Query("SELECT icon FROM champions WHERE [key] = :key")
+    suspend fun getChampionIconByChampionId(key: String): String?
+
+    @Query("SELECT iconUrl FROM champion_icons WHERE name = :championName LIMIT 1")
+    suspend fun getChampionIconByChampionName2(championName: String): String?
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertIcons(icons: List<ChampionIconEntity>)
+
+    @Query("SELECT * FROM champion_icons")
+    suspend fun getAllIcons(): List<ChampionIconEntity>
+
 }

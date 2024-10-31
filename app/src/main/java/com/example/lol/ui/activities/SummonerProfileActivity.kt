@@ -22,6 +22,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import coil.compose.rememberImagePainter
 import com.example.lol.R
 import com.example.lol.data.database.ChampionDatabase
 import com.example.lol.data.network.ChampionMasteryResponse
@@ -38,6 +39,7 @@ import com.example.lol.ui.theme.LolTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class SummonerProfileActivity : ComponentActivity() {
     private lateinit var riotRepository: RiotRepository
@@ -69,6 +71,7 @@ class SummonerProfileActivity : ComponentActivity() {
 fun SummonerProfileScreen(summonerLevel: Int, puuid: String, summonerName: String, riotRepository: RiotRepository) {
     var masteries by remember { mutableStateOf<List<ChampionMasteryResponse>>(emptyList()) }
     var championNames by remember { mutableStateOf<Map<Int, String>>(emptyMap()) }
+    var championIcons by remember { mutableStateOf<Map<String, String?>>(emptyMap()) }
     var recentMatches by remember { mutableStateOf<List<MatchDetailsResponse>>(emptyList()) }
 
     val context = LocalContext.current
@@ -82,13 +85,23 @@ fun SummonerProfileScreen(summonerLevel: Int, puuid: String, summonerName: Strin
                     masteries = masteryList
 
                     val names = mutableMapOf<Int, String>()
+                    val icons = mutableMapOf<String, String?>()
                     for (mastery in masteryList) {
-                        val championName = getChampionNameById(mastery.championId, db.championDao())
-                        if (championName != null) {
-                            names[mastery.championId] = championName
+                        val championEntity = db.championDao().getChampionById(mastery.championId.toString())
+                        Log.d("caceete", "championId: ${mastery.championId}")
+
+                        if (championEntity != null) {
+                            names[mastery.championId] = championEntity.name
+
+                            val iconUrl = withContext(Dispatchers.IO) {
+                                db.championDao().getChampionIconByChampionId(mastery.championId.toString())
+                            }
+                            icons[championEntity.name] = iconUrl
                         }
                     }
+
                     championNames = names
+                    championIcons = icons
 
                     val matchIds = riotRepository.getMatchIds(puuid, start = 0, count = 5)
                     val matches = matchIds.map { matchId ->
@@ -101,6 +114,7 @@ fun SummonerProfileScreen(summonerLevel: Int, puuid: String, summonerName: Strin
             }
         }
     }
+
 
     Scaffold(
         topBar = {
@@ -133,6 +147,8 @@ fun SummonerProfileScreen(summonerLevel: Int, puuid: String, summonerName: Strin
             if (masteries.isNotEmpty()) {
                 items(masteries) { mastery ->
                     val championName = championNames[mastery.championId] ?: "Desconhecido"
+                    val championIconUrl = championIcons[championName]
+
                     Card(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -145,7 +161,7 @@ fun SummonerProfileScreen(summonerLevel: Int, puuid: String, summonerName: Strin
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Image(
-                                painter = painterResource(id = R.drawable.teste222),
+                                painter = rememberImagePainter(championIconUrl ?: R.drawable.teste222),
                                 contentDescription = championName,
                                 modifier = Modifier.size(40.dp)
                             )
@@ -222,7 +238,6 @@ fun SummonerProfileScreen(summonerLevel: Int, puuid: String, summonerName: Strin
                     }
                 }
             }
-
         }
     }
 }

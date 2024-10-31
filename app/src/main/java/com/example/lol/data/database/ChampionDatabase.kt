@@ -7,7 +7,7 @@ import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import android.content.Context
 
-@Database(entities = [ChampionStatsEntity::class], version = 21)
+@Database(entities = [ChampionStatsEntity::class, ChampionIconEntity::class], version = 1)
 abstract class ChampionDatabase : RoomDatabase() {
     abstract fun championDao(): ChampionDao
 
@@ -27,6 +27,19 @@ abstract class ChampionDatabase : RoomDatabase() {
             }
         }
 
+        val MIGRATION_21_22 = object : Migration(21, 22) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL(
+                    """
+                    CREATE TABLE IF NOT EXISTS champion_icons (
+                        name TEXT PRIMARY KEY NOT NULL,
+                        iconUrl TEXT NOT NULL
+                    )
+                    """.trimIndent()
+                )
+            }
+        }
+
         fun getDatabase(context: Context): ChampionDatabase {
             return INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder(
@@ -34,6 +47,7 @@ abstract class ChampionDatabase : RoomDatabase() {
                     ChampionDatabase::class.java,
                     "champion_database"
                 )
+                    .addMigrations(MIGRATION_21_22)
                     .fallbackToDestructiveMigration()
                     .build()
                 INSTANCE = instance

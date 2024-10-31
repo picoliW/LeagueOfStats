@@ -16,6 +16,7 @@ import org.json.JSONArray
 import java.net.HttpURLConnection
 import java.net.URL
 import com.example.lol.data.database.ChampionDao
+import com.example.lol.data.database.ChampionIconEntity
 import com.example.lol.data.models.ChampionIconModel
 import com.example.lol.data.models.ItemsModel
 import com.example.lol.data.models.Price
@@ -200,46 +201,59 @@ fun fetchChampionIcons(
     context: Context,
     onComplete: () -> Unit
 ) {
+    val database = ChampionDatabase.getDatabase(context)
     CoroutineScope(Dispatchers.IO).launch {
-        val allChampions = mutableListOf<ChampionIconModel>()
-        var currentPage = 1
-        val size = 20
-        var hasMore = true
-
-        while (hasMore) {
-            val url = URL("http://girardon.com.br:3001/champions?page=$currentPage&size=$size")
-            val connection = url.openConnection() as HttpURLConnection
-            connection.requestMethod = "GET"
-
-            try {
-                connection.connect()
-                val response = connection.inputStream.bufferedReader().use { it.readText() }
-                val jsonArray = JSONArray(response)
-
-                if (jsonArray.length() == 0) {
-                    hasMore = false
-                } else {
-                    for (i in 0 until jsonArray.length()) {
-                        val champion = jsonArray.getJSONObject(i)
-                        val icon = ChampionIconModel(
-                            name = champion.getString("name"),
-                            iconUrl = champion.getString("icon").replace("http://", "https://")
-                        )
-                        allChampions.add(icon)
-                    }
-                    currentPage++
-                }
-            } finally {
-                connection.disconnect()
+        val cachedIcons = database.championDao().getAllIcons()
+        if (cachedIcons.isNotEmpty()) {
+            withContext(Dispatchers.Main) {
+                icons.value = cachedIcons.map { ChampionIconModel(it.name, it.iconUrl) }
+                onComplete()
             }
-        }
+        } else {
+            val allChampions = mutableListOf<ChampionIconModel>()
+            var currentPage = 1
+            val size = 20
+            var hasMore = true
 
-        withContext(Dispatchers.Main) {
-            icons.value = allChampions
-            onComplete()
+            while (hasMore) {
+                val url = URL("http://girardon.com.br:3001/champions?page=$currentPage&size=$size")
+                val connection = url.openConnection() as HttpURLConnection
+                connection.requestMethod = "GET"
+
+                try {
+                    connection.connect()
+                    val response = connection.inputStream.bufferedReader().use { it.readText() }
+                    val jsonArray = JSONArray(response)
+
+                    if (jsonArray.length() == 0) {
+                        hasMore = false
+                    } else {
+                        for (i in 0 until jsonArray.length()) {
+                            val champion = jsonArray.getJSONObject(i)
+                            val icon = ChampionIconModel(
+                                name = champion.getString("name"),
+                                iconUrl = champion.getString("icon").replace("http://", "https://")
+                            )
+                            allChampions.add(icon)
+                        }
+                        currentPage++
+                    }
+                } finally {
+                    connection.disconnect()
+                }
+            }
+
+            val iconEntities = allChampions.map { ChampionIconEntity(it.name, it.iconUrl) }
+            database.championDao().insertIcons(iconEntities)
+
+            withContext(Dispatchers.Main) {
+                icons.value = allChampions
+                onComplete()
+            }
         }
     }
 }
+
 
 fun fetchRandomItems(context: Context, onResult: (List<ItemsModel>) -> Unit) {
     CoroutineScope(Dispatchers.IO).launch {
