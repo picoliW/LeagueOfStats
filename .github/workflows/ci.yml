@@ -40,12 +40,12 @@ jobs:
       - name: Install x86 emulator system image
         run: |
           echo "Installing x86 emulator system image..."
-          sdkmanager --install "system-images;android-30;google_apis;x86"
-
+          sdkmanager --install "system-images;android-33;google_apis;x86"
       - name: Create AVD with x86 image
         run: |
           echo "Creating AVD with x86 image..."
-          echo "no" | avdmanager create avd -n test -k "system-images;android-30;google_apis;x86" --device "pixel"
+          echo "no" | avdmanager create avd -n test -k "system-images;android-33;google_apis;x86" --device "pixel"
+      
 
       - name: Start x86 emulator with software rendering
         run: |
