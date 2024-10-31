@@ -14,8 +14,8 @@ jobs:
 
     env:
       JAVA_VERSION: '23'
-      ANDROID_COMPILE_SDK: 33  # Updated to a known working API level
-      ANDROID_BUILD_TOOLS: '33.0.2'
+      ANDROID_COMPILE_SDK: 30  # Altere para API 30, mais estável no GitHub Actions
+      ANDROID_BUILD_TOOLS: '30.0.3'  # Certifique-se de que o build tools é compatível com a SDK
 
     steps:
       - name: Checkout code
@@ -34,15 +34,18 @@ jobs:
           build-tools: ${{ env.ANDROID_BUILD_TOOLS }}
           cache: gradle
 
+      - name: Update SDK Manager
+        run: sdkmanager --update
+
       - name: Install x86 emulator system image
         run: |
           echo "Installing x86 emulator system image..."
-          sdkmanager --install "system-images;android-33;google_apis;x86"  # Ensure this is correct
+          sdkmanager --install "system-images;android-30;google_apis;x86"
 
       - name: Create AVD with x86 image
         run: |
           echo "Creating AVD with x86 image..."
-          echo "no" | avdmanager create avd -n test -k "system-images;android-33;google_apis;x86" --device "pixel"
+          echo "no" | avdmanager create avd -n test -k "system-images;android-30;google_apis;x86" --device "pixel"
 
       - name: Start x86 emulator with software rendering
         run: |
