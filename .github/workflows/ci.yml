@@ -14,7 +14,7 @@ jobs:
 
     env:
       JAVA_VERSION: '23'
-      ANDROID_COMPILE_SDK: 34
+      ANDROID_COMPILE_SDK: 33  # Updated to a known working API level
       ANDROID_BUILD_TOOLS: '33.0.2'
 
     steps:
@@ -37,12 +37,12 @@ jobs:
       - name: Install x86 emulator system image
         run: |
           echo "Installing x86 emulator system image..."
-          sdkmanager --install "system-images;android-34;google_apis;x86"
+          sdkmanager --install "system-images;android-33;google_apis;x86"  # Ensure this is correct
 
       - name: Create AVD with x86 image
         run: |
           echo "Creating AVD with x86 image..."
-          echo "no" | avdmanager create avd -n test -k "system-images;android-34;google_apis;x86" --device "pixel"
+          echo "no" | avdmanager create avd -n test -k "system-images;android-33;google_apis;x86" --device "pixel"
 
       - name: Start x86 emulator with software rendering
         run: |
