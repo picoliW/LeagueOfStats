@@ -37,6 +37,11 @@ jobs:
       - name: Grant execution permission for gradlew
         run: chmod +x ./gradlew
 
+      - name: Create local.properties
+        run: |
+          echo "GOOGLE_API_KEY=${{ secrets.GOOGLE_API_KEY }}" >> local.properties
+          echo "RIOT_API_KEY=${{ secrets.RIOT_API_KEY }}" >> local.properties
+
       - name: Build app
         run: ./gradlew assembleDebug
 
