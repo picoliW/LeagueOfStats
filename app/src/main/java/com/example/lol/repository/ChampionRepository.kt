@@ -281,7 +281,7 @@ fun fetchRandomItems(context: Context, onResult: (List<ItemsModel>) -> Unit) {
                         val priceJson = item.getJSONObject("price")
                         val totalPrice = priceJson.getInt("total")
 
-                        if (totalPrice > 2000) {
+                        if (totalPrice > 2000 && !item.getString("name").contains("enchantment:", ignoreCase = true)) {
                             val itemModel = ItemsModel(
                                 name = item.getString("name"),
                                 description = item.getString("description"),

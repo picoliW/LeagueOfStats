@@ -53,8 +53,8 @@ fun RandomChampionsScreen() {
     var isLoading by remember { mutableStateOf(true) }
     var selectedChampion by remember { mutableStateOf<Pair<ChampionIconModel, List<ItemsModel>>?>(null) }
 
-    val team1 = remember { mutableStateListOf<ChampionIconModel>() }
-    val team2 = remember { mutableStateListOf<ChampionIconModel>() }
+    val team1 = remember { mutableStateListOf<Pair<ChampionIconModel, List<ItemsModel>>>() }
+    val team2 = remember { mutableStateListOf<Pair<ChampionIconModel, List<ItemsModel>>>() }
 
     LaunchedEffect(Unit) {
         isLoading = true
@@ -68,10 +68,18 @@ fun RandomChampionsScreen() {
         randomChampions.addAll(champions.value.shuffled().take(10))
 
         team1.clear()
-        team1.addAll(randomChampions.take(5))
-
         team2.clear()
-        team2.addAll(randomChampions.takeLast(5))
+
+        randomChampions.take(5).forEach { champion ->
+            fetchRandomItems(context) { items ->
+                team1.add(champion to items)
+            }
+        }
+        randomChampions.takeLast(5).forEach { champion ->
+            fetchRandomItems(context) { items ->
+                team2.add(champion to items)
+            }
+        }
     }
 
     selectedChampion?.let { (champion, items) ->
@@ -88,17 +96,23 @@ fun RandomChampionsScreen() {
         R.drawable.lane5_sup
     )
 
+    Image(
+        painter = painterResource(id = R.drawable.background1),
+        contentDescription = null,
+        contentScale = ContentScale.Crop
+    )
+
     if (isLoading) {
         Box(
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
             CustomCircularProgressIndicator(
-                color = MaterialTheme.colorScheme.primary,
+                color = Color.White,
                 strokeWidth = 4.dp
             )
         }
-    } else if (randomChampions.size == 10) {
+    } else if (team1.size == 5 && team2.size == 5) {
         Box(modifier = Modifier.fillMaxSize()) {
             Image(
                 painter = painterResource(id = R.drawable.background1),
@@ -115,17 +129,28 @@ fun RandomChampionsScreen() {
             ) {
                 Button(
                     onClick = {
+                        isLoading = true
                         randomChampions.clear()
                         randomChampions.addAll(champions.value.shuffled().take(10))
 
                         team1.clear()
-                        team1.addAll(randomChampions.take(5))
-
                         team2.clear()
-                        team2.addAll(randomChampions.takeLast(5))
 
-                        val team1Names = team1.joinToString(", ") { it.name }
-                        val team2Names = team2.joinToString(", ") { it.name }
+                        randomChampions.take(5).forEach { champion ->
+                            fetchRandomItems(context) { items ->
+                                team1.add(champion to items)
+                                if (team1.size == 5 && team2.size == 5) isLoading = false
+                            }
+                        }
+                        randomChampions.takeLast(5).forEach { champion ->
+                            fetchRandomItems(context) { items ->
+                                team2.add(champion to items)
+                                if (team1.size == 5 && team2.size == 5) isLoading = false
+                            }
+                        }
+
+                        val team1Names = team1.joinToString(", ") { it.first.name }
+                        val team2Names = team2.joinToString(", ") { it.first.name }
                         val notificationText = "Time 1: $team1Names\nTime 2: $team2Names"
 
                         scheduleNotification(context, notificationText)
@@ -142,8 +167,8 @@ fun RandomChampionsScreen() {
                     modifier = Modifier.weight(1f)
                 ) {
                     items(team1.size) { index ->
-                        val champion1 = team1[index]
-                        val champion2 = team2[index]
+                        val (champion1, items1) = team1[index]
+                        val (champion2, items2) = team2[index]
                         val vsImage = vsImages.getOrNull(index) ?: R.drawable.test
 
                         Row(
@@ -157,17 +182,15 @@ fun RandomChampionsScreen() {
                         ) {
                             ChampionWithDiceIcon(
                                 champion = champion1,
-                                onChampionClick = {
-                                    fetchRandomItems(context) { randomItems ->
-                                        selectedChampion = champion1 to randomItems
-                                    }
-                                },
+                                onChampionClick = { selectedChampion = champion1 to items1 },
                                 onDiceClick = {
                                     var newChampion: ChampionIconModel
                                     do {
                                         newChampion = champions.value.shuffled().first()
-                                    } while (newChampion == team1[index])
-                                    team1[index] = newChampion
+                                    } while (newChampion == champion1)
+                                    fetchRandomItems(context) { newItems ->
+                                        team1[index] = newChampion to newItems
+                                    }
                                 }
                             )
 
@@ -182,17 +205,15 @@ fun RandomChampionsScreen() {
 
                             ChampionWithDiceIcon(
                                 champion = champion2,
-                                onChampionClick = {
-                                    fetchRandomItems(context) { randomItems ->
-                                        selectedChampion = champion2 to randomItems
-                                    }
-                                },
+                                onChampionClick = { selectedChampion = champion2 to items2 },
                                 onDiceClick = {
                                     var newChampion: ChampionIconModel
                                     do {
                                         newChampion = champions.value.shuffled().first()
-                                    } while (newChampion == team2[index])
-                                    team2[index] = newChampion
+                                    } while (newChampion == champion2)
+                                    fetchRandomItems(context) { newItems ->
+                                        team2[index] = newChampion to newItems
+                                    }
                                 }
                             )
                         }
@@ -203,6 +224,7 @@ fun RandomChampionsScreen() {
         }
     }
 }
+
 
 
 
