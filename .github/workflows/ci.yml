@@ -39,9 +39,9 @@ jobs:
 
       - name: Create local.properties
         run: |
-          echo "sdk.dir=D\:\\androidstudio2\\licenses" > ./local.properties
-          echo "GOOGLE_API_KEY=${{ secrets.GOOGLE_API_KEY }}" >> ./local.properties
-          echo "RIOT_API_KEY=${{ secrets.RIOT_API_KEY }}" >> ./local.properties
+          echo "sdk.dir=${{ secrets.ANDROID_SDK_DIR }}" >> local.properties
+          echo "GOOGLE_API_KEY=${{ secrets.GOOGLE_API_KEY }}" >> local.properties
+          echo "RIOT_API_KEY=${{ secrets.RIOT_API_KEY }}" >> local.properties
 
       - name: Build app
         run: ./gradlew assembleDebug
