@@ -37,6 +37,12 @@ jobs:
       - name: Grant execution permission for gradlew
         run: chmod +x ./gradlew
 
+      - name: Create local.properties
+        run: |
+          echo "API_KEY=${{ secrets.API_KEY }}" >> ./local.properties
+          echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> ./local.properties
+          # Adicione outras variáveis conforme necessário
+
       - name: Build app
         run: ./gradlew assembleDebug
 
