@@ -1,10 +1,33 @@
-
 import java.util.Properties
 
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
-    id ("com.google.devtools.ksp") version ("1.9.0-1.0.13")
+    id("com.google.devtools.ksp") version ("1.9.0-1.0.13")
+    id("jacoco")
+}
+
+jacoco {
+    toolVersion = "0.8.7"
+}
+
+tasks.withType<Test> {
+    extensions.configure(JacocoTaskExtension::class.java) {
+        excludes = listOf("jdk.internal.*")
+    }
+}
+
+tasks.register("jacocoTestReport", JacocoReport::class.java) {
+    dependsOn("testDebugUnitTest")
+
+    reports {
+        xml.required.set(true)
+        html.required.set(true)
+    }
+
+    sourceDirectories.setFrom(files("src/main/java"))
+    classDirectories.setFrom(files("build/tmp/kotlin-classes/debug"))
+    executionData.setFrom(fileTree(buildDir).include("**/*.exec"))
 }
 
 val localProperties = Properties()
@@ -15,7 +38,6 @@ if (localPropertiesFile.exists()) {
 
 val googleApiKey: String = localProperties.getProperty("GOOGLE_API_KEY", "google_api_key")
 val riotApiKey: String = localProperties.getProperty("RIOT_API_KEY", "riot_api_key")
-
 
 android {
     namespace = "com.example.lol"
@@ -34,7 +56,6 @@ android {
         }
         buildConfigField("String", "GOOGLE_API_KEY", "\"${googleApiKey}\"")
         buildConfigField("String", "RIOT_API_KEY", "\"${riotApiKey}\"")
-
     }
 
     buildTypes {
@@ -65,12 +86,14 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
             excludes += "META-INF/INDEX.LIST"
             excludes += "META-INF/DEPENDENCIES"
+            excludes += "META-INF/io.netty.versions.properties"
         }
     }
 }
 
 dependencies {
 
+    implementation("io.appium:java-client:8.5.1")
     implementation("androidx.room:room-ktx:2.6.1")
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -89,11 +112,10 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
-    implementation ("androidx.work:work-runtime-ktx:2.8.1")
-    implementation ("com.google.cloud:google-cloud-translate:1.94.3")
+    implementation("androidx.work:work-runtime-ktx:2.8.1")
+    implementation("com.google.cloud:google-cloud-translate:1.94.3")
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
-    implementation ("com.squareup.okhttp3:logging-interceptor:4.9.1")
+    implementation("com.squareup.okhttp3:logging-interceptor:4.9.1")
     implementation("io.coil-kt:coil-compose:2.1.0")
-
 }
