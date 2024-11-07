@@ -21,10 +21,10 @@ class ChampionActivityTest {
             setCapability("appPackage", "")
             setCapability("appActivity", ".ui.activities.ChampionActivity")
             setCapability("automationName", "UiAutomator2")
-            setCapability("udid", "emulator-5554")
+            setCapability("udid", "emulator-5556")
         }
 
-        driver = AndroidDriver(URL("http://192.168.0.7:4723/"), capabilities)
+        driver = AndroidDriver(URL("http://192.168.6.96:4723/"), capabilities)
         driver.manage().timeouts().implicitlyWait(20, TimeUnit.SECONDS)
     }
 
