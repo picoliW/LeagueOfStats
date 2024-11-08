@@ -1,4 +1,6 @@
 import android.content.Context
+import android.content.res.Configuration
+import android.content.res.Resources
 import androidx.compose.runtime.mutableStateOf
 import com.example.lol.data.database.ChampionDao
 import com.example.lol.data.database.ChampionDatabase
@@ -14,6 +16,7 @@ import org.junit.Test
 
 import java.net.HttpURLConnection
 import java.net.URL
+import java.util.Locale
 
 @ExperimentalCoroutinesApi
 class FetchAllChampionsTest {
@@ -31,8 +34,13 @@ class FetchAllChampionsTest {
         mockDatabase = mock(ChampionDatabase::class.java)
         mockHttpURLConnection = mock(HttpURLConnection::class.java)
 
+        val mockResources = mock(Resources::class.java)
+        `when`(mockResources.configuration).thenReturn(Resources.getSystem().configuration)
+        `when`(mockContext.resources).thenReturn(mockResources)
+
         `when`(mockDatabase.championDao()).thenReturn(mockChampionDao)
-        `when`(mockContext.resources.configuration.locales[0].language).thenReturn("pt")
+
+        Locale.setDefault(Locale("pt"))
     }
 
     @Test

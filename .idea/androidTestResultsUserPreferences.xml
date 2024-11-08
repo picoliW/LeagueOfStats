@@ -23,6 +23,7 @@
                 <map>
                   <entry key="Duration" value="90" />
                   <entry key="Tests" value="360" />
+                  <entry key="samsung SM-G611MT" value="120" />
                   <entry key="test" value="120" />
                 </map>
               </option>
@@ -38,6 +39,7 @@
                   <entry key="Medium_Phone_API_35" value="120" />
                   <entry key="Pixel_8_API_35" value="120" />
                   <entry key="Tests" value="360" />
+                  <entry key="samsung SM-G611MT" value="120" />
                   <entry key="test" value="120" />
                 </map>
               </option>

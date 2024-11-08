@@ -7,6 +7,11 @@ plugins {
     id("jacoco")
 }
 
+repositories {
+    google()
+    mavenCentral()
+}
+
 jacoco {
     toolVersion = "0.8.7"
 }
@@ -90,13 +95,9 @@ android {
             excludes += "META-INF/io.netty.versions.properties"
         }
     }
-    packagingOptions {
-        exclude ("mockito-extensions/org.mockito.plugins.MockMaker")
-    }
 }
 
 dependencies {
-
     implementation("io.appium:java-client:8.5.1")
     implementation("androidx.room:room-ktx:2.6.1")
     implementation(libs.androidx.core.ktx)
@@ -122,9 +123,11 @@ dependencies {
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation("com.squareup.okhttp3:logging-interceptor:4.9.1")
     implementation("io.coil-kt:coil-compose:2.1.0")
-    debugImplementation(libs.mockito.core)
-    debugImplementation(libs.mockito.kotlin)
-    debugImplementation(libs.mockito.inline)
-    debugImplementation(libs.mockito.android)
-
+    androidTestImplementation("org.mockito:mockito-android:5.0.0")
+    testImplementation(libs.mockk)
+    testImplementation(libs.mockito.kotlin)
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.junit)
+    androidTestImplementation("androidx.test:runner:1.5.2")
+    androidTestImplementation("androidx.test:rules:1.5.0")
 }
