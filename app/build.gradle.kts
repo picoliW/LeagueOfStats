@@ -90,6 +90,9 @@ android {
             excludes += "META-INF/io.netty.versions.properties"
         }
     }
+    packagingOptions {
+        exclude ("mockito-extensions/org.mockito.plugins.MockMaker")
+    }
 }
 
 dependencies {
@@ -119,4 +122,9 @@ dependencies {
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation("com.squareup.okhttp3:logging-interceptor:4.9.1")
     implementation("io.coil-kt:coil-compose:2.1.0")
+    debugImplementation(libs.mockito.core)
+    debugImplementation(libs.mockito.kotlin)
+    debugImplementation(libs.mockito.inline)
+    debugImplementation(libs.mockito.android)
+
 }
