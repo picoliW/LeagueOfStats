@@ -93,6 +93,9 @@ android {
             excludes += "META-INF/INDEX.LIST"
             excludes += "META-INF/DEPENDENCIES"
             excludes += "META-INF/io.netty.versions.properties"
+            excludes += "META-INF/LICENSE.md"
+            excludes += "META-INF/LICENSE-notice.md"
+
         }
     }
 }
@@ -124,9 +127,9 @@ dependencies {
     implementation("com.squareup.okhttp3:logging-interceptor:4.9.1")
     implementation("io.coil-kt:coil-compose:2.1.0")
     androidTestImplementation("org.mockito:mockito-android:5.0.0")
-    testImplementation(libs.mockk)
-    testImplementation(libs.mockito.kotlin)
+    debugImplementation(libs.mockk)
     testImplementation(libs.kotlinx.coroutines.test)
+    debugImplementation("org.mockito.kotlin:mockito-kotlin:3.2.0")
     testImplementation(libs.junit)
     androidTestImplementation("androidx.test:runner:1.5.2")
     androidTestImplementation("androidx.test:rules:1.5.0")
