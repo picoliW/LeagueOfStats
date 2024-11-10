@@ -1,28 +1,17 @@
-import android.content.Context
-import android.content.res.Configuration
-import android.content.res.Resources
 import androidx.compose.runtime.mutableStateOf
-import com.example.lol.data.database.ChampionDao
-import com.example.lol.data.database.ChampionDatabase
 import com.example.lol.data.database.ChampionStatsEntity
 import com.example.lol.data.models.ChampionStats
 import com.example.lol.data.models.Sprite
 import com.example.lol.data.models.Stats
-import com.example.lol.repository.fetchAllChampions
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.runBlockingTest
 import org.json.JSONArray
-import org.mockito.Mockito.*
 import org.junit.Before
 import org.junit.Test
 
-import java.net.HttpURLConnection
-import java.net.URL
-import java.util.Locale
-
 @ExperimentalCoroutinesApi
-class FetchAllChampionsTest {
+class DatabaseTest {
 
     private lateinit var testDatabase: MutableList<ChampionStatsEntity>
     private val testDispatcher = TestCoroutineDispatcher()

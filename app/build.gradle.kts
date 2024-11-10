@@ -155,4 +155,5 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation("androidx.test:runner:1.5.2")
     androidTestImplementation("androidx.test:rules:1.5.0")
+    implementation("com.squareup.okhttp3:mockwebserver:4.12.0")
 }
