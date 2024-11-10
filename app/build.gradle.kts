@@ -1,5 +1,10 @@
 import java.util.Properties
 
+repositories {
+    google()
+    mavenCentral()
+}
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
@@ -16,15 +21,16 @@ jacoco {
     toolVersion = "0.8.7"
 }
 
-
-tasks.withType<Test> {
-    extensions.configure(JacocoTaskExtension::class.java) {
-        excludes = listOf("jdk.internal.*")
+android {
+    buildTypes {
+        debug {
+            isTestCoverageEnabled = true
+        }
     }
 }
 
 tasks.register("jacocoTestReport", JacocoReport::class.java) {
-    dependsOn("testDebugUnitTest")
+    dependsOn("connectedDebugAndroidTest")
 
     reports {
         xml.required.set(true)
@@ -32,9 +38,25 @@ tasks.register("jacocoTestReport", JacocoReport::class.java) {
     }
 
     sourceDirectories.setFrom(files("src/main/java"))
-    classDirectories.setFrom(files("build/tmp/kotlin-classes/debug"))
-    executionData.setFrom(fileTree(buildDir).include("**/*.exec"))
+    classDirectories.setFrom(
+        fileTree(mapOf(
+            "dir" to "$buildDir/tmp/kotlin-classes/debug",
+            "excludes" to listOf("**/R.class", "**/R$*.class", "**/BuildConfig.*", "**/Manifest*.*")
+        ))
+    )
+    executionData.setFrom(fileTree(mapOf(
+        "dir" to buildDir,
+        "includes" to listOf("**/*.exec", "**/*.ec")
+    )))
+
+    doFirst {
+        executionData.files.forEach { file ->
+            println("JaCoCo execution data found: ${file.absolutePath}")
+        }
+    }
 }
+
+
 
 val localProperties = Properties()
 val localPropertiesFile = rootProject.file("local.properties")

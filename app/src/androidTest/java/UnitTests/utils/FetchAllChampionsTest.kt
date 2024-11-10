@@ -27,15 +27,13 @@ class FetchAllChampionsTest {
     private lateinit var testDatabase: MutableList<ChampionStatsEntity>
     private val testDispatcher = TestCoroutineDispatcher()
 
-
-    // Função de extensão para converter ChampionStatsEntity em ChampionStats
     fun ChampionStatsEntity.toChampionStats(): ChampionStats {
         return ChampionStats(
             id = this.id,
             key = this.key,
             name = this.name,
             title = this.title,
-            tags = this.tags.split(",").map { it.trim() },  // Supondo que 'tags' seja uma string separada por vírgulas
+            tags = this.tags.split(",").map { it.trim() },
             stats = Stats(
                 hp = this.hp,
                 hpperlevel = this.hpperlevel,
@@ -65,7 +63,7 @@ class FetchAllChampionsTest {
                 y = this.spriteY
             ),
             description = this.description,
-            isFavorited = false  // Valor padrão; ajuste conforme necessário
+            isFavorited = false
         )
     }
 
@@ -109,18 +107,13 @@ class FetchAllChampionsTest {
         )
     }
 
-
-
-
     @Test
     fun testFetchAllChampionsFromCache() = runBlockingTest(testDispatcher) {
         val championsState = mutableStateOf<List<ChampionStats>>(emptyList())
 
-        // Simulando a recuperação dos campeões do "cache"
         val cachedChampions = testDatabase
         championsState.value = cachedChampions.map { it.toChampionStats() }
 
-        // Verificando que o estado dos campeões foi preenchido corretamente
         assert(championsState.value.isNotEmpty())
         assert(championsState.value[0].name == "Aatrox")
     }
@@ -129,14 +122,11 @@ class FetchAllChampionsTest {
     fun testFetchAllChampionsFromNetwork() = runBlockingTest(testDispatcher) {
         val championsState = mutableStateOf<List<ChampionStats>>(emptyList())
 
-        // Simulando dados que viriam da rede
         val networkResponse = "[{\"id\":\"1\", \"key\":\"Aatrox\", \"name\":\"Aatrox\", \"title\":\"The Darkin Blade\", \"tags\":[\"Fighter\"], \"stats\":{\"hp\":600, \"hpperlevel\":90}, \"sprite\":{\"url\":\"spriteUrl\", \"x\":0, \"y\":0}, \"icon\":\"iconUrl\", \"description\":\"A champion\"}]"
 
-        // Parseando a resposta JSON diretamente (você pode substituir este parse com Gson ou outra biblioteca)
         val networkChampions = parseNetworkResponse(networkResponse)
         championsState.value = networkChampions
 
-        // Verificando que o estado dos campeões foi preenchido corretamente
         assert(championsState.value.isNotEmpty())
         assert(championsState.value[0].name == "Aatrox")
     }
@@ -144,7 +134,6 @@ class FetchAllChampionsTest {
     private fun parseNetworkResponse(response: String): List<ChampionStats> {
         val champions = mutableListOf<ChampionStats>()
 
-        // Parseia a resposta JSON assumindo que é uma lista de campeões
         val jsonArray = JSONArray(response)
         for (i in 0 until jsonArray.length()) {
             val championJson = jsonArray.getJSONObject(i)
@@ -152,7 +141,6 @@ class FetchAllChampionsTest {
             val statsJson = championJson.getJSONObject("stats")
             val spriteJson = championJson.getJSONObject("sprite")
 
-            // Cria a instância de ChampionStats com os objetos Stats e Sprite
             val champion = ChampionStats(
                 id = championJson.getString("id"),
                 key = championJson.getString("key"),
@@ -190,7 +178,7 @@ class FetchAllChampionsTest {
                     y = spriteJson.getInt("y")
                 ),
                 description = championJson.getString("description"),
-                isFavorited = false  // Ajuste este valor conforme necessário
+                isFavorited = false
             )
 
             champions.add(champion)
