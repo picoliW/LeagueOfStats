@@ -37,7 +37,7 @@ class RiotRepository(
         return matchDetails to summonerNames
     }
 
-    private suspend fun getSummonerNamesByPUUIDs(participants: List<String>): List<String> {
+    suspend fun getSummonerNamesByPUUIDs(participants: List<String>): List<String> {
         return participants.map { puuid ->
             val account = riotAccountApi.getAccountByPUUID(puuid)
             "${account.gameName}#${account.tagLine}"

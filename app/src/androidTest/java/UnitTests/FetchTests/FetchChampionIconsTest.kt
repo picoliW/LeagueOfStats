@@ -16,7 +16,7 @@ import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 
 @ExperimentalCoroutinesApi
-class FetchChampionIconsIntegrationTest {
+class FetchChampionIconsTest {
 
     private lateinit var mockWebServer: MockWebServer
     private lateinit var context: Context

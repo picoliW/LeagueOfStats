@@ -14,7 +14,7 @@ import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 
 @ExperimentalCoroutinesApi
-class FetchRandomItemsIntegrationTest {
+class FetchRandomItemsTest {
 
     private lateinit var mockWebServer: MockWebServer
 
