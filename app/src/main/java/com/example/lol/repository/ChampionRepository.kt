@@ -32,9 +32,6 @@ fun fetchAllChampions(champions: MutableState<List<ChampionStats>>, context: Con
 
         val locale = context.resources.configuration.locales.get(0)
         val isPortuguese = locale.language == "pt"
-        Log.d("sexo", "Cached size: ${cachedChampions.size}")
-        Log.d("sexo", "size: $size")
-        Log.d("sexo", "page: $page")
 
         if (cachedChampions.size >= size) {
             withContext(Dispatchers.Main) {

@@ -475,7 +475,3 @@ fun ChampionDetailsScreen(championStats: ChampionStats) {
         }
     }
 }
-
-
-
-
