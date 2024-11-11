@@ -4,12 +4,14 @@
     <selectionStates>
       <SelectionState runConfigName="Unnamed">
         <option name="selectionMode" value="DROPDOWN" />
-      </SelectionState>
-      <SelectionState runConfigName="RiotApiServiceTest">
-        <option name="selectionMode" value="DROPDOWN" />
-      </SelectionState>
-      <SelectionState runConfigName="AccountResponseTest">
-        <option name="selectionMode" value="DROPDOWN" />
+        <DropdownSelection timestamp="2024-11-11T04:15:31.637404Z">
+          <Target type="DEFAULT_BOOT">
+            <handle>
+              <DeviceId pluginId="LocalEmulator" identifier="path=D:\androidstudio2\licenses\.android\avd\test_2.avd" />
+            </handle>
+          </Target>
+        </DropdownSelection>
+        <DialogSelection />
       </SelectionState>
       <SelectionState runConfigName="DataClassUnitTest">
         <option name="selectionMode" value="DROPDOWN" />
@@ -18,6 +20,12 @@
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
       <SelectionState runConfigName="RiotRepositoryTest2">
+        <option name="selectionMode" value="DROPDOWN" />
+      </SelectionState>
+      <SelectionState runConfigName="ChampionActivityTest">
+        <option name="selectionMode" value="DROPDOWN" />
+      </SelectionState>
+      <SelectionState runConfigName="RandomChampionsActivityTest">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
     </selectionStates>

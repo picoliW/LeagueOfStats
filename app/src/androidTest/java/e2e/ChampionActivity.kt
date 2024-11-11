@@ -5,33 +5,47 @@ import org.junit.Before
 import org.junit.Test
 import org.openqa.selenium.By
 import org.openqa.selenium.WebDriver
-import org.openqa.selenium.WebElement
 import org.openqa.selenium.remote.DesiredCapabilities
+import org.openqa.selenium.support.ui.ExpectedConditions
+import org.openqa.selenium.support.ui.WebDriverWait
 import java.net.URL
-import java.util.concurrent.TimeUnit
+import java.time.Duration
 
-class ChampionActivityTest {
+class RandomChampionsActivityTest {
     private lateinit var driver: WebDriver
 
     @Before
     fun setUp() {
         val capabilities = DesiredCapabilities().apply {
             setCapability("platformName", "Android")
-            setCapability("deviceName", "test")
-            setCapability("appPackage", "")
-            setCapability("appActivity", ".ui.activities.ChampionActivity")
+            setCapability("deviceName", "samsung SM-G611MT")
+            setCapability("appPackage", "com.example.lol")
+            setCapability("appActivity", ".ui.activities.HomeActivity")
             setCapability("automationName", "UiAutomator2")
-            setCapability("udid", "emulator-5556")
+            setCapability("udid", "330098f0268f358b")
+            setCapability("noReset", true)
         }
 
-        driver = AndroidDriver(URL("http://192.168.6.96:4723/"), capabilities)
-        driver.manage().timeouts().implicitlyWait(20, TimeUnit.SECONDS)
+        driver = AndroidDriver(URL("http://192.168.0.7:4723/"), capabilities)
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10))
     }
 
     @Test
-    fun testCheckChampionDetails() {
-        val test = true
+    fun testNavigateToRandomChampionsActivity() {
+        val wait = WebDriverWait(driver, Duration.ofSeconds(20))
+        val randomChampionsButton = wait.until(
+            ExpectedConditions.elementToBeClickable(By.xpath("//android.view.View[@content-desc='randomChampionsButton']"))
+        )
+        randomChampionsButton.click()
 
-        assertTrue(test)
+        val randomChampionTitle = wait.until(
+            ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[contains(@text, 'Random Champions')]"))
+        )
+        assertTrue("Failed to navigate to RandomChampionsActivity", randomChampionTitle.isDisplayed)
+    }
+
+    @After
+    fun tearDown() {
+        driver.quit()
     }
 }
