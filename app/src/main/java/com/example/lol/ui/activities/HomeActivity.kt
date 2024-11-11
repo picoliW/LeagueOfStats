@@ -18,6 +18,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import com.example.lol.R
 import com.example.lol.ui.theme.LolTheme
@@ -87,13 +89,14 @@ fun HomeScreen() {
             }
 
             Spacer(modifier = Modifier.height(16.dp))
-
             Button(
                 onClick = {
                     val intent = Intent(context, RandomChampionsActivity::class.java)
                     context.startActivity(intent)
                 },
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .semantics { contentDescription = "randomChampionsButton" },
                 shape = RoundedCornerShape(12.dp),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colorScheme.secondary
@@ -105,8 +108,12 @@ fun HomeScreen() {
                     modifier = Modifier.size(24.dp)
                 )
                 Spacer(modifier = Modifier.width(8.dp))
-                Text(text = stringResource(id = R.string.sort_random_champion), style = MaterialTheme.typography.bodyLarge)
+                Text(
+                    text = stringResource(id = R.string.sort_random_champion),
+                    style = MaterialTheme.typography.bodyLarge
+                )
             }
+
 
             Spacer(modifier = Modifier.height(16.dp))
 

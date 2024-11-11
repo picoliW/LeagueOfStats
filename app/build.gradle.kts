@@ -156,4 +156,6 @@ dependencies {
     androidTestImplementation("androidx.test:runner:1.5.2")
     androidTestImplementation("androidx.test:rules:1.5.0")
     implementation("com.squareup.okhttp3:mockwebserver:4.12.0")
+    implementation("org.seleniumhq.selenium:selenium-java:4.9.1")
+
 }
