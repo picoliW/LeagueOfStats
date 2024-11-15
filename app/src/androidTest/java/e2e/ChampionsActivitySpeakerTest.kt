@@ -1,3 +1,4 @@
+import android.util.Log
 import io.appium.java_client.AppiumBy
 import io.appium.java_client.android.AndroidDriver
 import org.junit.Before
@@ -10,7 +11,7 @@ import java.net.URL
 import java.time.Duration
 import java.util.concurrent.TimeUnit
 
-class ChampionsActivityTest {
+class ChampionsActivitySpeakerTest {
     private lateinit var appDriver: AndroidDriver
 
     private fun getAppiumDriver(): AndroidDriver {
@@ -32,29 +33,39 @@ class ChampionsActivityTest {
     @Before
     fun setUp() {
         appDriver = getAppiumDriver()
-        appDriver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS)
+        appDriver.manage().timeouts().implicitlyWait(15, TimeUnit.SECONDS)
 
         appDriver.executeScript("mobile: shell", mapOf("command" to "am start -n com.example.lol/.ui.activities.HomeActivity"))
     }
 
     @Test
-    fun testNavigateToRandomChampionsActivity() {
+    fun testSpeakerButton() {
         val wait = WebDriverWait(appDriver, Duration.ofSeconds(20))
 
+        Thread.sleep(4000)
+
         val firstButton = wait.until(
-            ExpectedConditions.elementToBeClickable(
+            ExpectedConditions.visibilityOfElementLocated(
             AppiumBy.ByAndroidUIAutomator("new UiSelector().className(\"android.widget.Button\").instance(0)")
         ))
+        Log.d("axdsadsadasdsad", "vai clicar no primeiro")
         firstButton.click()
+        Log.d("axdsadsadasdsad", "clicou no primeiro")
+
+        Thread.sleep(7000)
 
         val randomChampionElement = wait.until(ExpectedConditions.elementToBeClickable(
-            By.xpath("//androidx.compose.ui.platform.ComposeView/android.view.View/android.view.View/android.view.View[1]")
+            AppiumBy.ByAndroidUIAutomator("new UiSelector().className(\"android.view.View\").instance(2)")
         ))
+        Log.d("axdsadsadasdsad", "vai clicar no segundo")
         randomChampionElement.click()
+        Log.d("axdsadsadasdsad", "clicou no segundo")
 
         val speakerIcon = wait.until(ExpectedConditions.elementToBeClickable(
             AppiumBy.ByAndroidUIAutomator("new UiSelector().description(\"Speaker Icon\")")
         ))
         speakerIcon.click()
+
+        Thread.sleep(3500)
     }
 }

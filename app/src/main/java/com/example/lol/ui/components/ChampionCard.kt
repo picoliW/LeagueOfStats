@@ -14,11 +14,15 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.testTag
+import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.lol.ui.activities.ChampionActivity
@@ -29,6 +33,7 @@ import com.example.lol.data.models.ChampionStats
 import java.net.HttpURLConnection
 import java.net.URL
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun ChampionCard(champion: ChampionStats, onClick: () -> Unit) {
     val context = LocalContext.current
@@ -48,7 +53,8 @@ fun ChampionCard(champion: ChampionStats, onClick: () -> Unit) {
                 val intent = Intent(context, ChampionActivity::class.java)
                 intent.putExtra("championStats", champion)
                 context.startActivity(intent)
-            },
+            }
+            .semantics { testTag = "championCard_${champion.name}" },
         shape = RoundedCornerShape(8.dp),
         elevation = CardDefaults.cardElevation(4.dp),
         colors = CardDefaults.cardColors(containerColor = Color(0xFF1E1E1E))
@@ -72,12 +78,22 @@ fun ChampionCard(champion: ChampionStats, onClick: () -> Unit) {
 
             Spacer(modifier = Modifier.width(16.dp))
             Column {
-                Text(text = champion.name, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = Color.White)
-                Text(text = champion.title, style = MaterialTheme.typography.bodyMedium, color = Color.White)
+                Text(
+                    text = champion.name,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White
+                )
+                Text(
+                    text = champion.title,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = Color.White
+                )
             }
         }
     }
 }
+
 
 fun loadImageFromUrl(url: String): Bitmap? {
     return try {
