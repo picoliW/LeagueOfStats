@@ -19,7 +19,8 @@ import com.example.lol.data.models.ChampionIconModel
 fun ChampionWithDiceIcon(
     champion: ChampionIconModel,
     onChampionClick: () -> Unit,
-    onDiceClick: () -> Unit
+    onDiceClick: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Box(
         modifier = Modifier.size(96.dp)

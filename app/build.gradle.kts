@@ -123,7 +123,15 @@ android {
 }
 
 dependencies {
-    implementation("io.appium:java-client:8.5.1")
+    implementation("io.appium:java-client:8.5.1") {
+        exclude(group = "org.seleniumhq.selenium", module = "selenium-api")
+        exclude(group = "commons-logging", module = "commons-logging")
+        exclude(group = "org.springframework", module = "spring-jcl")
+    }
+
+    implementation("org.seleniumhq.selenium:selenium-api:3.141.59")
+    implementation("org.seleniumhq.selenium:selenium-remote-driver:3.141.59")
+    implementation("org.seleniumhq.selenium:selenium-support:3.141.59")
     implementation("androidx.room:room-ktx:2.6.1")
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -156,6 +164,4 @@ dependencies {
     androidTestImplementation("androidx.test:runner:1.5.2")
     androidTestImplementation("androidx.test:rules:1.5.0")
     implementation("com.squareup.okhttp3:mockwebserver:4.12.0")
-    implementation("org.seleniumhq.selenium:selenium-java:4.9.1")
-
 }
