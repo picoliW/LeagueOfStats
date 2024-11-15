@@ -1,8 +1,8 @@
-import android.util.Log
 import io.appium.java_client.AppiumBy
 import io.appium.java_client.android.AndroidDriver
 import org.junit.Before
 import org.junit.Test
+import org.openqa.selenium.By
 import org.openqa.selenium.remote.DesiredCapabilities
 import org.openqa.selenium.support.ui.ExpectedConditions
 import org.openqa.selenium.support.ui.WebDriverWait
@@ -10,7 +10,7 @@ import java.net.URL
 import java.time.Duration
 import java.util.concurrent.TimeUnit
 
-class RandomChampionsActivityTest {
+class ChampionsActivityTest {
     private lateinit var appDriver: AndroidDriver
 
     private fun getAppiumDriver(): AndroidDriver {
@@ -43,24 +43,18 @@ class RandomChampionsActivityTest {
 
         val firstButton = wait.until(
             ExpectedConditions.elementToBeClickable(
-        appDriver.findElement(AppiumBy.ByAndroidUIAutomator("new UiSelector().className(\"android.widget.Button\").instance(1)"))
-            ))
+            AppiumBy.ByAndroidUIAutomator("new UiSelector().className(\"android.widget.Button\").instance(0)")
+        ))
         firstButton.click()
 
-        val sortAgain = wait.until(ExpectedConditions.elementToBeClickable(
-        appDriver.findElement(AppiumBy.ByAndroidUIAutomator("new UiSelector().className(\"android.widget.Button\").instance(0)"))
+        val randomChampionElement = wait.until(ExpectedConditions.elementToBeClickable(
+            By.xpath("//androidx.compose.ui.platform.ComposeView/android.view.View/android.view.View/android.view.View[1]")
         ))
-        sortAgain.click()
+        randomChampionElement.click()
 
-
-        val champions = wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(
-            AppiumBy.ByAndroidUIAutomator("new UiSelector().descriptionMatches(\".* Icon\")")
+        val speakerIcon = wait.until(ExpectedConditions.elementToBeClickable(
+            AppiumBy.ByAndroidUIAutomator("new UiSelector().description(\"Speaker Icon\")")
         ))
-
-        val randomChampion = champions.random()
-        randomChampion.click()
-
-        Thread.sleep(2000)
-
+        speakerIcon.click()
     }
 }

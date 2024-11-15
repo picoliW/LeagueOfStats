@@ -1,9 +1,7 @@
-import android.util.Log
 import io.appium.java_client.AppiumBy
 import io.appium.java_client.android.AndroidDriver
 import org.junit.Before
 import org.junit.Test
-import org.openqa.selenium.By
 import org.openqa.selenium.remote.DesiredCapabilities
 import org.openqa.selenium.support.ui.ExpectedConditions
 import org.openqa.selenium.support.ui.WebDriverWait
@@ -11,7 +9,7 @@ import java.net.URL
 import java.time.Duration
 import java.util.concurrent.TimeUnit
 
-class ChampionsActivityTest {
+class RandomChampionsActivityTest {
     private lateinit var appDriver: AndroidDriver
 
     private fun getAppiumDriver(): AndroidDriver {
@@ -44,18 +42,24 @@ class ChampionsActivityTest {
 
         val firstButton = wait.until(
             ExpectedConditions.elementToBeClickable(
-            AppiumBy.ByAndroidUIAutomator("new UiSelector().className(\"android.widget.Button\").instance(0)")
-        ))
+        appDriver.findElement(AppiumBy.ByAndroidUIAutomator("new UiSelector().className(\"android.widget.Button\").instance(1)"))
+            ))
         firstButton.click()
 
-        val randomChampionElement = wait.until(ExpectedConditions.elementToBeClickable(
-            By.xpath("//androidx.compose.ui.platform.ComposeView/android.view.View/android.view.View/android.view.View[1]")
+        val sortAgain = wait.until(ExpectedConditions.elementToBeClickable(
+        appDriver.findElement(AppiumBy.ByAndroidUIAutomator("new UiSelector().className(\"android.widget.Button\").instance(0)"))
         ))
-        randomChampionElement.click()
+        sortAgain.click()
 
-        val speakerIcon = wait.until(ExpectedConditions.elementToBeClickable(
-            AppiumBy.ByAndroidUIAutomator("new UiSelector().description(\"Speaker Icon\")")
+
+        val champions = wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(
+            AppiumBy.ByAndroidUIAutomator("new UiSelector().descriptionMatches(\".* Icon\")")
         ))
-        speakerIcon.click()
+
+        val randomChampion = champions.random()
+        randomChampion.click()
+
+        Thread.sleep(2000)
+
     }
 }
