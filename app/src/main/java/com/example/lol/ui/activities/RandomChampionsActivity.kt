@@ -19,10 +19,14 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.testTag
+import androidx.compose.ui.semantics.testTagsAsResourceId
 import com.example.lol.R
 import com.example.lol.data.models.ChampionIconModel
 import com.example.lol.data.models.ItemsModel
@@ -45,6 +49,7 @@ class RandomChampionsActivity : ComponentActivity() {
     }
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun RandomChampionsScreen() {
     val champions = remember { mutableStateOf(listOf<ChampionIconModel>()) }
@@ -123,6 +128,7 @@ fun RandomChampionsScreen() {
 
             Column(
                 modifier = Modifier
+                    .semantics { testTagsAsResourceId = true }
                     .fillMaxSize()
                     .padding(horizontal = 16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
@@ -155,7 +161,8 @@ fun RandomChampionsScreen() {
 
                         scheduleNotification(context, notificationText)
                     },
-                    modifier = Modifier.padding(vertical = 16.dp),
+                    modifier = Modifier.padding(vertical = 16.dp)
+                        .semantics { testTag = "sort_again" },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.secondary
                     )
@@ -191,7 +198,8 @@ fun RandomChampionsScreen() {
                                     fetchRandomItems(context) { newItems ->
                                         team1[index] = newChampion to newItems
                                     }
-                                }
+                                },
+                                modifier = Modifier.semantics { testTag = "team1_champion_$index" }
                             )
 
                             Image(
@@ -214,7 +222,8 @@ fun RandomChampionsScreen() {
                                     fetchRandomItems(context) { newItems ->
                                         team2[index] = newChampion to newItems
                                     }
-                                }
+                                },
+                                modifier = Modifier.semantics { testTag = "team2_champion_$index" }
                             )
                         }
                         Spacer(modifier = Modifier.height(16.dp))
