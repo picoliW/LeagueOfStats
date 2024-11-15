@@ -1,15 +1,17 @@
 import android.util.Log
 import io.appium.java_client.AppiumBy
-import io.appium.java_client.android.Activity
 import io.appium.java_client.android.AndroidDriver
 import org.junit.Before
 import org.junit.Test
 import org.openqa.selenium.By
 import org.openqa.selenium.remote.DesiredCapabilities
+import org.openqa.selenium.support.ui.ExpectedConditions
+import org.openqa.selenium.support.ui.WebDriverWait
 import java.net.URL
+import java.time.Duration
 import java.util.concurrent.TimeUnit
 
-class RandomChampionsActivityTest {
+class ChampionsActivityTest {
     private lateinit var appDriver: AndroidDriver
 
     private fun getAppiumDriver(): AndroidDriver {
@@ -38,23 +40,22 @@ class RandomChampionsActivityTest {
 
     @Test
     fun testNavigateToRandomChampionsActivity() {
-        Log.d("AppiumPageSource", appDriver.pageSource)
+        val wait = WebDriverWait(appDriver, Duration.ofSeconds(20))
 
-        appDriver.findElement(AppiumBy.ByAndroidUIAutomator("new UiSelector().className(\"android.widget.Button\").instance(1)"))
-            .click()
+        val firstButton = wait.until(
+            ExpectedConditions.elementToBeClickable(
+            AppiumBy.ByAndroidUIAutomator("new UiSelector().className(\"android.widget.Button\").instance(0)")
+        ))
+        firstButton.click()
 
-        Thread.sleep(20000)
+        val randomChampionElement = wait.until(ExpectedConditions.elementToBeClickable(
+            By.xpath("//androidx.compose.ui.platform.ComposeView/android.view.View/android.view.View/android.view.View[1]")
+        ))
+        randomChampionElement.click()
 
-        appDriver.findElement(AppiumBy.ByAndroidUIAutomator("new UiSelector().className(\"android.widget.Button\").instance(0)"))
-            .click()
-
-        Thread.sleep(7000)
-
-        val champions = appDriver.findElements(AppiumBy.ByAndroidUIAutomator("new UiSelector().descriptionMatches(\".* Icon\")"))
-        val randomChampion = champions.random()
-        randomChampion.click()
-
-        Thread.sleep(2000)
-
+        val speakerIcon = wait.until(ExpectedConditions.elementToBeClickable(
+            AppiumBy.ByAndroidUIAutomator("new UiSelector().description(\"Speaker Icon\")")
+        ))
+        speakerIcon.click()
     }
 }

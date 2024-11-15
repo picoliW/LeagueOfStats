@@ -122,16 +122,23 @@ android {
     }
 }
 
+configurations.all {
+    resolutionStrategy {
+        force ("com.google.guava:guava:31.1-jre")
+    }
+}
+
 dependencies {
     implementation("io.appium:java-client:8.5.1") {
         exclude(group = "org.seleniumhq.selenium", module = "selenium-api")
         exclude(group = "commons-logging", module = "commons-logging")
         exclude(group = "org.springframework", module = "spring-jcl")
+        exclude(group = "com.google.guava")
     }
-
-    implementation("org.seleniumhq.selenium:selenium-api:3.141.59")
-    implementation("org.seleniumhq.selenium:selenium-remote-driver:3.141.59")
-    implementation("org.seleniumhq.selenium:selenium-support:3.141.59")
+    implementation("com.google.guava:guava:31.1-jre")
+    implementation("org.seleniumhq.selenium:selenium-api:4.13.0")
+    implementation("org.seleniumhq.selenium:selenium-remote-driver:4.13.0")
+    implementation("org.seleniumhq.selenium:selenium-support:4.13.0")
     implementation("androidx.room:room-ktx:2.6.1")
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
