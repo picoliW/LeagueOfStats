@@ -2,6 +2,7 @@ package e2e
 
 import io.appium.java_client.AppiumBy
 import io.appium.java_client.android.AndroidDriver
+import org.asynchttpclient.util.Assertions.assertNotNull
 import org.junit.Before
 import org.junit.Test
 import org.openqa.selenium.remote.DesiredCapabilities
@@ -43,8 +44,6 @@ class FavoriteChampionsActivityTest {
     fun testFavoriteChampion(){
         val wait = WebDriverWait(appDriver, Duration.ofSeconds(20))
 
-        Thread.sleep(7000)
-
         val firstButton = wait.until(
             ExpectedConditions.visibilityOfElementLocated(
                 AppiumBy.ByAndroidUIAutomator("new UiSelector().className(\"android.widget.Button\").instance(0)")
@@ -75,7 +74,16 @@ class FavoriteChampionsActivityTest {
 
         showFavoritesButton.click()
 
-        Thread.sleep(7000)
+        val favoriteChampionCard = wait.until(
+            ExpectedConditions.visibilityOfElementLocated(
+                AppiumBy.ByAndroidUIAutomator("new UiSelector().className(\"android.widget.TextView\").text(\"Aatrox\")")
+            )
+        )
+
+        assertNotNull(favoriteChampionCard, "Aatrox não apareceu como campeão favorito")
+
+
+
 
 
     }
