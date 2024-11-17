@@ -81,10 +81,5 @@ class FavoriteChampionsActivityTest {
         )
 
         assertNotNull(favoriteChampionCard, "Aatrox não apareceu como campeão favorito")
-
-
-
-
-
     }
 }

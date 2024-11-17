@@ -1,5 +1,6 @@
 import io.appium.java_client.AppiumBy
 import io.appium.java_client.android.AndroidDriver
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.openqa.selenium.remote.DesiredCapabilities
@@ -24,7 +25,7 @@ class RandomChampionsActivityTest {
             setCapability("appium:newCommandTimeout", 100)
             setCapability("appium:enableAdbShell", true)
 
-            return AndroidDriver(URL("http://192.168.0.7:4723/"), this)
+            return AndroidDriver(URL("http://192.168.0.8:4723/"), this)
         }
     }
 
@@ -36,21 +37,42 @@ class RandomChampionsActivityTest {
         appDriver.executeScript("mobile: shell", mapOf("command" to "am start -n com.example.lol/.ui.activities.HomeActivity"))
     }
 
+
     @Test
-    fun testNavigateToRandomChampionsActivity() {
+    fun testRandomChampionsAreDifferent() {
         val wait = WebDriverWait(appDriver, Duration.ofSeconds(20))
 
         val firstButton = wait.until(
             ExpectedConditions.elementToBeClickable(
-        appDriver.findElement(AppiumBy.ByAndroidUIAutomator("new UiSelector().className(\"android.widget.Button\").instance(1)"))
-            ))
+                appDriver.findElement(
+                    AppiumBy.ByAndroidUIAutomator("new UiSelector().className(\"android.widget.Button\").instance(1)")
+                )
+            )
+        )
         firstButton.click()
 
-        val sortAgain = wait.until(ExpectedConditions.elementToBeClickable(
-        appDriver.findElement(AppiumBy.ByAndroidUIAutomator("new UiSelector().className(\"android.widget.Button\").instance(0)"))
-        ))
+        val initialChampions = wait.until(
+            ExpectedConditions.visibilityOfAllElementsLocatedBy(
+                AppiumBy.ByAndroidUIAutomator("new UiSelector().descriptionMatches(\".* Icon\")")
+            )
+        ).map { it.getAttribute("contentDescription") }
+
+        val sortAgain = wait.until(
+            ExpectedConditions.elementToBeClickable(
+                appDriver.findElement(
+                    AppiumBy.ByAndroidUIAutomator("new UiSelector().className(\"android.widget.Button\").instance(0)")
+                )
+            )
+        )
         sortAgain.click()
 
+        val newChampions = wait.until(
+            ExpectedConditions.visibilityOfAllElementsLocatedBy(
+                AppiumBy.ByAndroidUIAutomator("new UiSelector().descriptionMatches(\".* Icon\")")
+            )
+        ).map { it.getAttribute("contentDescription") }
+
+        assertTrue(initialChampions != newChampions)
 
         val champions = wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(
             AppiumBy.ByAndroidUIAutomator("new UiSelector().descriptionMatches(\".* Icon\")")
@@ -60,6 +82,5 @@ class RandomChampionsActivityTest {
         randomChampion.click()
 
         Thread.sleep(2000)
-
     }
 }

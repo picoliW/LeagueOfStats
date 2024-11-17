@@ -16,7 +16,7 @@
       <SelectionState runConfigName="RandomChampionsActivityTest">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="FavoriteChampionsActivityTest">
+      <SelectionState runConfigName="ChampionsActivitySpeakerTest">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
     </selectionStates>
