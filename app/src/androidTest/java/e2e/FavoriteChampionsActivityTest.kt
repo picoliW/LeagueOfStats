@@ -49,12 +49,16 @@ class FavoriteChampionsActivityTest {
     fun testFavoriteChampion(){
         val wait = WebDriverWait(appDriver, Duration.ofSeconds(20))
 
+        Thread.sleep(4000)
+
         val firstButton = wait.until(
             ExpectedConditions.visibilityOfElementLocated(
                 AppiumBy.ByAndroidUIAutomator("new UiSelector().className(\"android.widget.Button\").instance(0)")
             ))
 
         firstButton.click()
+
+        Thread.sleep(7000)
 
         val randomChampionElement = wait.until(ExpectedConditions.elementToBeClickable(
             AppiumBy.ByAndroidUIAutomator("new UiSelector().className(\"android.view.View\").instance(2)")
