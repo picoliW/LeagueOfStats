@@ -1,5 +1,6 @@
 package e2e
 
+import com.example.lol.BuildConfig
 import io.appium.java_client.AppiumBy
 import io.appium.java_client.android.AndroidDriver
 import org.asynchttpclient.util.Assertions.assertNotNull
@@ -17,18 +18,22 @@ class FavoriteChampionsActivityTest {
     private lateinit var appDriver: AndroidDriver
 
     private fun getAppiumDriver(): AndroidDriver {
+
+        val serverIp = BuildConfig.APPIUM_SERVER_IP
+        val serverUrl = "http://$serverIp:4723/"
+
         with(DesiredCapabilities()) {
             setCapability("platformName", "Android")
-            setCapability("deviceName", "Small Phone API 35")
+            setCapability("deviceName", "samsung SM-G611MT")
             setCapability("appPackage", "com.example.lol")
             setCapability("appActivity", ".ui.activities.HomeActivity")
             setCapability("automationName", "UiAutomator2")
-            setCapability("udid", "emulator-5554")
+            setCapability("udid", "330098f0268f358b")
             setCapability("noReset", true)
             setCapability("appium:newCommandTimeout", 100)
             setCapability("appium:enableAdbShell", true)
 
-            return AndroidDriver(URL("http://192.168.206.1:4723/"), this)
+            return AndroidDriver(URL(serverUrl), this)
         }
     }
 

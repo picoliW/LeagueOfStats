@@ -66,6 +66,8 @@ if (localPropertiesFile.exists()) {
 
 val googleApiKey: String = localProperties.getProperty("GOOGLE_API_KEY", "google_api_key")
 val riotApiKey: String = localProperties.getProperty("RIOT_API_KEY", "riot_api_key")
+val appiumServerIp: String = localProperties.getProperty("APPIUM_SERVER_IP", "appium_server_ip")
+
 
 android {
     namespace = "com.example.lol"
@@ -84,6 +86,7 @@ android {
         }
         buildConfigField("String", "GOOGLE_API_KEY", "\"${googleApiKey}\"")
         buildConfigField("String", "RIOT_API_KEY", "\"${riotApiKey}\"")
+        buildConfigField("String", "APPIUM_SERVER_IP", "\"${appiumServerIp}\"")
     }
 
     buildTypes {

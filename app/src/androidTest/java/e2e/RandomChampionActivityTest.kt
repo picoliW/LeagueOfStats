@@ -1,3 +1,4 @@
+import com.example.lol.BuildConfig
 import io.appium.java_client.AppiumBy
 import io.appium.java_client.android.AndroidDriver
 import org.junit.Assert.assertTrue
@@ -14,6 +15,10 @@ class RandomChampionsActivityTest {
     private lateinit var appDriver: AndroidDriver
 
     private fun getAppiumDriver(): AndroidDriver {
+
+        val serverIp = BuildConfig.APPIUM_SERVER_IP
+        val serverUrl = "http://$serverIp:4723/"
+
         with(DesiredCapabilities()) {
             setCapability("platformName", "Android")
             setCapability("deviceName", "samsung SM-G611MT")
@@ -25,7 +30,7 @@ class RandomChampionsActivityTest {
             setCapability("appium:newCommandTimeout", 100)
             setCapability("appium:enableAdbShell", true)
 
-            return AndroidDriver(URL("http://192.168.0.8:4723/"), this)
+            return AndroidDriver(URL(serverUrl), this)
         }
     }
 
